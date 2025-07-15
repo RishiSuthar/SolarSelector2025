@@ -294,10 +294,48 @@ function updateSummary() {
 }
 
 function shareSummary() {
-    const summaryContent = document.getElementById('summary').innerText;
-    const totalCost = document.getElementById('total-cost').innerText;
+    const inverterText = `${state.selectedCompany} ${state.selectedInverter.kva}kVA - ${state.selectedInverter.voltage}V`;
+    const batteryText = `${state.selectedBattery.name} x${state.selectedBattery.count}`;
+    const panelText = `${state.selectedPanels} panels`;
+    const accessoryCost = getAccessoryCost();
+    const totalCost = document.getElementById('total-cost').textContent;
+
     const subject = encodeURIComponent('Sangyug Solar Inverter System Summary');
-    const body = encodeURIComponent(`Here is my solar inverter system summary:\n\n${summaryContent}\nTotal Cost: ${totalCost}\n\nPlease note: Above quote includes solar mounting/structure. The final quote can be given after the site survey is done.`);
+    const body = encodeURIComponent(
+`Solar System Quote from Sangyug
+
+Here are the details of your selected solar inverter system:
+
+🔹 INVERTER
+• Model: ${inverterText}
+• Price: ${state.selectedInverter.price.toLocaleString()} Ksh
+• Installation/Labour: ${state.selectedInverter.labour.toLocaleString()} Ksh
+
+🔹 BATTERY
+• Type: ${batteryText}
+• Price: ${(state.selectedBattery.price * state.selectedBattery.count).toLocaleString()} Ksh
+
+🔹 SOLAR PANELS
+• Quantity: ${panelText}
+• Price: ${(state.selectedPanels * 8300).toLocaleString()} Ksh
+
+🔹 ACCESSORIES
+• Included: ${accessoryCost.toLocaleString()} Ksh
+
+TOTAL COST: ${totalCost}
+
+Important Notes:
+• Above quote includes solar mounting/structure
+• Final quote will be provided after site survey
+
+
+For any questions, please contact us at:
+📞 Phone: 0742196553
+📧 Email: info@sangyug.com
+
+Thank you for choosing Sangyug Solar!
+`);
+
     window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
 }
 
@@ -305,44 +343,91 @@ function downloadPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(12);
-    const primaryColor = [0, 0, 0];
-    const textColor = [0, 0, 102];
-
-    doc.setFontSize(16);
+    // Set colors
+    const primaryColor = [0, 102, 204]; // Blue
+    const accentColor = [0, 0, 0];  // Orange
+    const textColor = [51, 51, 51];     // Dark gray
+    
+    // Add header with logo
+    doc.setFontSize(18);
     doc.setTextColor(...primaryColor);
-    doc.text("Sangyug Solar Inverter System Summary", 105, 20, { align: 'center' });
-
+    doc.setFont("helvetica", "bold");
+    doc.text("SANGYUG SOLAR QUOTATION", 105, 20, { align: 'center' });
+    
+    // Add divider line
+    doc.setDrawColor(...primaryColor);
+    doc.setLineWidth(0.5);
+    doc.line(15, 25, 195, 25);
+    
+    // Customer info section
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text("Prepared for:", 20, 35);
+    doc.text("Date: " + new Date().toLocaleDateString(), 160, 35);
+    
+    // Main content
     doc.setFontSize(12);
     doc.setTextColor(...textColor);
-    let yPosition = 40;
+    let yPosition = 50;
     
-    const summaryItems = [
-        `Inverter: ${state.selectedCompany} ${state.selectedInverter.kva}kVA - ${state.selectedInverter.voltage}V`,
-        `Price: ${state.selectedInverter.price.toLocaleString()} Ksh`,
-        `Labour: ${state.selectedInverter.labour.toLocaleString()} Ksh`,
-        `Batteries: ${state.selectedBattery.name} x${state.selectedBattery.count}`,
-        `Battery Price: ${(state.selectedBattery.price * state.selectedBattery.count).toLocaleString()} Ksh`,
-        `Solar Panels: ${state.selectedPanels} panels`,
-        `Panel Price: ${(state.selectedPanels * 8300).toLocaleString()} Ksh`,
-        `Accessories: Included (${getAccessoryCost().toLocaleString()} Ksh)`
-    ];
-
-    summaryItems.forEach(item => {
-        doc.text(item, 20, yPosition);
-        yPosition += 10;
-    });
-
-    const totalCost = document.getElementById('total-cost').textContent;
+    // System Details section
     doc.setFont("helvetica", "bold");
-    doc.text(`Total Cost: ${totalCost}`, 20, yPosition + 15);
-
+    doc.setTextColor(...primaryColor);
+    doc.text("SYSTEM DETAILS", 20, yPosition);
+    yPosition += 8;
+    
     doc.setFont("helvetica", "normal");
+    doc.setTextColor(...textColor);
+    doc.text(`Inverter: ${state.selectedCompany} ${state.selectedInverter.kva}kVA - ${state.selectedInverter.voltage}V`, 20, yPosition);
+    doc.text(`${state.selectedInverter.price.toLocaleString()} Ksh`, 160, yPosition);
+    yPosition += 7;
+    
+    doc.text(`Installation/Labour`, 20, yPosition);
+    doc.text(`${state.selectedInverter.labour.toLocaleString()} Ksh`, 160, yPosition);
+    yPosition += 7;
+    
+    doc.text(`Batteries: ${state.selectedBattery.name} x${state.selectedBattery.count}`, 20, yPosition);
+    doc.text(`${(state.selectedBattery.price * state.selectedBattery.count).toLocaleString()} Ksh`, 160, yPosition);
+    yPosition += 7;
+    
+    doc.text(`Solar Panels: ${state.selectedPanels} panels`, 20, yPosition);
+    doc.text(`${(state.selectedPanels * 8300).toLocaleString()} Ksh`, 160, yPosition);
+    yPosition += 7;
+    
+    doc.text(`Accessories (included)`, 20, yPosition);
+    doc.text(`${getAccessoryCost().toLocaleString()} Ksh`, 160, yPosition);
+    yPosition += 15;
+    
+    // Total section
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...accentColor);
+    doc.text("TOTAL COST", 20, yPosition);
+    const totalCost = document.getElementById('total-cost').textContent;
+    doc.text(totalCost, 160, yPosition);
+    yPosition += 15;
+    
+    // Notes section
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...primaryColor);
+    doc.text("IMPORTANT NOTES", 20, yPosition);
+    yPosition += 8;
+    
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(...textColor);
+    doc.text("1. Above quote includes solar mounting/structure.", 20, yPosition);
+    yPosition += 7;
+    doc.text("2. Final quote will be provided after site survey.", 20, yPosition);
+    yPosition += 20;
+    
+    // Footer
     doc.setFontSize(10);
-    doc.text("Note: The above quote includes solar mounting/structure. The final quote can be given after the site survey is done.", 20, yPosition + 30, { maxWidth: 170 });
-
-    doc.save("Sangyug_Solar_Summary.pdf");
+    doc.setTextColor(100, 100, 100);
+    doc.text("Thank you for choosing Sangyug!", 105, yPosition, { align: 'center' });
+    yPosition += 5;
+    doc.text("Contact: 0742196553 | info@sangyug.com", 105, yPosition, { align: 'center' });
+    
+    // Save the PDF
+    doc.save(`Sangyug_Solar_Quote_${new Date().toISOString().slice(0,10)}.pdf`);
 }
 
 function resetSelection() {
