@@ -13,10 +13,10 @@ const kstarInverters = [
 ];
 
 const fortunerInverters = [
-    { kva: 0.7, voltage: 12, price: 25000, labour: 15000, img: 'images/inverter-700va-12v.png', specsLink: 'https://drive.google.com/file/d/placeholder_fortuner_700va/view?usp=sharing' },
-    { kva: 1.7, voltage: 24, price: 35000, labour: 15000, img: 'images/inverter-1700va-24v.png', specsLink: 'https://drive.google.com/file/d/placeholder_fortuner_1700va/view?usp=sharing' },
-    { kva: 2.2, voltage: 24, price: 45000, labour: 18000, img: 'images/inverter-2200va-24v.png', specsLink: 'https://drive.google.com/file/d/placeholder_fortuner_2200va/view?usp=sharing' },
-    { kva: 10.2, voltage: 48, price: 90000, labour: 25000, img: 'images/inverter-10200va-48v.png', specsLink: 'https://drive.google.com/file/d/placeholder_fortuner_10200va/view?usp=sharing' }
+    { kva: 0.7, voltage: 12, price: 25000, labour: 15000, img: 'images/solar.jpg', specsLink: 'https://drive.google.com/file/d/placeholder_fortuner_700va/view?usp=sharing' },
+    { kva: 1.7, voltage: 24, price: 35000, labour: 15000, img: 'images/solar.jpg', specsLink: 'https://drive.google.com/file/d/placeholder_fortuner_1700va/view?usp=sharing' },
+    { kva: 2.2, voltage: 24, price: 45000, labour: 18000, img: 'images/solar.jpg', specsLink: 'https://drive.google.com/file/d/placeholder_fortuner_2200va/view?usp=sharing' },
+    { kva: 10.2, voltage: 48, price: 90000, labour: 25000, img: 'images/solar.jpg', specsLink: 'https://drive.google.com/file/d/placeholder_fortuner_10200va/view?usp=sharing' }
 ];
 
 const batteries = [
