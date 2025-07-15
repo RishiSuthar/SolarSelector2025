@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sangyug Solar System Selector</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header section -->
+    <header class="header">
+        <div class="header-container">
+            <img src="images/sangyuglogo.png" alt="Sangyug Logo" class="header-logo">
+            <h1>Solar System Maker</h1>
+        </div>
+    </header>
+
+    <!-- Progress indicator -->
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-steps">
+            <div class="progress-step active" data-step="company">
+                <div class="step-icon"><i class="fas fa-building"></i></div>
+                <div class="step-label">Company</div>
+            </div>
+            <div class="progress-step" data-step="inverter">
+                <div class="step-icon"><i class="fas fa-bolt"></i></div>
+                <div class="step-label">Inverter</div>
+            </div>
+            <div class="progress-step" data-step="battery">
+                <div class="step-icon"><i class="fas fa-car-battery"></i></div>
+                <div class="step-label">Battery</div>
+            </div>
+            <div class="progress-step" data-step="summary">
+                <div class="step-icon"><i class="fas fa-file-alt"></i></div>
+                <div class="step-label">Summary</div>
+            </div>
+        </div>
+    </div>
+
+    <main class="main-container">
+        <!-- Company Selection -->
+        <section id="company-section" class="section active">
+            <div class="section-header">
+                <h2>Select a Company</h2>
+                <p>Choose the manufacturer for your solar system</p>
+            </div>
+            <div id="company-options" class="options-grid"></div>
+        </section>
+
+        <!-- Inverter Selection -->
+        <section id="inverter-section" class="section hidden">
+            <div class="section-header">
+                <h2>Select an Inverter</h2>
+                <p>Choose the inverter that matches your power needs</p>
+            </div>
+            <div class="links">
+                <a href="https://drive.google.com/file/d/1X_Azx91o4wRf9H45SUOGCV_l9N45dfT6/view?usp=sharing" target="_blank" class="link-button">
+                    <i class="fas fa-book"></i> User Manual
+                </a>
+                <a href="https://drive.google.com/file/d/1sx29gQLQzLj1ThCVjoHGLXOGOZG-XCgi/view?usp=sharing" target="_blank" class="link-button">
+                    <i class="fas fa-star"></i> Features
+                </a>
+            </div>
+            <div id="inverter-options" class="options-grid"></div>
+        </section>
+
+        <!-- Battery Selection -->
+        <section id="battery-section" class="section hidden">
+            <div class="section-header">
+                <h2>Select a Battery</h2>
+                <p>Choose the battery type for your energy storage</p>
+            </div>
+            <div id="battery-options" class="options-grid"></div>
+        </section>
+
+        <!-- Panel Section -->
+        <section id="panel-section" class="section hidden">
+            <div class="section-header">
+                <h2>Solar Panels Required</h2>
+                <p>Based on your selection, here's what you'll need</p>
+            </div>
+            <div id="loading-summary" class="loading-container hidden">
+                <div class="spinner"></div>
+            </div>
+            <div id="panel-info" class="panel-info"></div>
+            <div id="panel-images" class="panel-images"></div>
+        </section>
+
+        <!-- Accessories Section -->
+        <section id="accessory-section" class="section hidden">
+            <div class="section-header">
+                <h2>Included Accessories</h2>
+                <p>These items are included in your system package</p>
+            </div>
+            <div class="accessory-grid">
+                <div class="accessory-item">
+                    <i class="fas fa-toggle-on"></i>
+                    <div>Change Over Switch</div>
+                    <div class="price">4,000 Ksh</div>
+                </div>
+                <div class="accessory-item">
+                    <i class="fas fa-plug"></i>
+                    <div>DC MCCB</div>
+                    <div class="price">2,500 Ksh</div>
+                </div>
+                <div class="accessory-item">
+                    <i class="fas fa-sliders-h"></i>
+                    <div>AVS 30 AMPS</div>
+                    <div class="price">4,000 Ksh</div>
+                </div>
+                <div class="accessory-item" id="mounting-cost">
+                    <i class="fas fa-solar-panel"></i>
+                    <div>Mounting Structure & Cables</div>
+                    <div class="price">22,000 Ksh</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary Section -->
+        <section id="summary-section" class="section hidden">
+            <div class="section-header">
+                <h2>Your Solar System Summary</h2>
+                <p>Here's your complete system configuration</p>
+            </div>
+            <div id="summary" class="summary-content"></div>
+            <div class="total-cost-container">
+                <div class="total-cost-label">Total Estimated Cost:</div>
+                <div id="total-cost" class="total-cost-amount">0 KSH</div>
+            </div>
+            <div class="quote">
+                <i class="fas fa-info-circle"></i>
+                <p>Please note: The above quote includes solar mounting/structure. The final quote can be given after the site survey is completed.</p>
+            </div>
+            <div class="action-buttons">
+                <button id="share-summary" class="action-button">
+                    <i class="fas fa-envelope"></i> Email Summary
+                </button>
+                <button id="download-pdf" class="action-button">
+                    <i class="fas fa-file-pdf"></i> Download PDF
+                </button>
+                <button id="reset-selection" class="action-button secondary">
+                    <i class="fas fa-redo"></i> Reset Selection
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Floating action button -->
+    <button id="scroll-to-top" class="scroll-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-contact">
+                <span><i class="fas fa-envelope"></i> info@sangyug.com | marketing@sangyug.com</span>
+                <span><i class="fas fa-phone"></i> 0742196553 | 0734332084</span>
+                <span><i class="fas fa-globe"></i> www.sangyug.com</span>
+                <span><i class="fas fa-map-marker-alt"></i> The Big Bang - Ngara, Opp. Rainbow plaza</span>
+            </div>
+            <p class="copyright">Solar System Selector v3.0 | Designed & Built by <a href="https://about.me/rishisuthar" target="_blank">Dynamo</a></p>
+            <p class="copyright">© 2025 Sangyug Enterprises. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
