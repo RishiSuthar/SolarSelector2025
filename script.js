@@ -13,10 +13,10 @@ const kstarInverters = [
 ];
 
 const fortunerInverters = [
-    { kva: 0.7, voltage: 12, price: 25000, labour: 15000, img: 'images/solar.jpg', specsLink: 'https://drive.google.com/file/d/placeholder_fortuner_700va/view?usp=sharing' },
-    { kva: 1.7, voltage: 24, price: 35000, labour: 15000, img: 'images/solar.jpg', specsLink: 'https://drive.google.com/file/d/placeholder_fortuner_1700va/view?usp=sharing' },
-    { kva: 2.2, voltage: 24, price: 45000, labour: 18000, img: 'images/solar.jpg', specsLink: 'https://drive.google.com/file/d/placeholder_fortuner_2200va/view?usp=sharing' },
-    { kva: 10.2, voltage: 48, price: 90000, labour: 25000, img: 'images/solar.jpg', specsLink: 'https://drive.google.com/file/d/placeholder_fortuner_10200va/view?usp=sharing' }
+    { kva: 0.7, voltage: 12, price: 25000, labour: 15000, img: 'images/solar.jpg', specsLink: '#' },
+    { kva: 1.7, voltage: 24, price: 35000, labour: 15000, img: 'images/solar.jpg', specsLink: '#' },
+    { kva: 2.2, voltage: 24, price: 45000, labour: 18000, img: 'images/solar.jpg', specsLink: '#' },
+    { kva: 10.2, voltage: 48, price: 90000, labour: 25000, img: 'images/solar.jpg', specsLink: '#' }
 ];
 
 const batteries = [
@@ -33,13 +33,30 @@ function getAccessoryCost() {
     return 4000 + 2500 + 4000 + 22000;
 }
 
+function saveState() {
+    localStorage.setItem('solarSelectorState', JSON.stringify(state));
+}
+
+function loadState() {
+    const saved = localStorage.getItem('solarSelectorState');
+    if (saved) {
+        Object.assign(state, JSON.parse(saved));
+        updateProgressIndicator(state.currentStep);
+        updateInverterOptions();
+        updateBatteryOptions();
+        updatePanelRequirement();
+        updateSummary();
+    }
+}
+
 function updateProgressIndicator(step) {
     state.currentStep = step;
     const steps = ['company', 'inverter', 'battery', 'summary'];
     const currentIndex = steps.indexOf(step);
-    const progressPercentage = (currentIndex + 1) * 25;
-    
-    document.getElementById('progress-fill').style.width = `${progressPercentage}%`;
+    const progressFill = document.getElementById('progress-fill');
+    progressFill.classList.add('transition');
+    progressFill.style.width = `${(currentIndex + 1) * 25}%`;
+    setTimeout(() => progressFill.classList.remove('transition'), 500);
     
     document.querySelectorAll('.progress-step').forEach((stepEl, index) => {
         if (index <= currentIndex) {
@@ -51,44 +68,38 @@ function updateProgressIndicator(step) {
 }
 
 function navigateToStep(step) {
-    document.querySelectorAll('.section').forEach(section => {
-        section.classList.add('hidden');
-    });
-    
+    document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
     document.getElementById(`${step}-section`).classList.remove('hidden');
     
-    // Show all relevant sections for summary
     if (step === 'summary') {
         document.getElementById('panel-section').classList.remove('hidden');
         document.getElementById('accessory-section').classList.remove('hidden');
         document.getElementById('summary-section').classList.remove('hidden');
-
+        setTimeout(() => {
+            document.getElementById('summary-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 2000);
+    } else {
+        const targetSection = document.getElementById(`${step}-section`);
+        const sectionRect = targetSection.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        const scrollPosition = sectionRect.top + window.scrollY - (windowHeight / 2) + (sectionRect.height / 2);
+        window.scrollTo({ top: scrollPosition, behavior: 'smooth' });
     }
     
     updateProgressIndicator(step);
-    
-    // Scroll to center of section
-    const targetSection = document.getElementById(`${step}-section`);
-    const sectionRect = targetSection.getBoundingClientRect();
-    const windowHeight = window.innerHeight;
-    const scrollPosition = sectionRect.top + window.scrollY - (windowHeight / 2) + (sectionRect.height / 2);
-    if (step === 'summary') {
-        setTimeout(() => {
-            const summarySection = document.getElementById('summary-section');
-            summarySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 2000);
-    }
+}
 
-    else {
-        window.scrollTo({ top: scrollPosition, behavior: 'smooth' });
-    }
-
+function navigateBack() {
+    const steps = ['company', 'inverter', 'battery', 'summary'];
+    const currentIndex = steps.indexOf(state.currentStep);
+    if (currentIndex > 0) navigateToStep(steps[currentIndex - 1]);
 }
 
 function selectCompany(company) {
     state.selectedCompany = company;
     navigateToStep('inverter');
     updateInverterOptions();
+    saveState();
 }
 
 function updateInverterOptions() {
@@ -99,25 +110,22 @@ function updateInverterOptions() {
     inverters.forEach(inverter => {
         const div = document.createElement('div');
         div.className = 'option';
+        const specsLink = inverter.specsLink || '#';
         div.innerHTML = `
             <div class="option-image">
-                <img src="${inverter.img}" alt="${state.selectedCompany} ${inverter.kva}kVA ${inverter.voltage}V" loading="lazy">
+                <img src="${inverter.img}">
             </div>
             <div class="option-content">
                 <p>${state.selectedCompany} ${inverter.kva}kVA - ${inverter.voltage}V</p>
                 <p class="price">${inverter.price.toLocaleString()} Ksh</p>
-                <p class="view-specs"><a href="${inverter.specsLink}" target="_blank"><i class="fas fa-external-link-alt"></i> Specifications</a></p>
+                <p class="view-specs"><a href="${specsLink}" target="_blank" ${specsLink === '#' ? 'onclick="alert(\'Specification link unavailable\')"' : ''}><i class="fas fa-external-link-alt"></i> Specifications</a></p>
             </div>
         `;
-
-        // Add click event to the entire div
         div.addEventListener('click', (e) => {
-            // Check if the click was on the specs link
             if (!e.target.closest('.view-specs a')) {
                 selectInverter(inverter);
             }
         });
-        
         inverterOptions.appendChild(div);
     });
 }
@@ -126,11 +134,11 @@ function selectInverter(inverter) {
     state.selectedInverter = inverter;
     navigateToStep('battery');
     updateBatteryOptions();
-    
     const mountingCostText = (inverter.kva === 6.0 && inverter.voltage === 48) || 
                            (inverter.kva === 10.2 && inverter.voltage === 48) ? 
                            '40,000 Ksh' : '22,000 Ksh';
     document.querySelector('#mounting-cost .price').textContent = mountingCostText;
+    saveState();
 }
 
 function updateBatteryOptions() {
@@ -187,75 +195,63 @@ function updateBatteryOptions() {
         if (compatible) {
             const div = document.createElement('div');
             div.className = 'option';
+            const specsLink = battery.specsLink || '#';
             div.innerHTML = `
                 <div class="option-image">
-                    <img src="${battery.img}" alt="${battery.name}" loading="lazy">
+                    <img src="${battery.img}">
                 </div>
                 <div class="option-content">
                     <p>${battery.name}</p>
                     <p class="price">${battery.price.toLocaleString()} Ksh <span>(x${batteryCount})</span></p>
-                    <p class="view-specs"><a href="${battery.specsLink}" target="_blank"><i class="fas fa-external-link-alt"></i> Specifications</a></p>
+                    <p class="view-specs"><a href="${specsLink}" target="_blank" ${specsLink === '#' ? 'onclick="alert(\'Specification link unavailable\')"' : ''}><i class="fas fa-external-link-alt"></i> Specifications</a></p>
                 </div>
             `;
-            
-            // Modified click handler to prevent selection when clicking specs link
             div.addEventListener('click', (e) => {
-                // Check if the click was on the specs link
                 if (!e.target.closest('.view-specs a')) {
                     selectBattery(battery, batteryCount);
                 }
             });
-            
             batteryOptions.appendChild(div);
         }
     });
 }
+
 function selectBattery(battery, count) {
     state.selectedBattery = { ...battery, count };
-    
-    // Show loading state
     document.getElementById('panel-info').style.display = 'none';
     document.getElementById('panel-images').style.display = 'none';
     document.getElementById('panel-section').classList.add('hidden');
     document.getElementById('accessory-section').classList.add('hidden');
     document.getElementById('summary-section').classList.add('hidden');
-    
-    // Navigate to summary with all sections
     navigateToStep('summary');
-    
-    // After a short delay, show the content
     setTimeout(() => {
         document.getElementById('panel-info').style.display = 'block';
         document.getElementById('panel-images').style.display = 'flex';
         document.getElementById('panel-section').classList.remove('hidden');
         document.getElementById('accessory-section').classList.remove('hidden');
         document.getElementById('summary-section').classList.remove('hidden');
-        
         updatePanelRequirement();
     }, 800);
+    saveState();
 }
 
 function updatePanelRequirement() {
     state.selectedPanels = (state.selectedInverter.kva === 6.0 && state.selectedInverter.voltage === 48) || 
                           (state.selectedInverter.kva === 10.2 && state.selectedInverter.voltage === 48) ? 10 : 6;
-    
     document.getElementById('panel-info').innerHTML = `
         <p>You need ${state.selectedPanels} solar panels</p>
         <p><span class="price">8,300 Ksh each</span></p>
         <p><a href="https://drive.google.com/file/d/14w98znycd4Y4-quOsoSItp4ulKUkpoCv/view?usp=sharing" target="_blank"><i class="fas fa-external-link-alt"></i> View Specifications</a></p>
     `;
-    
     const panelImages = document.getElementById('panel-images');
     panelImages.innerHTML = '';
     for (let i = 0; i < state.selectedPanels; i++) {
         const img = document.createElement('img');
         img.src = 'images/solar-panel.png';
-        img.alt = 'Solar Panel';
         img.className = 'solar-panel';
         img.loading = 'lazy';
         panelImages.appendChild(img);
     }
-    
     updateSummary();
 }
 
@@ -294,83 +290,127 @@ function updateSummary() {
 }
 
 function shareSummary() {
+    const name = document.getElementById('user-name').value;
+    const email = document.getElementById('user-email').value;
+    const phone = document.getElementById('user-phone').value || 'Not provided';
+    if (!name || !email) {
+        alert('Please fill in your name and email.');
+        return;
+    }
     const inverterText = `${state.selectedCompany} ${state.selectedInverter.kva}kVA - ${state.selectedInverter.voltage}V`;
     const batteryText = `${state.selectedBattery.name} x${state.selectedBattery.count}`;
     const panelText = `${state.selectedPanels} panels`;
     const accessoryCost = getAccessoryCost();
     const totalCost = document.getElementById('total-cost').textContent;
 
-    const subject = encodeURIComponent('Sangyug Solar Inverter System Summary');
+    const subject = encodeURIComponent(`Sangyug Solar Quote for ${name}`);
     const body = encodeURIComponent(
-`Solar System Quote from Sangyug
-
-Here are the details of your selected solar inverter system:
-
-🔹 INVERTER
-• Model: ${inverterText}
-• Price: ${state.selectedInverter.price.toLocaleString()} Ksh
-• Installation/Labour: ${state.selectedInverter.labour.toLocaleString()} Ksh
-
-🔹 BATTERY
-• Type: ${batteryText}
-• Price: ${(state.selectedBattery.price * state.selectedBattery.count).toLocaleString()} Ksh
-
-🔹 SOLAR PANELS
-• Quantity: ${panelText}
-• Price: ${(state.selectedPanels * 8300).toLocaleString()} Ksh
-
-🔹 ACCESSORIES
-• Included: ${accessoryCost.toLocaleString()} Ksh
-
-TOTAL COST: ${totalCost}
-
-Important Notes:
-• Above quote includes solar mounting/structure
-• Final quote will be provided after site survey
-
-
-For any questions, please contact us at:
-📞 Phone: 0742196553
-📧 Email: info@sangyug.com
-
-Thank you for choosing Sangyug Solar!
-`);
-
+        `Solar System Quote for ${name}\n\n` +
+        `Email: ${email}\n` +
+        `Phone: ${phone}\n\n` +
+        `Here are the details of your selected solar inverter system:\n\n` +
+        `🔹 INVERTER\n` +
+        `• Model: ${inverterText}\n` +
+        `• Price: ${state.selectedInverter.price.toLocaleString()} Ksh\n` +
+        `• Installation/Labour: ${state.selectedInverter.labour.toLocaleString()} Ksh\n\n` +
+        `🔹 BATTERY\n` +
+        `• Type: ${batteryText}\n` +
+        `• Price: ${(state.selectedBattery.price * state.selectedBattery.count).toLocaleString()} Ksh\n\n` +
+        `🔹 SOLAR PANELS\n` +
+        `• Quantity: ${panelText}\n` +
+        `• Price: ${(state.selectedPanels * 8300).toLocaleString()} Ksh\n\n` +
+        `🔹 ACCESSORIES\n` +
+        `• Included: ${accessoryCost.toLocaleString()} Ksh\n\n` +
+        `TOTAL COST: ${totalCost}\n\n` +
+        `Important Notes:\n` +
+        `• Above quote includes solar mounting/structure\n` +
+        `• Final quote will be provided after site survey\n\n` +
+        `For any questions, please contact us at:\n` +
+        `📞 Phone: 0742196553\n` +
+        `📧 Email: info@sangyug.com\n\n` +
+        `Thank you for choosing Sangyug Solar!`
+    );
     window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
 }
 
+function shareWhatsApp() {
+    const name = document.getElementById('user-name').value;
+    const email = document.getElementById('user-email').value;
+    const phone = document.getElementById('user-phone').value || 'Not provided';
+    if (!name || !email) {
+        alert('Please fill in your name and email.');
+        return;
+    }
+    const inverterText = `${state.selectedCompany} ${state.selectedInverter.kva}kVA - ${state.selectedInverter.voltage}V`;
+    const batteryText = `${state.selectedBattery.name} x${state.selectedBattery.count}`;
+    const panelText = `${state.selectedPanels} panels`;
+    const accessoryCost = getAccessoryCost();
+    const totalCost = document.getElementById('total-cost').textContent;
+
+    const text = encodeURIComponent(
+        `Solar System Quote for ${name}\n\n` +
+        `Email: ${email}\n` +
+        `Phone: ${phone}\n\n` +
+        `Here are the details of your selected solar inverter system:\n\n` +
+        `🔹 INVERTER\n` +
+        `• Model: ${inverterText}\n` +
+        `• Price: ${state.selectedInverter.price.toLocaleString()} Ksh\n` +
+        `• Installation/Labour: ${state.selectedInverter.labour.toLocaleString()} Ksh\n\n` +
+        `🔹 BATTERY\n` +
+        `• Type: ${batteryText}\n` +
+        `• Price: ${(state.selectedBattery.price * state.selectedBattery.count).toLocaleString()} Ksh\n\n` +
+        `🔹 SOLAR PANELS\n` +
+        `• Quantity: ${panelText}\n` +
+        `• Price: ${(state.selectedPanels * 8300).toLocaleString()} Ksh\n\n` +
+        `🔹 ACCESSORIES\n` +
+        `• Included: ${accessoryCost.toLocaleString()} Ksh\n\n` +
+        `TOTAL COST: ${totalCost}\n\n` +
+        `Important Notes:\n` +
+        `• Above quote includes solar mounting/structure\n` +
+        `• Final quote will be provided after site survey\n\n` +
+        `For any questions, please contact us at:\n` +
+        `📞 Phone: 0742196553\n` +
+        `📧 Email: info@sangyug.com\n\n` +
+        `Thank you for choosing Sangyug Solar!`
+    );
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+}
+
 function downloadPDF() {
+    if (!window.jspdf) {
+        alert('PDF generation failed. Please try again later.');
+        return;
+    }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
-    // Set colors
-    const primaryColor = [0, 102, 204]; // Blue
-    const accentColor = [0, 0, 0];  // Orange
-    const textColor = [51, 51, 51];     // Dark gray
+    const primaryColor = [0, 102, 204];
+    const accentColor = [0, 0, 0];
+    const textColor = [51, 51, 51];
     
-    // Add header with logo
     doc.setFontSize(18);
     doc.setTextColor(...primaryColor);
     doc.setFont("helvetica", "bold");
     doc.text("SANGYUG SOLAR QUOTATION", 105, 20, { align: 'center' });
     
-    // Add divider line
     doc.setDrawColor(...primaryColor);
     doc.setLineWidth(0.5);
     doc.line(15, 25, 195, 25);
     
-    // Customer info section
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
-    doc.text("Prepared for:", 20, 35);
+    const name = document.getElementById('user-name').value || 'Customer';
+    const email = document.getElementById('user-email').value || 'Not provided';
+    const phone = document.getElementById('user-phone').value || 'Not provided';
+    doc.text(`Prepared for: ${name}`, 20, 35);
+    doc.text(`Email: ${email}`, 20, 40);
+    doc.text(`Phone: ${phone}`, 20, 45);
     doc.text("Date: " + new Date().toLocaleDateString(), 160, 35);
     
-    // Main content
     doc.setFontSize(12);
     doc.setTextColor(...textColor);
-    let yPosition = 50;
+    let yPosition = 55;
     
-    // System Details section
     doc.setFont("helvetica", "bold");
     doc.setTextColor(...primaryColor);
     doc.text("SYSTEM DETAILS", 20, yPosition);
@@ -398,7 +438,6 @@ function downloadPDF() {
     doc.text(`${getAccessoryCost().toLocaleString()} Ksh`, 160, yPosition);
     yPosition += 15;
     
-    // Total section
     doc.setFont("helvetica", "bold");
     doc.setTextColor(...accentColor);
     doc.text("TOTAL COST", 20, yPosition);
@@ -406,7 +445,6 @@ function downloadPDF() {
     doc.text(totalCost, 160, yPosition);
     yPosition += 15;
     
-    // Notes section
     doc.setFont("helvetica", "bold");
     doc.setTextColor(...primaryColor);
     doc.text("IMPORTANT NOTES", 20, yPosition);
@@ -419,14 +457,12 @@ function downloadPDF() {
     doc.text("2. Final quote will be provided after site survey.", 20, yPosition);
     yPosition += 20;
     
-    // Footer
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
     doc.text("Thank you for choosing Sangyug!", 105, yPosition, { align: 'center' });
     yPosition += 5;
     doc.text("Contact: 0742196553 | info@sangyug.com", 105, yPosition, { align: 'center' });
     
-    // Save the PDF
     doc.save(`Sangyug_Solar_Quote_${new Date().toISOString().slice(0,10)}.pdf`);
 }
 
@@ -437,9 +473,11 @@ function resetSelection() {
     state.selectedPanels = 0;
     navigateToStep('company');
     document.querySelectorAll('.option').forEach(option => option.classList.remove('selected'));
+    saveState();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    loadState();
     const companyOptions = document.getElementById('company-options');
     
     const companies = [
@@ -452,7 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
         div.className = 'option';
         div.innerHTML = `
             <div class="option-image">
-                <img src="${company.logo}" alt="${company.name} Logo" loading="lazy">
+                <img src="${company.logo}">
             </div>
             <div class="option-content">
                 <p>${company.name}</p>
@@ -463,6 +501,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     document.getElementById('share-summary').addEventListener('click', shareSummary);
+    document.getElementById('share-whatsapp').addEventListener('click', shareWhatsApp);
     document.getElementById('download-pdf').addEventListener('click', downloadPDF);
     document.getElementById('reset-selection').addEventListener('click', resetSelection);
     
@@ -485,10 +524,13 @@ document.addEventListener('DOMContentLoaded', () => {
         step.addEventListener('click', () => {
             const stepName = step.getAttribute('data-step');
             if (stepName === 'company' || 
-               (stepName === 'inverter' && state.selectedCompany) || 
-               (stepName === 'battery' && state.selectedInverter.kva) || 
-               (stepName === 'summary' && state.selectedBattery.name)) {
+                (stepName === 'inverter' && state.selectedCompany) || 
+                (stepName === 'battery' && state.selectedInverter.kva) || 
+                (stepName === 'summary' && state.selectedBattery.name)) {
                 navigateToStep(stepName);
+            } else {
+                step.classList.add('disabled');
+                setTimeout(() => step.classList.remove('disabled'), 1000);
             }
         });
     });

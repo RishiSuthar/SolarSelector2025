@@ -5,12 +5,12 @@
     --secondary: #47c5ff;
     --accent: #5badff;
     --text-dark: #d1d5db;
-    --text-light: #f3f4f6;
+    --text-light: #f9fafb;
     --background: #1f2937;
-    --card-bg: #374151;
+    --card-bg: #2d3748;
     --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     --border-radius: 12px;
-    --transition: all 0.3s ease;
+    --transition: all 0.5s ease-in-out;
 }
 
 * {
@@ -53,11 +53,20 @@ body {
     margin: 0 auto;
     padding: 0 15px;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
 }
 
 .header-container h1 {
     font-size: 1.4rem;
     font-weight: 600;
+}
+
+.header-logo {
+    height: 40px;
+    width: auto;
 }
 
 .progress-container {
@@ -79,7 +88,44 @@ body {
     width: 25%;
     background: linear-gradient(90deg, var(--primary), var(--secondary));
     border-radius: 8px;
-    transition: var(--transition);
+    transition: width 0.5s ease-in-out, background 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-fill.transition {
+    animation: glide 0.5s ease-in-out;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+@keyframes glide {
+    0% {
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        box-shadow: 0 0 0 rgba(71, 197, 255, 0);
+    }
+    50% {
+        background: linear-gradient(90deg, var(--primary), #47c5ff);
+        box-shadow: 0 0 8px rgba(71, 197, 255, 0.3);
+    }
+    100% {
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        box-shadow: 0 0 0 rgba(71, 197, 255, 0);
+    }
 }
 
 .progress-steps {
@@ -96,10 +142,16 @@ body {
     width: 80px;
     opacity: 0.6;
     transition: var(--transition);
+    cursor: pointer;
 }
 
 .progress-step.active {
     opacity: 1;
+}
+
+.progress-step.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
 }
 
 .progress-step::before {
@@ -128,7 +180,7 @@ body {
     width: 32px;
     height: 32px;
     background: #4b5563;
-    border-radius: 50%;
+    border-radius: 50% !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -156,15 +208,48 @@ body {
     box-shadow: var(--card-shadow);
     padding: 20px;
     margin-bottom: 20px;
-    transition: var(--transition);
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out, filter 0.5s ease-in-out;
     opacity: 1;
-    transform: translateY(0);
+    visibility: visible;
+    position: relative;
+    animation: waveIn 0.5s ease-in-out forwards;
 }
 
 .section.hidden {
-    display: none;
     opacity: 0;
-    transform: translateY(20px);
+    visibility: hidden;
+    animation: waveOut 0.5s ease-in-out forwards;
+    display: none;
+}
+
+@keyframes waveIn {
+    0% {
+        opacity: 0;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.02);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes waveOut {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(0.98);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.98);
+    }
 }
 
 .section-header {
@@ -206,6 +291,11 @@ body {
 .option:hover {
     transform: translateY(-6px);
     box-shadow: 0 8px 20px rgba(0, 42, 159, 0.3);
+}
+
+.option:active {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .option.selected {
@@ -470,14 +560,30 @@ body {
 }
 
 .action-button:not(.secondary) {
-    background: var(--primary);
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
     color: var(--text-light);
+    position: relative;
+    overflow: hidden;
 }
 
 .action-button:not(.secondary):hover {
-    background: var(--primary-light);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
+}
+
+.action-button:not(.secondary)::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.2);
+    transition: left 0.3s ease;
+}
+
+.action-button:not(.secondary):hover::after {
+    left: 100%;
 }
 
 .action-button.secondary {
@@ -488,6 +594,51 @@ body {
 .action-button.secondary:hover {
     background: #6b7280;
     transform: translateY(-2px);
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 20px;
+}
+
+.user-info-form {
+    background: #4b5563;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.user-info-form h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.user-info-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 6px;
+    background: #6b7280;
+    font-size: 1rem;
+    font-weight: 500;
+    color: white;
+}
+
+.user-info-form input::-webkit-input-placeholder {
+    color: #b9b9b9 !important;
+    opacity: 1 !important;
+}
+
+.user-info-form input::-moz-placeholder {
+    color: #b9b9b9 !important;
+    opacity: 1 !important;
+}
+
+.user-info-form input:-ms-input-placeholder {
+    color: #b9b9b9 !important;
+    opacity: 1 !important;
 }
 
 .scroll-to-top {
@@ -560,9 +711,24 @@ body {
     text-decoration: underline;
 }
 
+.footer-content .copyright {
+    margin-top: 5px;
+    font-size: 0.9rem;
+    color: #9ca3af;
+}
+
 @media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
     .header-container h1 {
         font-size: 1.2rem;
+    }
+    
+    .header-logo {
+        height: 35px;
     }
     
     .options-grid {
@@ -570,13 +736,14 @@ body {
     }
     
     .progress-steps {
-        flex-wrap: wrap;
-        gap: 10px;
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 10px;
     }
     
     .progress-step {
-        width: auto;
-        flex: 1;
+        min-width: 80px;
     }
     
     .progress-step::before {
@@ -614,38 +781,5 @@ body {
     
     .total-cost-amount {
         font-size: 1.3rem;
-    }
-}
-
-/* Existing CSS remains the same */
-
-/* Add these new rules: */
-.header-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-}
-
-.header-logo {
-    height: 40px;
-    width: auto;
-}
-
-.footer-content .copyright {
-    margin-top: 5px;
-    font-size: 0.9rem;
-    color: #9ca3af;
-}
-
-/* Media query adjustments */
-@media (max-width: 768px) {
-    .header-container {
-        flex-direction: column;
-        gap: 8px;
-    }
-    
-    .header-logo {
-        height: 35px;
     }
 }

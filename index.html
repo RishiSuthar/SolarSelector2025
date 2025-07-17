@@ -10,15 +10,13 @@
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 </head>
 <body>
-    <!-- Header section -->
     <header class="header">
         <div class="header-container">
-            <img src="images/sangyuglogo.png" alt="Sangyug Logo" class="header-logo">
+            <img src="images/sangyuglogo.png" class="header-logo">
             <h1>Solar System Maker</h1>
         </div>
     </header>
 
-    <!-- Progress indicator -->
     <div class="progress-container">
         <div class="progress-bar">
             <div class="progress-fill" id="progress-fill"></div>
@@ -44,16 +42,17 @@
     </div>
 
     <main class="main-container">
-        <!-- Company Selection -->
         <section id="company-section" class="section active">
             <div class="section-header">
                 <h2>Select a Company</h2>
                 <p>Choose the manufacturer for your solar system</p>
             </div>
             <div id="company-options" class="options-grid"></div>
+            <div class="navigation-buttons">
+                <button class="action-button secondary" onclick="navigateBack()"><i class="fas fa-arrow-left"></i> Back</button>
+            </div>
         </section>
 
-        <!-- Inverter Selection -->
         <section id="inverter-section" class="section hidden">
             <div class="section-header">
                 <h2>Select an Inverter</h2>
@@ -68,18 +67,22 @@
                 </a>
             </div>
             <div id="inverter-options" class="options-grid"></div>
+            <div class="navigation-buttons">
+                <button class="action-button secondary" onclick="navigateBack()"><i class="fas fa-arrow-left"></i> Back</button>
+            </div>
         </section>
 
-        <!-- Battery Selection -->
         <section id="battery-section" class="section hidden">
             <div class="section-header">
                 <h2>Select a Battery</h2>
                 <p>Choose the battery type for your energy storage</p>
             </div>
             <div id="battery-options" class="options-grid"></div>
+            <div class="navigation-buttons">
+                <button class="action-button secondary" onclick="navigateBack()"><i class="fas fa-arrow-left"></i> Back</button>
+            </div>
         </section>
 
-        <!-- Panel Section -->
         <section id="panel-section" class="section hidden">
             <div class="section-header">
                 <h2>Solar Panels Required</h2>
@@ -92,7 +95,6 @@
             <div id="panel-images" class="panel-images"></div>
         </section>
 
-        <!-- Accessories Section -->
         <section id="accessory-section" class="section hidden">
             <div class="section-header">
                 <h2>Included Accessories</h2>
@@ -122,11 +124,16 @@
             </div>
         </section>
 
-        <!-- Summary Section -->
         <section id="summary-section" class="section hidden">
             <div class="section-header">
                 <h2>Your Solar System Summary</h2>
                 <p>Here's your complete system configuration</p>
+            </div>
+            <div class="user-info-form">
+                <h3>Your Details</h3>
+                <input type="text" id="user-name" placeholder="Enter your full name" required>
+                <input type="email" id="user-email" placeholder="Enter your email address" required>
+                <input type="tel" id="user-phone" placeholder="Enter your phone number">
             </div>
             <div id="summary" class="summary-content"></div>
             <div class="total-cost-container">
@@ -141,6 +148,9 @@
                 <button id="share-summary" class="action-button">
                     <i class="fas fa-envelope"></i> Email Summary
                 </button>
+                <button id="share-whatsapp" class="action-button">
+                    <i class="fab fa-whatsapp"></i> Share on WhatsApp
+                </button>
                 <button id="download-pdf" class="action-button">
                     <i class="fas fa-file-pdf"></i> Download PDF
                 </button>
@@ -151,7 +161,6 @@
         </section>
     </main>
 
-    <!-- Floating action button -->
     <button id="scroll-to-top" class="scroll-to-top">
         <i class="fas fa-arrow-up"></i>
     </button>
@@ -164,12 +173,12 @@
                 <span><i class="fas fa-globe"></i> www.sangyug.com</span>
                 <span><i class="fas fa-map-marker-alt"></i> The Big Bang - Ngara, Opp. Rainbow plaza</span>
             </div>
-            <p class="copyright">Solar System Selector v3.1.1 | Designed & Built by <a href="https://about.me/rishisuthar" target="_blank">Dynamo</a></p>
+            <p class="copyright">Solar System Selector v3.1.2 | Designed & Built by <a href="https://about.me/rishisuthar" target="_blank">Dynamo</a></p>
             <p class="copyright">© 2025 Sangyug Enterprises. All rights reserved.</p>
         </div>
     </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="script.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script defer src="script.js"></script>
 </body>
 </html>
