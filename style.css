@@ -560,15 +560,16 @@ body {
 }
 
 .action-button:not(.secondary) {
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
     color: var(--text-light);
     position: relative;
     overflow: hidden;
 }
 
 .action-button:not(.secondary):hover {
+    background: linear-gradient(135deg, #1e40af, #0967ff);
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 6px 15px rgba(30, 64, 175, 0.4); 
 }
 
 .action-button:not(.secondary)::after {
