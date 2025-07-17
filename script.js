@@ -7,16 +7,16 @@ const state = {
 };
 
 const kstarInverters = [
-    { kva: 3.6, voltage: 24, price: 48000, labour: 20000, img: 'images/inverter-3.6-24v.png', specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing' },
-    { kva: 3.6, voltage: 48, price: 63000, labour: 20000, img: 'images/inverter-3.6-48v.png', specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing' },
-    { kva: 6.0, voltage: 48, price: 80000, labour: 25000, img: 'images/inverter-6.0-48v.png', specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing' }
+    { kva: 3.6, voltage: 24, price: 48000, labour: 20000, img: 'images/kstarinverter.png', specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing' },
+    { kva: 3.6, voltage: 48, price: 63000, labour: 20000, img: 'images/kstarinverter.png', specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing' },
+    { kva: 6.0, voltage: 48, price: 80000, labour: 25000, img: 'images/kstarinverter.png', specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing' }
 ];
 
 const fortunerInverters = [
-    { kva: 0.7, voltage: 12, price: 25000, labour: 15000, img: 'images/solar.jpg', specsLink: '#' },
-    { kva: 1.7, voltage: 24, price: 35000, labour: 15000, img: 'images/solar.jpg', specsLink: '#' },
-    { kva: 2.2, voltage: 24, price: 45000, labour: 18000, img: 'images/solar.jpg', specsLink: '#' },
-    { kva: 10.2, voltage: 48, price: 90000, labour: 25000, img: 'images/solar.jpg', specsLink: '#' }
+    { kva: 0.7, voltage: 12, price: 25000, labour: 15000, img: 'images/fortunerinverter.png', specsLink: '#' },
+    { kva: 1.7, voltage: 24, price: 35000, labour: 15000, img: 'images/fortunerinverter.png', specsLink: '#' },
+    { kva: 2.2, voltage: 24, price: 45000, labour: 18000, img: 'images/fortunerinverter.png', specsLink: '#' },
+    { kva: 10.2, voltage: 48, price: 90000, labour: 25000, img: 'images/fortunerinverter.png', specsLink: '#' }
 ];
 
 const batteries = [
