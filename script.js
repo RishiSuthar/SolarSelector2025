@@ -34,12 +34,11 @@ function getAccessoryCost() {
         }
         return 4000 + 2500 + 4000 + 22000; // Default for 0.7 kVA
     }
-    if ((state.selectedInverter.kva === 6.0 && state.selectedInverter.voltage === 48)) {
+    if (state.selectedInverter.kva === 6.0 && state.selectedInverter.voltage === 48) {
         return 4000 + 2500 + 4000 + 40000; // Kstar 6.0 kVA
     }
     return 4000 + 2500 + 4000 + 22000; // Default for Kstar
 }
-
 
 function saveState() {
     localStorage.setItem('solarSelectorState', JSON.stringify(state));
@@ -103,8 +102,10 @@ function navigateBack() {
     if (currentIndex > 0) navigateToStep(steps[currentIndex - 1]);
 }
 
-function selectCompany(company) {
+function selectCompany(company, clickedElement) {
     state.selectedCompany = company;
+    document.querySelectorAll('#company-options .option').forEach(option => option.classList.remove('selected'));
+    if (clickedElement) clickedElement.classList.add('selected');
     navigateToStep('inverter');
     updateInverterOptions();
     saveState();
@@ -118,6 +119,9 @@ function updateInverterOptions() {
     inverters.forEach(inverter => {
         const div = document.createElement('div');
         div.className = 'option';
+        if (state.selectedInverter.kva === inverter.kva && state.selectedInverter.voltage === inverter.voltage) {
+            div.classList.add('selected');
+        }
         const specsLink = inverter.specsLink || '#';
         const wattageText = inverter.watts ? ` (${inverter.watts}W)` : '';
         div.innerHTML = `
@@ -132,15 +136,17 @@ function updateInverterOptions() {
         `;
         div.addEventListener('click', (e) => {
             if (!e.target.closest('.view-specs a')) {
-                selectInverter(inverter);
+                selectInverter(inverter, div);
             }
         });
         inverterOptions.appendChild(div);
     });
 }
 
-function selectInverter(inverter) {
+function selectInverter(inverter, clickedElement) {
     state.selectedInverter = inverter;
+    document.querySelectorAll('#inverter-options .option').forEach(option => option.classList.remove('selected'));
+    if (clickedElement) clickedElement.classList.add('selected');
     navigateToStep('battery');
     updateBatteryOptions();
     const mountingCostText = state.selectedCompany === 'Fortuner' ? 
@@ -209,6 +215,9 @@ function updateBatteryOptions() {
         if (compatible) {
             const div = document.createElement('div');
             div.className = 'option';
+            if (state.selectedBattery.name === battery.name && state.selectedBattery.count === batteryCount) {
+                div.classList.add('selected');
+            }
             const specsLink = battery.specsLink || '#';
             div.innerHTML = `
                 <div class="option-image">
@@ -222,7 +231,7 @@ function updateBatteryOptions() {
             `;
             div.addEventListener('click', (e) => {
                 if (!e.target.closest('.view-specs a')) {
-                    selectBattery(battery, batteryCount);
+                    selectBattery(battery, batteryCount, div);
                 }
             });
             batteryOptions.appendChild(div);
@@ -230,8 +239,10 @@ function updateBatteryOptions() {
     });
 }
 
-function selectBattery(battery, count) {
+function selectBattery(battery, count, clickedElement) {
     state.selectedBattery = { ...battery, count };
+    document.querySelectorAll('#battery-options .option').forEach(option => option.classList.remove('selected'));
+    if (clickedElement) clickedElement.classList.add('selected');
     document.getElementById('panel-info').style.display = 'none';
     document.getElementById('panel-images').style.display = 'none';
     document.getElementById('panel-section').classList.add('hidden');
@@ -515,6 +526,9 @@ document.addEventListener('DOMContentLoaded', () => {
     companies.forEach(company => {
         const div = document.createElement('div');
         div.className = 'option';
+        if (state.selectedCompany === company.name) {
+            div.classList.add('selected');
+        }
         div.innerHTML = `
             <div class="option-image">
                 <img src="${company.logo}">
@@ -523,7 +537,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>${company.name}</p>
             </div>
         `;
-        div.addEventListener('click', () => selectCompany(company.name));
+        div.addEventListener('click', () => selectCompany(company.name, div));
         companyOptions.appendChild(div);
     });
     
