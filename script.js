@@ -13,10 +13,10 @@ const kstarInverters = [
 ];
 
 const fortunerInverters = [
-    { kva: 0.7, voltage: 12, price: 25000, labour: 15000, img: 'images/fortunerinverter.png', specsLink: '#' },
-    { kva: 1.7, voltage: 24, price: 35000, labour: 15000, img: 'images/fortunerinverter.png', specsLink: '#' },
-    { kva: 2.2, voltage: 24, price: 45000, labour: 18000, img: 'images/fortunerinverter.png', specsLink: '#' },
-    { kva: 10.2, voltage: 48, price: 90000, labour: 25000, img: 'images/fortunerinverter.png', specsLink: '#' }
+    { kva: 0.7, watts: 450, voltage: 12, price: 12500, labour: 15000, img: 'images/fortunerinverter.png', specsLink: '#' },
+    { kva: 1.5, watts: 1200, voltage: 24, price: 16000, labour: 15000, img: 'images/fortunerinverter.png', specsLink: '#' },
+    { kva: 2.2, watts: 1400, voltage: 24, price: 21000, labour: 18000, img: 'images/fortunerinverter.png', specsLink: '#' },
+    { kva: 10.0, voltage: 48, price: 105000, labour: 25000, img: 'images/fortunerinverter.png', specsLink: '#' }
 ];
 
 const batteries = [
@@ -26,12 +26,20 @@ const batteries = [
 ];
 
 function getAccessoryCost() {
-    if ((state.selectedInverter.kva === 6.0 && state.selectedInverter.voltage === 48) || 
-        (state.selectedInverter.kva === 10.2 && state.selectedInverter.voltage === 48)) {
-        return 4000 + 2500 + 4000 + 40000;
+    if (state.selectedCompany === 'Fortuner') {
+        if (state.selectedInverter.kva === 1.5 || state.selectedInverter.kva === 2.2) {
+            return 4000 + 2500 + 4000 + 4500; // Change Over Switch + DC MCCB + AVS 30 AMPS + Mounting Structure & Cables (4,500 Ksh)
+        } else if (state.selectedInverter.kva === 10.0) {
+            return 4000 + 2500 + 4000 + 54500; // Change Over Switch + DC MCCB + AVS 30 AMPS + Mounting Structure & Cables (54,500 Ksh)
+        }
+        return 4000 + 2500 + 4000 + 22000; // Default for 0.7 kVA
     }
-    return 4000 + 2500 + 4000 + 22000;
+    if ((state.selectedInverter.kva === 6.0 && state.selectedInverter.voltage === 48)) {
+        return 4000 + 2500 + 4000 + 40000; // Kstar 6.0 kVA
+    }
+    return 4000 + 2500 + 4000 + 22000; // Default for Kstar
 }
+
 
 function saveState() {
     localStorage.setItem('solarSelectorState', JSON.stringify(state));
@@ -111,12 +119,13 @@ function updateInverterOptions() {
         const div = document.createElement('div');
         div.className = 'option';
         const specsLink = inverter.specsLink || '#';
+        const wattageText = inverter.watts ? ` (${inverter.watts}W)` : '';
         div.innerHTML = `
             <div class="option-image">
                 <img src="${inverter.img}">
             </div>
             <div class="option-content">
-                <p>${state.selectedCompany} ${inverter.kva}kVA - ${inverter.voltage}V</p>
+                <p>${state.selectedCompany} ${inverter.kva}kVA${wattageText} - ${inverter.voltage}V</p>
                 <p class="price">${inverter.price.toLocaleString()} Ksh</p>
                 <p class="view-specs"><a href="${specsLink}" target="_blank" ${specsLink === '#' ? 'onclick="alert(\'Specification link unavailable\')"' : ''}><i class="fas fa-external-link-alt"></i> Specifications</a></p>
             </div>
@@ -134,9 +143,10 @@ function selectInverter(inverter) {
     state.selectedInverter = inverter;
     navigateToStep('battery');
     updateBatteryOptions();
-    const mountingCostText = (inverter.kva === 6.0 && inverter.voltage === 48) || 
-                           (inverter.kva === 10.2 && inverter.voltage === 48) ? 
-                           '40,000 Ksh' : '22,000 Ksh';
+    const mountingCostText = state.selectedCompany === 'Fortuner' ? 
+        (inverter.kva === 1.5 || inverter.kva === 2.2 ? '4,500 Ksh' : 
+         inverter.kva === 10.0 ? '54,500 Ksh' : '22,000 Ksh') : 
+        (inverter.kva === 6.0 && inverter.voltage === 48 ? '40,000 Ksh' : '22,000 Ksh');
     document.querySelector('#mounting-cost .price').textContent = mountingCostText;
     saveState();
 }
@@ -176,19 +186,23 @@ function updateBatteryOptions() {
             if (state.selectedInverter.kva === 0.7 && state.selectedInverter.voltage === 12) {
                 if (battery.name === 'Tubular 200AH' || battery.name === 'Maintenance Free KM12 12V 200AH') {
                     compatible = true;
-                    batteryCount = state.selectedInverter.voltage / 12;
+                    batteryCount = 1;
                 }
-            } else if (state.selectedInverter.kva === 1.7 && state.selectedInverter.voltage === 24) {
+            } else if (state.selectedInverter.kva === 1.5 && state.selectedInverter.voltage === 24) {
                 if (battery.name === 'Tubular 200AH' || battery.name === 'Maintenance Free KM12 12V 200AH') {
                     compatible = true;
-                    batteryCount = state.selectedInverter.voltage / 12;
+                    batteryCount = 2;
                 }
             } else if (state.selectedInverter.kva === 2.2 && state.selectedInverter.voltage === 24) {
-                compatible = true;
-                batteryCount = battery.name === 'Lithium LFP 51.2-100W' ? 1 : state.selectedInverter.voltage / 12;
-            } else if (state.selectedInverter.kva === 10.2 && state.selectedInverter.voltage === 48) {
-                compatible = true;
-                batteryCount = battery.name === 'Lithium LFP 51.2-100W' ? 2 : state.selectedInverter.voltage / 12;
+                if (battery.name === 'Tubular 200AH' || battery.name === 'Maintenance Free KM12 12V 200AH') {
+                    compatible = true;
+                    batteryCount = 2;
+                }
+            } else if (state.selectedInverter.kva === 10.0 && state.selectedInverter.voltage === 48) {
+                if (battery.name === 'Tubular 200AH' || battery.name === 'Maintenance Free KM12 12V 200AH') {
+                    compatible = true;
+                    batteryCount = 4;
+                }
             }
         }
 
@@ -236,12 +250,24 @@ function selectBattery(battery, count) {
 }
 
 function updatePanelRequirement() {
-    state.selectedPanels = (state.selectedInverter.kva === 6.0 && state.selectedInverter.voltage === 48) || 
-                          (state.selectedInverter.kva === 10.2 && state.selectedInverter.voltage === 48) ? 10 : 6;
-    document.getElementById('panel-info').innerHTML = `
+    if (state.selectedCompany === 'Fortuner') {
+        if (state.selectedInverter.kva === 0.7) {
+            state.selectedPanels = 0;
+        } else if (state.selectedInverter.kva === 1.5 || state.selectedInverter.kva === 2.2) {
+            state.selectedPanels = 2;
+        } else if (state.selectedInverter.kva === 10.0) {
+            state.selectedPanels = 16;
+        }
+    } else {
+        state.selectedPanels = (state.selectedInverter.kva === 6.0 && state.selectedInverter.voltage === 48) ? 10 : 6;
+    }
+    
+    document.getElementById('panel-info').innerHTML = state.selectedPanels > 0 ? `
         <p>You need ${state.selectedPanels} solar panels</p>
         <p><span class="price">8,300 Ksh each</span></p>
         <p><a href="https://drive.google.com/file/d/14w98znycd4Y4-quOsoSItp4ulKUkpoCv/view?usp=sharing" target="_blank"><i class="fas fa-external-link-alt"></i> View Specifications</a></p>
+    ` : `
+        <p>No solar panels required for this configuration</p>
     `;
     const panelImages = document.getElementById('panel-images');
     panelImages.innerHTML = '';
@@ -265,7 +291,7 @@ function updateSummary() {
     
     document.getElementById('summary').innerHTML = `
         <div class="summary-item">
-            <span>Inverter: ${state.selectedCompany} ${state.selectedInverter.kva}kVA - ${state.selectedInverter.voltage}V</span>
+            <span>Inverter: ${state.selectedCompany} ${state.selectedInverter.kva}kVA${state.selectedInverter.watts ? ` (${state.selectedInverter.watts}W)` : ''} - ${state.selectedInverter.voltage}V</span>
             <span class="price-value">${inverterCost.toLocaleString()} Ksh</span>
         </div>
         <div class="summary-item">
@@ -297,9 +323,9 @@ function shareSummary() {
         alert('Please fill in your name and email.');
         return;
     }
-    const inverterText = `${state.selectedCompany} ${state.selectedInverter.kva}kVA - ${state.selectedInverter.voltage}V`;
+    const inverterText = `${state.selectedCompany} ${state.selectedInverter.kva}kVA${state.selectedInverter.watts ? ` (${state.selectedInverter.watts}W)` : ''} - ${state.selectedInverter.voltage}V`;
     const batteryText = `${state.selectedBattery.name} x${state.selectedBattery.count}`;
-    const panelText = `${state.selectedPanels} panels`;
+    const panelText = state.selectedPanels > 0 ? `${state.selectedPanels} panels` : 'No panels required';
     const accessoryCost = getAccessoryCost();
     const totalCost = document.getElementById('total-cost').textContent;
 
@@ -341,9 +367,9 @@ function shareWhatsApp() {
         alert('Please fill in your name and email.');
         return;
     }
-    const inverterText = `${state.selectedCompany} ${state.selectedInverter.kva}kVA - ${state.selectedInverter.voltage}V`;
+    const inverterText = `${state.selectedCompany} ${state.selectedInverter.kva}kVA${state.selectedInverter.watts ? ` (${state.selectedInverter.watts}W)` : ''} - ${state.selectedInverter.voltage}V`;
     const batteryText = `${state.selectedBattery.name} x${state.selectedBattery.count}`;
-    const panelText = `${state.selectedPanels} panels`;
+    const panelText = state.selectedPanels > 0 ? `${state.selectedPanels} panels` : 'No panels required';
     const accessoryCost = getAccessoryCost();
     const totalCost = document.getElementById('total-cost').textContent;
 
@@ -418,7 +444,8 @@ function downloadPDF() {
     
     doc.setFont("helvetica", "normal");
     doc.setTextColor(...textColor);
-    doc.text(`Inverter: ${state.selectedCompany} ${state.selectedInverter.kva}kVA - ${state.selectedInverter.voltage}V`, 20, yPosition);
+    const inverterText = `${state.selectedCompany} ${state.selectedInverter.kva}kVA${state.selectedInverter.watts ? ` (${state.selectedInverter.watts}W)` : ''} - ${state.selectedInverter.voltage}V`;
+    doc.text(`Inverter: ${inverterText}`, 20, yPosition);
     doc.text(`${state.selectedInverter.price.toLocaleString()} Ksh`, 160, yPosition);
     yPosition += 7;
     
