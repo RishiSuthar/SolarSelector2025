@@ -235,6 +235,7 @@ function loadState() {
         updateBatteryOptions();
         updatePanelRequirement();
         updateSummary();
+        updateBodyBackground(state.currentStep); // Update background on load
     }
 }
 
@@ -254,6 +255,13 @@ function updateProgressIndicator(step) {
             stepEl.classList.remove('active');
         }
     });
+}
+
+function updateBodyBackground(step) {
+    // Remove all possible background classes
+    document.body.classList.remove('company-active', 'inverter-active', 'battery-active', 'summary-active');
+    // Add the class corresponding to the current step
+    document.body.classList.add(`${step}-active`);
 }
 
 function navigateToStep(step) {
@@ -276,6 +284,7 @@ function navigateToStep(step) {
     }
     
     updateProgressIndicator(step);
+    updateBodyBackground(step); // Update background when navigating
 }
 
 function navigateBack() {
@@ -631,7 +640,6 @@ function validateForm() {
 }
 
 function shareSummary() {
-
     const name = document.getElementById('user-name').value;
     const email = document.getElementById('user-email').value;
     const phone = document.getElementById('user-phone').value || 'Not provided';
@@ -673,7 +681,6 @@ function shareSummary() {
 }
 
 function shareWhatsApp() {
-
     const name = document.getElementById('user-name').value;
     const email = document.getElementById('user-email').value;
     const phone = document.getElementById('user-phone').value || 'Not provided';
@@ -714,7 +721,6 @@ function shareWhatsApp() {
 }
 
 function downloadPDF() {
-
     if (!window.jspdf) {
         alert('PDF generation failed. Please try again later.');
         return;
@@ -930,6 +936,5 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             phoneError.textContent = '';
         }
-        phoneInput.placeholder = `Enter ${phoneLength}-digit phone number`;
     });
 });

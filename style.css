@@ -27,6 +27,34 @@ body {
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    transition: background-image 0.5s ease-in-out;
+    min-height: 100vh;
+}
+
+/* Default background image for when no section is active */
+body {
+    background-image: url('images/companybg.png');
+}
+
+/* Background images for each section */
+body.company-active {
+    background-image: url('images/companybg.png');
+}
+
+body.inverter-active {
+    background-image: url('images/inverterbg.png');
+}
+
+body.battery-active {
+    background-image: url('images/batterybg.png');
+}
+
+body.summary-active {
+    background-image: url('images/summarybg.png');
 }
 
 .header {
@@ -340,7 +368,7 @@ body {
 }
 
 .warranty-info {
-    color: var(--primary-light)!important; /* Uses the --primary color variable (#0967ff) */
+    color: var(--primary-light)!important;
     font-size: 0.9rem;
     margin-top: 6px;
 }
@@ -886,10 +914,12 @@ body {
         flex-direction: column;
         gap: 8px;
     }
+    
+    body {
+        background-size: cover;
+        background-position: center;
+    }
 }
-
-
-
 
 @media (max-width: 480px) {
     .header-container h1 {
@@ -930,5 +960,10 @@ body {
     
     .modal-content {
         width: 95%;
+    }
+    
+    body {
+        background-size: cover;
+        background-position: center;
     }
 }
