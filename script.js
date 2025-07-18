@@ -249,16 +249,16 @@ function selectBattery(battery, count, clickedElement) {
     document.getElementById('accessory-section').classList.add('hidden');
     document.getElementById('summary-section').classList.add('hidden');
     navigateToStep('summary');
-    setTimeout(() => {
-        document.getElementById('panel-info').style.display = 'block';
-        document.getElementById('panel-images').style.display = 'flex';
-        document.getElementById('panel-section').classList.remove('hidden');
-        document.getElementById('accessory-section').classList.remove('hidden');
-        document.getElementById('summary-section').classList.remove('hidden');
-        updatePanelRequirement();
-    }, 800);
+    // No setTimeout, immediate update
+    document.getElementById('panel-info').style.display = 'block';
+    document.getElementById('panel-images').style.display = 'flex';
+    document.getElementById('panel-section').classList.remove('hidden');
+    document.getElementById('accessory-section').classList.remove('hidden');
+    document.getElementById('summary-section').classList.remove('hidden');
+    updatePanelRequirement();
     saveState();
 }
+
 
 function updatePanelRequirement() {
     if (state.selectedCompany === 'Fortuner') {
