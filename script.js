@@ -631,7 +631,6 @@ function validateForm() {
 }
 
 function shareSummary() {
-    if (!validateForm()) return;
 
     const name = document.getElementById('user-name').value;
     const email = document.getElementById('user-email').value;
@@ -674,7 +673,6 @@ function shareSummary() {
 }
 
 function shareWhatsApp() {
-    if (!validateForm()) return;
 
     const name = document.getElementById('user-name').value;
     const email = document.getElementById('user-email').value;
@@ -716,7 +714,6 @@ function shareWhatsApp() {
 }
 
 function downloadPDF() {
-    if (!validateForm()) return;
 
     if (!window.jspdf) {
         alert('PDF generation failed. Please try again later.');
