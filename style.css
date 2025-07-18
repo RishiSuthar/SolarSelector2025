@@ -2,12 +2,12 @@
     --primary: #0967ff;
     --primary-light: #97c6ff;
     --primary-dark: #1e40af;
-    --secondary: #47c5ff;
-    --accent: #5badff;
-    --text-dark: #d1d5db;
+    --secondary: #3facff;
+    --accent: #56abff;
+    --text-dark: #dbdfe6;
     --text-light: #f9fafb;
-    --background: #1f2937;
-    --card-bg: #2d3748;
+    --background: #19212c;
+    --card-bg: #283140;
     --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     --border-radius: 12px;
     --transition: all 0.5s ease-in-out;
