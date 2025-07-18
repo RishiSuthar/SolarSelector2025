@@ -16,15 +16,18 @@ const kstarInverters = [
         specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing',
         appliances: [
             { name: 'LED Bulbs (10W)', count: 10 },
-            { name: 'Ceiling Fans (50W)', count: 5 },
+            { name: 'Fans', count: 2 },
             { name: 'Fridge (150W)', count: 1 },
-            { name: 'TV (100W)', count: 1 },
-            { name: 'Laptop (60W)', count: 1 },
-            { name: 'Microwave (1000W)', count: 1 }
+            { name: 'TV (upto 80 inch)', count: 1 },
+            { name: 'Laptop', count: 2 },
+            { name: 'Router', count: 1 },
+            { name: 'Microwave (recommended for short duration)', count: 1 },
+            { name: 'Mixer Blender (upto 1500W for short duration)', count: 1 },
+            { name: 'Mobile Charging Sockets', count: 3 }
         ],
         details: {
             efficiency: '97.5%',
-            batteryCompatibility: 'Lithium & Lead-acid',
+            batteryCompatibility: 'Tubular (Semi-Maintenance) , Lead-acid (Maintenance Free)',
             features: ['Pure sine wave output for sensitive electronics', 'Wide input voltage range', 'Overcurrent protection', 'Supports parallel operation up to 6 units']
         }
     },
@@ -37,15 +40,18 @@ const kstarInverters = [
         specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing',
         appliances: [
             { name: 'LED Bulbs (10W)', count: 10 },
-            { name: 'Ceiling Fans (50W)', count: 5 },
+            { name: 'Fans', count: 2 },
             { name: 'Fridge (150W)', count: 1 },
-            { name: 'TV (100W)', count: 1 },
-            { name: 'Laptop (60W)', count: 1 },
-            { name: 'Microwave (1000W)', count: 1 }
+            { name: 'TV (upto 80 inch)', count: 1 },
+            { name: 'Laptop', count: 2 },
+            { name: 'Router', count: 1 },
+            { name: 'Microwave (recommended for short duration)', count: 1 },
+            { name: 'Mixer Blender (upto 1500W for short duration)', count: 1 },
+            { name: 'Mobile Charging Sockets', count: 3 }
         ],
         details: {
             efficiency: '97.5%',
-            batteryCompatibility: 'Lithium & Lead-acid',
+            batteryCompatibility: 'Tubular (Semi-Maintenance) , Lead-acid (Maintenance Free) , Lithium-ion',
             features: ['Pure sine wave output for sensitive electronics', 'Wide input voltage range', 'Overcurrent protection', 'Supports parallel operation up to 6 units']
         }
     },
@@ -57,18 +63,19 @@ const kstarInverters = [
         img: 'images/kstarinverter.png', 
         specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing',
         appliances: [
-            { name: 'LED Bulbs (10W)', count: 10 },
-            { name: 'Ceiling Fans (50W)', count: 5 },
-            { name: 'Fridge (150W)', count: 1 },
-            { name: 'TV (100W)', count: 1 },
-            { name: 'Laptop (60W)', count: 1 },
-            { name: 'Microwave (1000W)', count: 1 },
-            { name: 'Air Conditioner (1500W)', count: 1 },
-            { name: 'Washing Machine (500W)', count: 1 }
+            { name: 'LED Bulbs (10W)', count: 20 },
+            { name: 'Fans', count: 2 },
+            { name: 'Fridge (150W)', count: 2 },
+            { name: 'TV (upto 100 inch)', count: 2 },
+            { name: 'Laptop', count: 3 },
+            { name: 'Router', count: 1 },
+            { name: 'Microwave (recommended for short duration)', count: 1 },
+            { name: 'Mixer Blender (upto 1500W for short duration)', count: 1 },
+            { name: 'Mobile Charging Sockets', count: 3 }
         ],
         details: {
             efficiency: '97.5%',
-            batteryCompatibility: 'Lithium & Lead-acid',
+            batteryCompatibility: 'Tubular (Semi-Maintenance) , Lead-acid (Maintenance Free) , Lithium-ion',
             features: ['High power capacity for larger loads', 'Pure sine wave output', 'Wide input voltage range', 'Overcurrent protection', 'Supports parallel operation up to 6 units']
         }
     }
@@ -84,13 +91,14 @@ const fortunerInverters = [
         img: 'images/fortunerinverter.png', 
         specsLink: 'https://drive.google.com/file/d/1CYns0tOUy0iRoS5m_WMMs_Ms2ti_-dIS/view?usp=sharing',
         appliances: [
-            { name: 'LED Bulbs (10W)', count: 4 },
-            { name: 'Ceiling Fan (50W)', count: 1 },
-            { name: 'Laptop (60W)', count: 1 }
+            { name: 'LED Bulbs (10W)', count: 5 },
+            { name: 'Mobile Charging Sockets', count: 3 },
+            { name: 'Router', count: 1 },
+            { name: 'Laptop', count: 1 }
         ],
         details: {
             efficiency: '90%',
-            batteryCompatibility: 'Lead-acid',
+            batteryCompatibility: 'Tubular (Semi-Maintenance) , Lead-acid (Maintenance Free)',
             features: ['Compact design for small setups', 'Pure sine wave output', 'Cold start function', 'Basic overcurrent protection']
         }
     },
@@ -104,14 +112,15 @@ const fortunerInverters = [
         specsLink: 'https://drive.google.com/file/d/1NIKjc2GB9cWkZen_SsY2zwsVAEI5ZQN4/view?usp=sharing',
         appliances: [
             { name: 'LED Bulbs (10W)', count: 6 },
-            { name: 'Ceiling Fans (50W)', count: 2 },
-            { name: 'Fridge (150W)', count: 1 },
-            { name: 'TV (100W)', count: 1 },
-            { name: 'Laptop (60W)', count: 1 }
+            { name: 'Fans', count: 1 },
+            { name: 'TV (upto 60 inch)', count: 1 },
+            { name: 'Router', count: 1 },
+            { name: 'Mobile Charging Sockets', count: 3 },
+            { name: 'Laptop', count: 1 }
         ],
         details: {
             efficiency: '90%',
-            batteryCompatibility: 'Lead-acid',
+            batteryCompatibility: 'Tubular (Semi-Maintenance) , Lead-acid (Maintenance Free)',
             features: ['Suitable for medium households', 'Pure sine wave output', 'Cold start function', 'Overcurrent protection']
         }
     },
@@ -124,15 +133,17 @@ const fortunerInverters = [
         img: 'images/fortunerinverter.png', 
         specsLink: 'https://drive.google.com/file/d/1ulFxLsOsGDjsFW-jEXBOjU6I1qDScmB0/view?usp=sharing',
         appliances: [
-            { name: 'LED Bulbs (10W)', count: 6 },
-            { name: 'Ceiling Fans (50W)', count: 2 },
-            { name: 'Fridge (200W)', count: 1 },
-            { name: 'TV (100W)', count: 1 },
-            { name: 'Laptop (60W)', count: 1 }
+            { name: 'LED Bulbs (10W)', count: 10 },
+            { name: 'Fans', count: 1 },
+            { name: 'Fridge', count: 1 },
+            { name: 'TV (upto 80 inch)', count: 1 },
+            { name: 'Router', count: 1 },
+            { name: 'Mobile Charging Sockets', count: 3 },
+            { name: 'Laptop', count: 1 }
         ],
         details: {
             efficiency: '90%',
-            batteryCompatibility: 'Lead-acid',
+            batteryCompatibility: 'Tubular (Semi-Maintenance) , Lead-acid (Maintenance Free)',
             features: ['Supports larger fridges', 'Pure sine wave output', 'Cold start function', 'Overcurrent protection']
         }
     },
@@ -144,18 +155,20 @@ const fortunerInverters = [
         img: 'images/fortunerinverter.png', 
         specsLink: 'https://drive.google.com/file/d/1iCFsxqr2xB7p50QH4s4en1VPrdQ_-nY0/view?usp=sharing',
         appliances: [
-            { name: 'LED Bulbs (10W)', count: 10 },
-            { name: 'Ceiling Fans (50W)', count: 5 },
-            { name: 'Fridge (200W)', count: 1 },
-            { name: 'TV (100W)', count: 1 },
-            { name: 'Laptop (60W)', count: 1 },
-            { name: 'Air Conditioner (1500W)', count: 1 },
-            { name: 'Washing Machine (500W)', count: 1 },
-            { name: 'Water Pump (1000W)', count: 1 }
+            { name: 'LED Bulbs (10W)', count: 30 },
+            { name: 'Fans', count: 2 },
+            { name: 'Fridge', count: 3 },
+            { name: 'TV (upto 100 inch)', count: 3 },
+            { name: 'Laptop', count: 3 },
+            { name: 'Washing Machine (Maximum 500W)', count: 1 },
+            { name: 'Water Pump (Maximum 1000W)', count: 1 },
+            { name: 'Mixer Blender (upto 1500W for short duration)', count: 1 },
+            { name: 'Microwave (recommended for short duration)', count: 1 },
+            { name: 'Mobile Charging Sockets', count: 10 },
         ],
         details: {
             efficiency: '92%',
-            batteryCompatibility: 'Lead-acid',
+            batteryCompatibility: 'Tubular (Semi-Maintenance) , Lead-acid (Maintenance Free)',
             features: ['High capacity for large households', 'Pure sine wave output', 'Cold start function', 'Robust overcurrent protection']
         }
     }
@@ -169,7 +182,8 @@ const batteries = [
         specsLink: 'https://drive.google.com/file/d/17stgG0eX-rTGS8QR9KdDVZ08OXjWJH47/view?usp=sharing',
         capacityWh: 2400, // 200Ah × 12V
         dod: 0.8, // 80% Depth of Discharge
-        backupHours: 8.6 // 2400 × 0.8 × 0.9 / 200W
+        backupHours: 8.6, // 2400 × 0.8 × 0.9 / 200W
+        warranty: '1 year'
     },
     { 
         name: 'Maintenance Free KM12 12V 200AH', 
@@ -178,7 +192,8 @@ const batteries = [
         specsLink: 'https://drive.google.com/file/d/1IiygyBHcx85JLY5W7wFI6gQBflkKHNh9/view?usp=sharing',
         capacityWh: 2400, // 200Ah × 12V
         dod: 0.8, // 80% Depth of Discharge
-        backupHours: 8.6 // 2400 × 0.8 × 0.9 / 200W
+        backupHours: 8.6, // 2400 × 0.8 × 0.9 / 200W
+        warranty: '1 year'
     },
     { 
         name: 'Lithium LFP 51.2-100W', 
@@ -187,7 +202,8 @@ const batteries = [
         specsLink: 'https://drive.google.com/file/d/194rpm8gHCgehwTyFhx35o35G-JwXVgCS/view?usp=sharing',
         capacityWh: 5120, // 100Ah × 51.2V
         dod: 0.9, // 90% Depth of Discharge
-        backupHours: 20.7 // 5120 × 0.9 × 0.9 / 200W
+        backupHours: 20.7, // 5120 × 0.9 × 0.9 / 200W
+        warranty: '10 years'
     }
 ];
 
@@ -425,6 +441,7 @@ function updateBatteryOptions() {
                     <p>${battery.name}</p>
                     <p class="price">${battery.price.toLocaleString()} Ksh <span>(x${batteryCount})</span></p>
                     <p class="backup-info">${backupText}</p>
+                    <p class="warranty-info">Warranty: ${battery.warranty}</p>
                     <p class="view-specs"><a href="${specsLink}" target="_blank" ${specsLink === '#' ? 'onclick="alert(\'Specification link unavailable\')"' : ''}><i class="fas fa-external-link-alt"></i> Specifications</a></p>
                 </div>
             `;
@@ -530,10 +547,14 @@ function showApplianceModal(inverter) {
     const wattageText = inverter.watts ? ` (${inverter.watts}W)` : '';
     modalTitle.textContent = `${state.selectedCompany} ${inverter.kva}kVA${wattageText} - ${inverter.voltage}V Compatibility`;
     
-    const totalWatts = inverter.appliances.reduce((sum, app) => sum + (app.count * parseInt(app.name.match(/\((\d+)W\)/)[1])), 0);
+    // Calculate total watts only for appliances with specified wattage
+    const totalWatts = inverter.appliances.reduce((sum, app) => {
+        const match = app.name.match(/\((\d+)W\)/);
+        return sum + (match ? app.count * parseInt(match[1]) : 0);
+    }, 0);
     
     modalBody.innerHTML = `
-        <p><strong>Supported Appliances (Total: ${totalWatts}W):</strong></p>
+        <p><strong>Supported Appliances</strong></p>
         <ul>
             ${inverter.appliances.map(app => `<li><i class="fas fa-check-circle"></i> ${app.count}x ${app.name}</li>`).join('')}
         </ul>
@@ -545,10 +566,17 @@ function showApplianceModal(inverter) {
     
     modal.classList.remove('hidden');
 
-    // Add close button functionality
+    // Close modal on clicking close button
     const closeButton = document.querySelector('.modal-close');
     closeButton.addEventListener('click', () => {
         modal.classList.add('hidden');
+    });
+
+    // Close modal on outside click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.add('hidden');
+        }
     });
 }
 

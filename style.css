@@ -339,6 +339,12 @@ body {
     margin-top: 6px;
 }
 
+.warranty-info {
+    color: var(--primary-light)!important; /* Uses the --primary color variable (#0967ff) */
+    font-size: 0.9rem;
+    margin-top: 6px;
+}
+
 .option-content .view-specs {
     margin-top: 10px;
 }
@@ -881,6 +887,9 @@ body {
         gap: 8px;
     }
 }
+
+
+
 
 @media (max-width: 480px) {
     .header-container h1 {
