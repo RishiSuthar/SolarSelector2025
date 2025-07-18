@@ -58,11 +58,14 @@
                 <h2>Select an Inverter</h2>
                 <p>Choose the inverter that matches your power needs</p>
             </div>
-            <div class="links">
-                <a href="https://drive.google.com/file/d/1X_Azx91o4wRf9H45SUOGCV_l9N45dfT6/view?usp=sharing" target="_blank" class="link-button">
+            <div class="links" id="inverter-links">
+                <a href="https://drive.google.com/file/d/1X_Azx91o4wRf9H45SUOGCV_l9N45dfT6/view?usp=sharing" target="_blank" class="link-button kstar-only">
                     <i class="fas fa-book"></i> User Manual
                 </a>
-                <a href="https://drive.google.com/file/d/1sx29gQLQzLj1ThCVjoHGLXOGOZG-XCgi/view?usp=sharing" target="_blank" class="link-button">
+                <a href="https://drive.google.com/file/d/1sx29gQLQzLj1ThCVjoHGLXOGOZG-XCgi/view?usp=sharing" target="_blank" class="link-button kstar-only">
+                    <i class="fas fa-star"></i> Features
+                </a>
+                <a href="https://drive.google.com/file/d/1LGHqj75hovaBsraE4k5FIrT-4pDXfNzd/view?usp=sharing" target="_blank" class="link-button fortuner-only">
                     <i class="fas fa-star"></i> Features
                 </a>
             </div>
@@ -131,9 +134,25 @@
             </div>
             <div class="user-info-form">
                 <h3>Your Details</h3>
-                <input type="text" id="user-name" placeholder="Enter your full name" required>
-                <input type="email" id="user-email" placeholder="Enter your email address" required>
-                <input type="tel" id="user-phone" placeholder="Enter your phone number">
+                <div class="input-group">
+                    <input type="text" id="user-name" placeholder="Enter your full name" required>
+                    <div class="error-message" id="name-error"></div>
+                </div>
+                <div class="input-group">
+                    <input type="email" id="user-email" placeholder="Enter your email address" required>
+                    <div class="error-message" id="email-error"></div>
+                </div>
+                <div class="input-group phone-group">
+                    <select id="country-code" class="country-code">
+                        <option value="+254" data-length="9">Kenya (+254)</option>
+                        <option value="+1" data-length="10">United States (+1)</option>
+                        <option value="+44" data-length="10">United Kingdom (+44)</option>
+                        <option value="+91" data-length="10">India (+91)</option>
+                        <option value="+234" data-length="10">Nigeria (+234)</option>
+                    </select>
+                    <input type="tel" id="user-phone" placeholder="Enter your phone number">
+                    <div class="error-message" id="phone-error"></div>
+                </div>
             </div>
             <div id="summary" class="summary-content"></div>
             <div class="total-cost-container">
@@ -161,6 +180,15 @@
         </section>
     </main>
 
+    <!-- Modal for Appliance Compatibility -->
+    <div id="appliance-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="modal-close">×</span>
+            <h3 id="modal-title">Appliance Compatibility</h3>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
     <button id="scroll-to-top" class="scroll-to-top">
         <i class="fas fa-arrow-up"></i>
     </button>
@@ -173,7 +201,7 @@
                 <span><i class="fas fa-globe"></i> www.sangyug.com</span>
                 <span><i class="fas fa-map-marker-alt"></i> The Big Bang - Ngara, Opp. Rainbow plaza</span>
             </div>
-            <p class="copyright">Solar System Selector v3.2.12 | Designed & Built by <a href="https://about.me/rishisuthar" target="_blank">Dynamo</a></p>
+            <p class="copyright">Solar System Selector v3.3.0 | Designed & Built by <a href="https://about.me/rishisuthar" target="_blank">Dynamo</a></p>
             <p class="copyright">© 2025 Sangyug Enterprises. All rights reserved.</p>
         </div>
     </footer>

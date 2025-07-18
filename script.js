@@ -7,37 +7,203 @@ const state = {
 };
 
 const kstarInverters = [
-    { kva: 3.6, voltage: 24, price: 48000, labour: 20000, img: 'images/kstarinverter.png', specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing' },
-    { kva: 3.6, voltage: 48, price: 63000, labour: 20000, img: 'images/kstarinverter.png', specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing' },
-    { kva: 6.0, voltage: 48, price: 80000, labour: 25000, img: 'images/kstarinverter.png', specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing' }
+    { 
+        kva: 3.6, 
+        voltage: 24, 
+        price: 48000, 
+        labour: 20000, 
+        img: 'images/kstarinverter.png', 
+        specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing',
+        appliances: [
+            { name: 'LED Bulbs (10W)', count: 10 },
+            { name: 'Ceiling Fans (50W)', count: 5 },
+            { name: 'Fridge (150W)', count: 1 },
+            { name: 'TV (100W)', count: 1 },
+            { name: 'Laptop (60W)', count: 1 },
+            { name: 'Microwave (1000W)', count: 1 }
+        ],
+        details: {
+            efficiency: '97.5%',
+            batteryCompatibility: 'Lithium & Lead-acid',
+            features: ['Pure sine wave output for sensitive electronics', 'Wide input voltage range', 'Overcurrent protection', 'Supports parallel operation up to 6 units']
+        }
+    },
+    { 
+        kva: 3.6, 
+        voltage: 48, 
+        price: 63000, 
+        labour: 20000, 
+        img: 'images/kstarinverter.png', 
+        specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing',
+        appliances: [
+            { name: 'LED Bulbs (10W)', count: 10 },
+            { name: 'Ceiling Fans (50W)', count: 5 },
+            { name: 'Fridge (150W)', count: 1 },
+            { name: 'TV (100W)', count: 1 },
+            { name: 'Laptop (60W)', count: 1 },
+            { name: 'Microwave (1000W)', count: 1 }
+        ],
+        details: {
+            efficiency: '97.5%',
+            batteryCompatibility: 'Lithium & Lead-acid',
+            features: ['Pure sine wave output for sensitive electronics', 'Wide input voltage range', 'Overcurrent protection', 'Supports parallel operation up to 6 units']
+        }
+    },
+    { 
+        kva: 6.0, 
+        voltage: 48, 
+        price: 80000, 
+        labour: 25000, 
+        img: 'images/kstarinverter.png', 
+        specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing',
+        appliances: [
+            { name: 'LED Bulbs (10W)', count: 10 },
+            { name: 'Ceiling Fans (50W)', count: 5 },
+            { name: 'Fridge (150W)', count: 1 },
+            { name: 'TV (100W)', count: 1 },
+            { name: 'Laptop (60W)', count: 1 },
+            { name: 'Microwave (1000W)', count: 1 },
+            { name: 'Air Conditioner (1500W)', count: 1 },
+            { name: 'Washing Machine (500W)', count: 1 }
+        ],
+        details: {
+            efficiency: '97.5%',
+            batteryCompatibility: 'Lithium & Lead-acid',
+            features: ['High power capacity for larger loads', 'Pure sine wave output', 'Wide input voltage range', 'Overcurrent protection', 'Supports parallel operation up to 6 units']
+        }
+    }
 ];
 
 const fortunerInverters = [
-    { kva: 0.7, watts: 450, voltage: 12, price: 12500, labour: 15000, img: 'images/fortunerinverter.png', specsLink: '#' },
-    { kva: 1.5, watts: 1200, voltage: 24, price: 16000, labour: 15000, img: 'images/fortunerinverter.png', specsLink: '#' },
-    { kva: 2.2, watts: 1400, voltage: 24, price: 21000, labour: 18000, img: 'images/fortunerinverter.png', specsLink: '#' },
-    { kva: 10.0, voltage: 48, price: 105000, labour: 25000, img: 'images/fortunerinverter.png', specsLink: '#' }
+    { 
+        kva: 0.7, 
+        watts: 450, 
+        voltage: 12, 
+        price: 12500, 
+        labour: 15000, 
+        img: 'images/fortunerinverter.png', 
+        specsLink: 'https://drive.google.com/file/d/1CYns0tOUy0iRoS5m_WMMs_Ms2ti_-dIS/view?usp=sharing',
+        appliances: [
+            { name: 'LED Bulbs (10W)', count: 4 },
+            { name: 'Ceiling Fan (50W)', count: 1 },
+            { name: 'Laptop (60W)', count: 1 }
+        ],
+        details: {
+            efficiency: '90%',
+            batteryCompatibility: 'Lead-acid',
+            features: ['Compact design for small setups', 'Pure sine wave output', 'Cold start function', 'Basic overcurrent protection']
+        }
+    },
+    { 
+        kva: 1.5, 
+        watts: 1200, 
+        voltage: 24, 
+        price: 16000, 
+        labour: 15000, 
+        img: 'images/fortunerinverter.png', 
+        specsLink: 'https://drive.google.com/file/d/1NIKjc2GB9cWkZen_SsY2zwsVAEI5ZQN4/view?usp=sharing',
+        appliances: [
+            { name: 'LED Bulbs (10W)', count: 6 },
+            { name: 'Ceiling Fans (50W)', count: 2 },
+            { name: 'Fridge (150W)', count: 1 },
+            { name: 'TV (100W)', count: 1 },
+            { name: 'Laptop (60W)', count: 1 }
+        ],
+        details: {
+            efficiency: '90%',
+            batteryCompatibility: 'Lead-acid',
+            features: ['Suitable for medium households', 'Pure sine wave output', 'Cold start function', 'Overcurrent protection']
+        }
+    },
+    { 
+        kva: 2.2, 
+        watts: 1400, 
+        voltage: 24, 
+        price: 21000, 
+        labour: 18000, 
+        img: 'images/fortunerinverter.png', 
+        specsLink: 'https://drive.google.com/file/d/1ulFxLsOsGDjsFW-jEXBOjU6I1qDScmB0/view?usp=sharing',
+        appliances: [
+            { name: 'LED Bulbs (10W)', count: 6 },
+            { name: 'Ceiling Fans (50W)', count: 2 },
+            { name: 'Fridge (200W)', count: 1 },
+            { name: 'TV (100W)', count: 1 },
+            { name: 'Laptop (60W)', count: 1 }
+        ],
+        details: {
+            efficiency: '90%',
+            batteryCompatibility: 'Lead-acid',
+            features: ['Supports larger fridges', 'Pure sine wave output', 'Cold start function', 'Overcurrent protection']
+        }
+    },
+    { 
+        kva: 10.0, 
+        voltage: 48, 
+        price: 105000, 
+        labour: 25000, 
+        img: 'images/fortunerinverter.png', 
+        specsLink: 'https://drive.google.com/file/d/1iCFsxqr2xB7p50QH4s4en1VPrdQ_-nY0/view?usp=sharing',
+        appliances: [
+            { name: 'LED Bulbs (10W)', count: 10 },
+            { name: 'Ceiling Fans (50W)', count: 5 },
+            { name: 'Fridge (200W)', count: 1 },
+            { name: 'TV (100W)', count: 1 },
+            { name: 'Laptop (60W)', count: 1 },
+            { name: 'Air Conditioner (1500W)', count: 1 },
+            { name: 'Washing Machine (500W)', count: 1 },
+            { name: 'Water Pump (1000W)', count: 1 }
+        ],
+        details: {
+            efficiency: '92%',
+            batteryCompatibility: 'Lead-acid',
+            features: ['High capacity for large households', 'Pure sine wave output', 'Cold start function', 'Robust overcurrent protection']
+        }
+    }
 ];
 
 const batteries = [
-    { name: 'Tubular 200AH', price: 23500, img: 'images/battery-200ah-tubular.png', specsLink: 'https://drive.google.com/file/d/17stgG0eX-rTGS8QR9KdDVZ08OXjWJH47/view?usp=sharing' },
-    { name: 'Maintenance Free KM12 12V 200AH', price: 35500, img: 'images/battery-200ah-mf.png', specsLink: 'https://drive.google.com/file/d/1IiygyBHcx85JLY5W7wFI6gQBflkKHNh9/view?usp=sharing' },
-    { name: 'Lithium LFP 51.2-100W', price: 125000, img: 'images/battery-100ah-lithium.png', specsLink: 'https://drive.google.com/file/d/194rpm8gHCgehwTyFhx35o35G-JwXVgCS/view?usp=sharing' }
+    { 
+        name: 'Tubular 200AH', 
+        price: 23500, 
+        img: 'images/battery-200ah-tubular.png', 
+        specsLink: 'https://drive.google.com/file/d/17stgG0eX-rTGS8QR9KdDVZ08OXjWJH47/view?usp=sharing',
+        capacityWh: 2400, // 200Ah × 12V
+        dod: 0.8, // 80% Depth of Discharge
+        backupHours: 8.6 // 2400 × 0.8 × 0.9 / 200W
+    },
+    { 
+        name: 'Maintenance Free KM12 12V 200AH', 
+        price: 35500, 
+        img: 'images/battery-200ah-mf.png', 
+        specsLink: 'https://drive.google.com/file/d/1IiygyBHcx85JLY5W7wFI6gQBflkKHNh9/view?usp=sharing',
+        capacityWh: 2400, // 200Ah × 12V
+        dod: 0.8, // 80% Depth of Discharge
+        backupHours: 8.6 // 2400 × 0.8 × 0.9 / 200W
+    },
+    { 
+        name: 'Lithium LFP 51.2-100W', 
+        price: 125000, 
+        img: 'images/battery-100ah-lithium.png', 
+        specsLink: 'https://drive.google.com/file/d/194rpm8gHCgehwTyFhx35o35G-JwXVgCS/view?usp=sharing',
+        capacityWh: 5120, // 100Ah × 51.2V
+        dod: 0.9, // 90% Depth of Discharge
+        backupHours: 20.7 // 5120 × 0.9 × 0.9 / 200W
+    }
 ];
 
 function getAccessoryCost() {
     if (state.selectedCompany === 'Fortuner') {
         if (state.selectedInverter.kva === 1.5 || state.selectedInverter.kva === 2.2) {
-            return 4000 + 2500 + 4000 + 4500; // Change Over Switch + DC MCCB + AVS 30 AMPS + Mounting Structure & Cables (4,500 Ksh)
+            return 4000 + 2500 + 4000 + 4500;
         } else if (state.selectedInverter.kva === 10.0) {
-            return 4000 + 2500 + 4000 + 54500; // Change Over Switch + DC MCCB + AVS 30 AMPS + Mounting Structure & Cables (54,500 Ksh)
+            return 4000 + 2500 + 4000 + 54500;
         }
-        return 4000 + 2500 + 4000 + 22000; // Default for 0.7 kVA
+        return 4000 + 2500 + 4000 + 22000;
     }
     if (state.selectedInverter.kva === 6.0 && state.selectedInverter.voltage === 48) {
-        return 4000 + 2500 + 4000 + 40000; // Kstar 6.0 kVA
+        return 4000 + 2500 + 4000 + 40000;
     }
-    return 4000 + 2500 + 4000 + 22000; // Default for Kstar
+    return 4000 + 2500 + 4000 + 22000;
 }
 
 function saveState() {
@@ -108,7 +274,21 @@ function selectCompany(company, clickedElement) {
     if (clickedElement) clickedElement.classList.add('selected');
     navigateToStep('inverter');
     updateInverterOptions();
+    updateInverterLinks();
     saveState();
+}
+
+function updateInverterLinks() {
+    const kstarLinks = document.querySelectorAll('.link-button.kstar-only');
+    const fortunerLink = document.querySelector('.link-button.fortuner-only');
+    
+    if (state.selectedCompany === 'Kstar') {
+        kstarLinks.forEach(link => link.style.display = 'flex');
+        fortunerLink.style.display = 'none';
+    } else if (state.selectedCompany === 'Fortuner') {
+        kstarLinks.forEach(link => link.style.display = 'none');
+        fortunerLink.style.display = 'flex';
+    }
 }
 
 function updateInverterOptions() {
@@ -116,7 +296,7 @@ function updateInverterOptions() {
     inverterOptions.innerHTML = '';
     const inverters = state.selectedCompany === 'Kstar' ? kstarInverters : fortunerInverters;
 
-    inverters.forEach(inverter => {
+    inverters.forEach((inverter, index) => {
         const div = document.createElement('div');
         div.className = 'option';
         if (state.selectedInverter.kva === inverter.kva && state.selectedInverter.voltage === inverter.voltage) {
@@ -131,15 +311,30 @@ function updateInverterOptions() {
             <div class="option-content">
                 <p>${state.selectedCompany} ${inverter.kva}kVA${wattageText} - ${inverter.voltage}V</p>
                 <p class="price">${inverter.price.toLocaleString()} Ksh</p>
-                <p class="view-specs"><a href="${specsLink}" target="_blank" ${specsLink === '#' ? 'onclick="alert(\'Specification link unavailable\')"' : ''}><i class="fas fa-external-link-alt"></i> Specifications</a></p>
+                <p class="view-specs">
+                    <a href="${specsLink}" target="_blank" ${specsLink === '#' ? 'onclick="alert(\'Specification link unavailable\')"' : ''}>
+                        <i class="fas fa-external-link-alt"></i> Specifications
+                    </a>
+                </p>
+                <p class="view-appliances" data-inverter-index="${index}">
+                    <i class="fas fa-plug"></i> Compatibility
+                </p>
             </div>
         `;
         div.addEventListener('click', (e) => {
-            if (!e.target.closest('.view-specs a')) {
+            if (!e.target.closest('.view-specs a') && !e.target.closest('.view-appliances')) {
                 selectInverter(inverter, div);
             }
         });
         inverterOptions.appendChild(div);
+    });
+
+    document.querySelectorAll('.view-appliances').forEach(button => {
+        button.addEventListener('click', () => {
+            const index = button.getAttribute('data-inverter-index');
+            const inverter = inverters[index];
+            showApplianceModal(inverter);
+        });
     });
 }
 
@@ -219,6 +414,9 @@ function updateBatteryOptions() {
                 div.classList.add('selected');
             }
             const specsLink = battery.specsLink || '#';
+            const backupText = batteryCount > 1 ? 
+                `Approx. ${(battery.backupHours * batteryCount).toFixed(1)} hours backup (200W load)` : 
+                `Approx. ${battery.backupHours.toFixed(1)} hours backup (200W load)`;
             div.innerHTML = `
                 <div class="option-image">
                     <img src="${battery.img}">
@@ -226,6 +424,7 @@ function updateBatteryOptions() {
                 <div class="option-content">
                     <p>${battery.name}</p>
                     <p class="price">${battery.price.toLocaleString()} Ksh <span>(x${batteryCount})</span></p>
+                    <p class="backup-info">${backupText}</p>
                     <p class="view-specs"><a href="${specsLink}" target="_blank" ${specsLink === '#' ? 'onclick="alert(\'Specification link unavailable\')"' : ''}><i class="fas fa-external-link-alt"></i> Specifications</a></p>
                 </div>
             `;
@@ -249,7 +448,6 @@ function selectBattery(battery, count, clickedElement) {
     document.getElementById('accessory-section').classList.add('hidden');
     document.getElementById('summary-section').classList.add('hidden');
     navigateToStep('summary');
-    // No setTimeout, immediate update
     document.getElementById('panel-info').style.display = 'block';
     document.getElementById('panel-images').style.display = 'flex';
     document.getElementById('panel-section').classList.remove('hidden');
@@ -258,7 +456,6 @@ function selectBattery(battery, count, clickedElement) {
     updatePanelRequirement();
     saveState();
 }
-
 
 function updatePanelRequirement() {
     if (state.selectedCompany === 'Fortuner') {
@@ -326,14 +523,91 @@ function updateSummary() {
     document.getElementById('total-cost').textContent = totalCost.toLocaleString() + ' KSH';
 }
 
+function showApplianceModal(inverter) {
+    const modal = document.getElementById('appliance-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalBody = document.getElementById('modal-body');
+    const wattageText = inverter.watts ? ` (${inverter.watts}W)` : '';
+    modalTitle.textContent = `${state.selectedCompany} ${inverter.kva}kVA${wattageText} - ${inverter.voltage}V Compatibility`;
+    
+    const totalWatts = inverter.appliances.reduce((sum, app) => sum + (app.count * parseInt(app.name.match(/\((\d+)W\)/)[1])), 0);
+    
+    modalBody.innerHTML = `
+        <p><strong>Supported Appliances (Total: ${totalWatts}W):</strong></p>
+        <ul>
+            ${inverter.appliances.map(app => `<li><i class="fas fa-check-circle"></i> ${app.count}x ${app.name}</li>`).join('')}
+        </ul>
+        <div class="inverter-details">
+            <p><strong>Efficiency:</strong> ${inverter.details.efficiency}</p>
+            <p><strong>Battery Compatibility:</strong> ${inverter.details.batteryCompatibility}</p>
+        </div>
+    `;
+    
+    modal.classList.remove('hidden');
+
+    // Add close button functionality
+    const closeButton = document.querySelector('.modal-close');
+    closeButton.addEventListener('click', () => {
+        modal.classList.add('hidden');
+    });
+}
+
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+}
+
+function validatePhone(phone, length) {
+    const digits = phone.replace(/\D/g, '');
+    return digits.length === length && /^\d+$/.test(digits);
+}
+
+function validateForm() {
+    const name = document.getElementById('user-name').value.trim();
+    const email = document.getElementById('user-email').value.trim();
+    const phone = document.getElementById('user-phone').value.trim();
+    const countryCode = document.getElementById('country-code');
+    const phoneLength = parseInt(countryCode.options[countryCode.selectedIndex].dataset.length);
+
+    const nameError = document.getElementById('name-error');
+    const emailError = document.getElementById('email-error');
+    const phoneError = document.getElementById('phone-error');
+
+    let isValid = true;
+
+    if (!name) {
+        nameError.textContent = 'Name is required';
+        isValid = false;
+    } else {
+        nameError.textContent = '';
+    }
+
+    if (!email) {
+        emailError.textContent = 'Email is required';
+        isValid = false;
+    } else if (!validateEmail(email)) {
+        emailError.textContent = 'Please enter a valid email';
+        isValid = false;
+    } else {
+        emailError.textContent = '';
+    }
+
+    if (phone && !validatePhone(phone, phoneLength)) {
+        phoneError.textContent = `Phone number must be ${phoneLength} digits`;
+        isValid = false;
+    } else {
+        phoneError.textContent = '';
+    }
+
+    return isValid;
+}
+
 function shareSummary() {
+    if (!validateForm()) return;
+
     const name = document.getElementById('user-name').value;
     const email = document.getElementById('user-email').value;
     const phone = document.getElementById('user-phone').value || 'Not provided';
-    if (!name || !email) {
-        alert('Please fill in your name and email.');
-        return;
-    }
     const inverterText = `${state.selectedCompany} ${state.selectedInverter.kva}kVA${state.selectedInverter.watts ? ` (${state.selectedInverter.watts}W)` : ''} - ${state.selectedInverter.voltage}V`;
     const batteryText = `${state.selectedBattery.name} x${state.selectedBattery.count}`;
     const panelText = state.selectedPanels > 0 ? `${state.selectedPanels} panels` : 'No panels required';
@@ -352,7 +626,8 @@ function shareSummary() {
         `• Installation/Labour: ${state.selectedInverter.labour.toLocaleString()} Ksh\n\n` +
         `🔹 BATTERY\n` +
         `• Type: ${batteryText}\n` +
-        `• Price: ${(state.selectedBattery.price * state.selectedBattery.count).toLocaleString()} Ksh\n\n` +
+        `• Price: ${(state.selectedBattery.price * state.selectedBattery.count).toLocaleString()} Ksh\n` +
+        `• Backup: Approx. ${(state.selectedBattery.backupHours * state.selectedBattery.count).toFixed(1)} hours (200W load)\n\n` +
         `🔹 SOLAR PANELS\n` +
         `• Quantity: ${panelText}\n` +
         `• Price: ${(state.selectedPanels * 8300).toLocaleString()} Ksh\n\n` +
@@ -371,13 +646,11 @@ function shareSummary() {
 }
 
 function shareWhatsApp() {
+    if (!validateForm()) return;
+
     const name = document.getElementById('user-name').value;
     const email = document.getElementById('user-email').value;
     const phone = document.getElementById('user-phone').value || 'Not provided';
-    if (!name || !email) {
-        alert('Please fill in your name and email.');
-        return;
-    }
     const inverterText = `${state.selectedCompany} ${state.selectedInverter.kva}kVA${state.selectedInverter.watts ? ` (${state.selectedInverter.watts}W)` : ''} - ${state.selectedInverter.voltage}V`;
     const batteryText = `${state.selectedBattery.name} x${state.selectedBattery.count}`;
     const panelText = state.selectedPanels > 0 ? `${state.selectedPanels} panels` : 'No panels required';
@@ -395,7 +668,8 @@ function shareWhatsApp() {
         `• Installation/Labour: ${state.selectedInverter.labour.toLocaleString()} Ksh\n\n` +
         `🔹 BATTERY\n` +
         `• Type: ${batteryText}\n` +
-        `• Price: ${(state.selectedBattery.price * state.selectedBattery.count).toLocaleString()} Ksh\n\n` +
+        `• Price: ${(state.selectedBattery.price * state.selectedBattery.count).toLocaleString()} Ksh\n` +
+        `• Backup: Approx. ${(state.selectedBattery.backupHours * state.selectedBattery.count).toFixed(1)} hours (200W load)\n\n` +
         `🔹 SOLAR PANELS\n` +
         `• Quantity: ${panelText}\n` +
         `• Price: ${(state.selectedPanels * 8300).toLocaleString()} Ksh\n\n` +
@@ -414,6 +688,8 @@ function shareWhatsApp() {
 }
 
 function downloadPDF() {
+    if (!validateForm()) return;
+
     if (!window.jspdf) {
         alert('PDF generation failed. Please try again later.');
         return;
@@ -438,7 +714,8 @@ function downloadPDF() {
     doc.setTextColor(100, 100, 100);
     const name = document.getElementById('user-name').value || 'Customer';
     const email = document.getElementById('user-email').value || 'Not provided';
-    const phone = document.getElementById('user-phone').value || 'Not provided';
+    const phone = document.getElementById('user-phone').value ? 
+        document.getElementById('country-code').value + document.getElementById('user-phone').value : 'Not provided';
     doc.text(`Prepared for: ${name}`, 20, 35);
     doc.text(`Email: ${email}`, 20, 40);
     doc.text(`Phone: ${phone}`, 20, 45);
@@ -511,6 +788,12 @@ function resetSelection() {
     state.selectedPanels = 0;
     navigateToStep('company');
     document.querySelectorAll('.option').forEach(option => option.classList.remove('selected'));
+    document.getElementById('user-name').value = '';
+    document.getElementById('user-email').value = '';
+    document.getElementById('user-phone').value = '';
+    document.getElementById('name-error').textContent = '';
+    document.getElementById('email-error').textContent = '';
+    document.getElementById('phone-error').textContent = '';
     saveState();
 }
 
@@ -574,5 +857,54 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => step.classList.remove('disabled'), 1000);
             }
         });
+    });
+
+    // Real-time form validation
+    const nameInput = document.getElementById('user-name');
+    const emailInput = document.getElementById('user-email');
+    const phoneInput = document.getElementById('user-phone');
+    const countryCode = document.getElementById('country-code');
+
+    nameInput.addEventListener('input', () => {
+        const nameError = document.getElementById('name-error');
+        if (!nameInput.value.trim()) {
+            nameError.textContent = 'Name is required';
+        } else {
+            nameError.textContent = '';
+        }
+    });
+
+    emailInput.addEventListener('input', () => {
+        const emailError = document.getElementById('email-error');
+        if (!emailInput.value.trim()) {
+            emailError.textContent = 'Email is required';
+        } else if (!validateEmail(emailInput.value)) {
+            emailError.textContent = 'Please enter a valid email';
+        } else {
+            emailError.textContent = '';
+        }
+    });
+
+    phoneInput.addEventListener('input', () => {
+        const phoneError = document.getElementById('phone-error');
+        const phoneLength = parseInt(countryCode.options[countryCode.selectedIndex].dataset.length);
+        const phone = phoneInput.value.trim();
+        if (phone && !validatePhone(phone, phoneLength)) {
+            phoneError.textContent = `Phone number must be ${phoneLength} digits`;
+        } else {
+            phoneError.textContent = '';
+        }
+    });
+
+    countryCode.addEventListener('change', () => {
+        const phoneError = document.getElementById('phone-error');
+        const phoneLength = parseInt(countryCode.options[countryCode.selectedIndex].dataset.length);
+        const phone = phoneInput.value.trim();
+        if (phone && !validatePhone(phone, phoneLength)) {
+            phoneError.textContent = `Phone number must be ${phoneLength} digits`;
+        } else {
+            phoneError.textContent = '';
+        }
+        phoneInput.placeholder = `Enter ${phoneLength}-digit phone number`;
     });
 });

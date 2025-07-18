@@ -11,6 +11,7 @@
     --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     --border-radius: 12px;
     --transition: all 0.5s ease-in-out;
+    --error-color: #f87171;
 }
 
 * {
@@ -303,8 +304,6 @@ body {
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
 }
 
-
-
 .option-image {
     height: 120px;
     display: flex;
@@ -344,8 +343,9 @@ body {
     margin-top: 10px;
 }
 
-.option-content .view-specs a {
-    color: white;
+.option-content .view-specs a,
+.option-content .view-appliances {
+    color: rgb(255, 255, 255);
     text-decoration: none;
     font-weight: 500;
     display: flex;
@@ -354,8 +354,13 @@ body {
     transition: var(--transition);
 }
 
-.option-content .view-specs a:hover {
+.option-content .view-specs a:hover,
+.option-content .view-appliances:hover {
     color: var(--primary-light);
+}
+
+.option-content .view-appliances {
+    cursor: pointer;
 }
 
 .links {
@@ -598,10 +603,14 @@ body {
     margin-bottom: 10px;
 }
 
+.input-group {
+    position: relative;
+    margin-bottom: 15px;
+}
+
 .user-info-form input {
     width: 100%;
     padding: 10px;
-    margin-bottom: 10px;
     border: none;
     border-radius: 6px;
     background: #6b7280;
@@ -623,6 +632,135 @@ body {
 .user-info-form input:-ms-input-placeholder {
     color: #b9b9b9 !important;
     opacity: 1 !important;
+}
+
+.user-info-form select.country-code {
+    width: 120px;
+    padding: 10px;
+    border: none;
+    border-radius: 6px 0 0 6px;
+    background: #5a626e;
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+}
+
+.user-info-form select.country-code:focus {
+    outline: none;
+    background-color: #6b7280;
+}
+
+.phone-group {
+    display: flex;
+    align-items: center;
+}
+
+.phone-group input#user-phone {
+    border-radius: 0 6px 6px 0;
+    flex: 1;
+}
+
+.error-message {
+    color: var(--error-color);
+    font-size: 0.85rem;
+    margin-top: 5px;
+    min-height: 20px;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal:not(.hidden) {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    box-shadow: var(--card-shadow);
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+}
+
+.modal:not(.hidden) .modal-content {
+    transform: scale(1);
+}
+
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.modal-close:hover {
+    color: var(--primary-light);
+}
+
+.modal-content h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.modal-content ul {
+    list-style: none;
+    margin-bottom: 20px;
+}
+
+.modal-content ul li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 0.95rem;
+}
+
+.modal-content ul li i {
+    color: var(--accent);
+}
+
+.modal-content .inverter-details {
+    background: #4b5563;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.modal-content .inverter-details p {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+
+.modal-content .inverter-details strong {
+    color: var(--accent);
 }
 
 .scroll-to-top {
@@ -765,5 +903,23 @@ body {
     
     .total-cost-amount {
         font-size: 1.3rem;
+    }
+    
+    .phone-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .phone-group select.country-code {
+        border-radius: 6px;
+        margin-bottom: 10px;
+    }
+    
+    .phone-group input#user-phone {
+        border-radius: 6px;
+    }
+    
+    .modal-content {
+        width: 95%;
     }
 }
