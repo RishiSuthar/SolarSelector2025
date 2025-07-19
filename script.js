@@ -931,4 +931,24 @@ document.addEventListener('DOMContentLoaded', () => {
             phoneError.textContent = '';
         }
     });
+
+    if (!sessionStorage.getItem('welcomeModalShown')) {
+        const welcomeModal = document.getElementById('welcome-modal');
+        const welcomeCloseButton = document.getElementById('welcome-close');
+
+        welcomeModal.classList.remove('hidden');
+
+        welcomeCloseButton.addEventListener('click', () => {
+            welcomeModal.classList.add('hidden');
+            sessionStorage.setItem('welcomeModalShown', 'true');
+    });
+
+    welcomeModal.addEventListener('click', (e) => {
+        if (e.target === welcomeModal || e.target.classList.contains('modal-close')) {
+            welcomeModal.classList.add('hidden');
+            sessionStorage.setItem('welcomeModalShown', 'true');
+        }
+    });
+}
+
 });
