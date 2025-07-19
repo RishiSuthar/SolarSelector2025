@@ -629,7 +629,7 @@ body.summary-active {
     background: #4b5563;
     padding: 15px;
     border-radius: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .user-info-form h3 {
@@ -639,7 +639,7 @@ body.summary-active {
 
 .input-group {
     position: relative;
-    margin-bottom: 15px;
+    margin-bottom: 3px;
 }
 
 .user-info-form input {
@@ -669,7 +669,7 @@ body.summary-active {
 }
 
 .user-info-form select.country-code {
-    width: 120px;
+    width: 130px;
     padding: 10px;
     border: none;
     border-radius: 6px 0 0 6px;
@@ -706,6 +706,7 @@ body.summary-active {
     font-size: 0.85rem;
     margin-top: 5px;
     min-height: 20px;
+    padding-left: 10px;
 }
 
 .modal {
