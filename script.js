@@ -10,7 +10,7 @@ const kstarInverters = [
     { 
         kva: 3.6, 
         voltage: 24, 
-        price: 48000, 
+        price: Math.round(48000 * 1.25), // 48000 * 1.25 = 60000
         labour: 20000, 
         img: 'images/kstarinverter.png', 
         specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing',
@@ -34,7 +34,7 @@ const kstarInverters = [
     { 
         kva: 3.6, 
         voltage: 48, 
-        price: 63000, 
+        price: Math.round(63000 * 1.25), // 63000 * 1.25 = 78750
         labour: 20000, 
         img: 'images/kstarinverter.png', 
         specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing',
@@ -58,7 +58,7 @@ const kstarInverters = [
     { 
         kva: 6.0, 
         voltage: 48, 
-        price: 80000, 
+        price: Math.round(80000 * 1.25), // 80000 * 1.25 = 100000
         labour: 25000, 
         img: 'images/kstarinverter.png', 
         specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing',
@@ -86,7 +86,7 @@ const fortunerInverters = [
         kva: 0.7, 
         watts: 450, 
         voltage: 12, 
-        price: 12500, 
+        price: Math.round(12500 * 1.25), // 12500 * 1.25 = 15625
         labour: 15000, 
         img: 'images/fortunerinverter.png', 
         specsLink: 'https://drive.google.com/file/d/1CYns0tOUy0iRoS5m_WMMs_Ms2ti_-dIS/view?usp=sharing',
@@ -106,7 +106,7 @@ const fortunerInverters = [
         kva: 1.5, 
         watts: 1200, 
         voltage: 24, 
-        price: 16000, 
+        price: Math.round(16000 * 1.25), // 16000 * 1.25 = 20000
         labour: 15000, 
         img: 'images/fortunerinverter.png', 
         specsLink: 'https://drive.google.com/file/d/1NIKjc2GB9cWkZen_SsY2zwsVAEI5ZQN4/view?usp=sharing',
@@ -128,7 +128,7 @@ const fortunerInverters = [
         kva: 2.2, 
         watts: 1400, 
         voltage: 24, 
-        price: 21000, 
+        price: Math.round(21000 * 1.25), // 21000 * 1.25 = 26250
         labour: 18000, 
         img: 'images/fortunerinverter.png', 
         specsLink: 'https://drive.google.com/file/d/1ulFxLsOsGDjsFW-jEXBOjU6I1qDScmB0/view?usp=sharing',
@@ -150,7 +150,7 @@ const fortunerInverters = [
     { 
         kva: 10.0, 
         voltage: 48, 
-        price: 105000, 
+        price: Math.round(105000 * 1.25), // 105000 * 1.25 = 131250
         labour: 25000, 
         img: 'images/fortunerinverter.png', 
         specsLink: 'https://drive.google.com/file/d/1iCFsxqr2xB7p50QH4s4en1VPrdQ_-nY0/view?usp=sharing',
@@ -177,7 +177,7 @@ const fortunerInverters = [
 const batteries = [
     { 
         name: 'Tubular 200AH', 
-        price: 23500, 
+        price: Math.round(23500 * 1.25), // 23500 * 1.25 = 29375
         img: 'images/battery-200ah-tubular.png', 
         specsLink: 'https://drive.google.com/file/d/17stgG0eX-rTGS8QR9KdDVZ08OXjWJH47/view?usp=sharing',
         capacityWh: 2400, // 200Ah × 12V
@@ -187,7 +187,7 @@ const batteries = [
     },
     { 
         name: 'Maintenance Free KM12 12V 200AH', 
-        price: 35500, 
+        price: Math.round(35500 * 1.25), // 35500 * 1.25 = 44375
         img: 'images/battery-200ah-mf.png', 
         specsLink: 'https://drive.google.com/file/d/1IiygyBHcx85JLY5W7wFI6gQBflkKHNh9/view?usp=sharing',
         capacityWh: 2400, // 200Ah × 12V
@@ -197,7 +197,7 @@ const batteries = [
     },
     { 
         name: 'Lithium LFP 51.2-100W', 
-        price: 125000, 
+        price: Math.round(125000 * 1.25), // 125000 * 1.25 = 156250
         img: 'images/battery-100ah-lithium.png', 
         specsLink: 'https://drive.google.com/file/d/194rpm8gHCgehwTyFhx35o35G-JwXVgCS/view?usp=sharing',
         capacityWh: 5120, // 100Ah × 51.2V
@@ -210,16 +210,16 @@ const batteries = [
 function getAccessoryCost() {
     if (state.selectedCompany === 'Fortuner') {
         if (state.selectedInverter.kva === 1.5 || state.selectedInverter.kva === 2.2) {
-            return 4000 + 2500 + 4000 + 4500;
+            return Math.round(4000 * 1.25) + Math.round(2500 * 1.25) + Math.round(4000 * 1.25) + Math.round(4500 * 1.25); // 5000 + 3125 + 5000 + 5625 = 18750
         } else if (state.selectedInverter.kva === 10.0) {
-            return 4000 + 2500 + 4000 + 54500;
+            return Math.round(4000 * 1.25) + Math.round(2500 * 1.25) + Math.round(4000 * 1.25) + Math.round(54500 * 1.25); // 5000 + 3125 + 5000 + 68125 = 81250
         }
-        return 4000 + 2500 + 4000 + 22000;
+        return Math.round(4000 * 1.25) + Math.round(2500 * 1.25) + Math.round(4000 * 1.25) + Math.round(22000 * 1.25); // 5000 + 3125 + 5000 + 27500 = 40625
     }
     if (state.selectedInverter.kva === 6.0 && state.selectedInverter.voltage === 48) {
-        return 4000 + 2500 + 4000 + 40000;
+        return Math.round(4000 * 1.25) + Math.round(2500 * 1.25) + Math.round(4000 * 1.25) + Math.round(40000 * 1.25); // 5000 + 3125 + 5000 + 50000 = 63125
     }
-    return 4000 + 2500 + 4000 + 22000;
+    return Math.round(4000 * 1.25) + Math.round(2500 * 1.25) + Math.round(4000 * 1.25) + Math.round(22000 * 1.25); // 5000 + 3125 + 5000 + 27500 = 40625
 }
 
 function saveState() {
@@ -235,7 +235,7 @@ function loadState() {
         updateBatteryOptions();
         updatePanelRequirement();
         updateSummary();
-        updateBodyBackground(state.currentStep); // Update background on load
+        updateBodyBackground(state.currentStep);
     }
 }
 
@@ -258,9 +258,7 @@ function updateProgressIndicator(step) {
 }
 
 function updateBodyBackground(step) {
-    // Remove all possible background classes
     document.body.classList.remove('company-active', 'inverter-active', 'battery-active', 'summary-active');
-    // Add the class corresponding to the current step
     document.body.classList.add(`${step}-active`);
 }
 
@@ -284,7 +282,7 @@ function navigateToStep(step) {
     }
     
     updateProgressIndicator(step);
-    updateBodyBackground(step); // Update background when navigating
+    updateBodyBackground(step);
 }
 
 function navigateBack() {
@@ -370,9 +368,9 @@ function selectInverter(inverter, clickedElement) {
     navigateToStep('battery');
     updateBatteryOptions();
     const mountingCostText = state.selectedCompany === 'Fortuner' ? 
-        (inverter.kva === 1.5 || inverter.kva === 2.2 ? '4,500 Ksh' : 
-         inverter.kva === 10.0 ? '54,500 Ksh' : '22,000 Ksh') : 
-        (inverter.kva === 6.0 && inverter.voltage === 48 ? '40,000 Ksh' : '22,000 Ksh');
+        (inverter.kva === 1.5 || inverter.kva === 2.2 ? `${Math.round(4500 * 1.25).toLocaleString()} Ksh` : 
+         inverter.kva === 10.0 ? `${Math.round(54500 * 1.25).toLocaleString()} Ksh` : `${Math.round(22000 * 1.25).toLocaleString()} Ksh`) : 
+        (inverter.kva === 6.0 && inverter.voltage === 48 ? `${Math.round(40000 * 1.25).toLocaleString()} Ksh` : `${Math.round(22000 * 1.25).toLocaleString()} Ksh`);
     document.querySelector('#mounting-cost .price').textContent = mountingCostText;
     saveState();
 }
@@ -498,7 +496,7 @@ function updatePanelRequirement() {
     
     document.getElementById('panel-info').innerHTML = state.selectedPanels > 0 ? `
         <p>You need ${state.selectedPanels} solar panels</p>
-        <p><span class="price">8,300 Ksh each</span></p>
+        <p><span class="price">${(8300 * 1.25).toLocaleString()} Ksh each</span></p>
         <p><a href="https://drive.google.com/file/d/14w98znycd4Y4-quOsoSItp4ulKUkpoCv/view?usp=sharing" target="_blank"><i class="fas fa-external-link-alt"></i> View Specifications</a></p>
     ` : `
         <p>No solar panels required for this configuration</p>
@@ -519,7 +517,7 @@ function updateSummary() {
     const inverterCost = state.selectedInverter.price || 0;
     const labourCost = state.selectedInverter.labour || 0;
     const batteryCost = state.selectedBattery.price ? state.selectedBattery.price * state.selectedBattery.count : 0;
-    const panelCost = state.selectedPanels * 8300;
+    const panelCost = state.selectedPanels * (8300 * 1.25); // Updated panel price
     const accessoryCost = getAccessoryCost();
     const totalCost = inverterCost + labourCost + batteryCost + panelCost + accessoryCost;
     
@@ -556,7 +554,6 @@ function showApplianceModal(inverter) {
     const wattageText = inverter.watts ? ` (${inverter.watts}W)` : '';
     modalTitle.textContent = `${state.selectedCompany} ${inverter.kva}kVA${wattageText} - ${inverter.voltage}V Compatibility`;
     
-    // Calculate total watts only for appliances with specified wattage
     const totalWatts = inverter.appliances.reduce((sum, app) => {
         const match = app.name.match(/\((\d+)W\)/);
         return sum + (match ? app.count * parseInt(match[1]) : 0);
@@ -575,13 +572,11 @@ function showApplianceModal(inverter) {
     
     modal.classList.remove('hidden');
 
-    // Close modal on clicking close button
     const closeButton = document.querySelector('.modal-close');
     closeButton.addEventListener('click', () => {
         modal.classList.add('hidden');
     });
 
-    // Close modal on outside click
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
             modal.classList.add('hidden');
@@ -665,7 +660,7 @@ function shareSummary() {
         `• Backup: Approx. ${(state.selectedBattery.backupHours * state.selectedBattery.count).toFixed(1)} hours (200W load)\n\n` +
         `🔹 SOLAR PANELS\n` +
         `• Quantity: ${panelText}\n` +
-        `• Price: ${(state.selectedPanels * 8300).toLocaleString()} Ksh\n\n` +
+        `• Price: ${(state.selectedPanels * (8300 * 1.25)).toLocaleString()} Ksh\n\n` +
         `🔹 ACCESSORIES\n` +
         `• Included: ${accessoryCost.toLocaleString()} Ksh\n\n` +
         `TOTAL COST: ${totalCost}\n\n` +
@@ -705,7 +700,7 @@ function shareWhatsApp() {
         `• Backup: Approx. ${(state.selectedBattery.backupHours * state.selectedBattery.count).toFixed(1)} hours (200W load)\n\n` +
         `🔹 SOLAR PANELS\n` +
         `• Quantity: ${panelText}\n` +
-        `• Price: ${(state.selectedPanels * 8300).toLocaleString()} Ksh\n\n` +
+        `• Price: ${(state.selectedPanels * (8300 * 1.25)).toLocaleString()} Ksh\n\n` +
         `🔹 ACCESSORIES\n` +
         `• Included: ${accessoryCost.toLocaleString()} Ksh\n\n` +
         `TOTAL COST: ${totalCost}\n\n` +
@@ -777,7 +772,7 @@ function downloadPDF() {
     yPosition += 7;
     
     doc.text(`Solar Panels: ${state.selectedPanels} panels`, 20, yPosition);
-    doc.text(`${(state.selectedPanels * 8300).toLocaleString()} Ksh`, 160, yPosition);
+    doc.text(`${(state.selectedPanels * (8300 * 1.25)).toLocaleString()} Ksh`, 160, yPosition);
     yPosition += 7;
     
     doc.text(`Accessories (included)`, 20, yPosition);
@@ -890,7 +885,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Real-time form validation
     const nameInput = document.getElementById('user-name');
     const emailInput = document.getElementById('user-email');
     const phoneInput = document.getElementById('user-phone');
