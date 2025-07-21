@@ -369,7 +369,7 @@ function selectInverter(inverter, clickedElement) {
     updateBatteryOptions();
     const mountingCostText = state.selectedCompany === 'Fortuner' ? 
         (inverter.kva === 1.5 || inverter.kva === 2.2 ? `${Math.round(4500 * 1.25).toLocaleString()} Ksh` : 
-         inverter.kva === 10.0 ? `${Math.round(54500 * 1.25).toLocaleString()} Ksh` : `${Math.round(22000 * 1.25).toLocaleString()} Ksh`) : 
+        inverter.kva === 10.0 ? `${Math.round(54500 * 1.25).toLocaleString()} Ksh` : `${Math.round(22000 * 1.25).toLocaleString()} Ksh`) : 
         (inverter.kva === 6.0 && inverter.voltage === 48 ? `${Math.round(40000 * 1.25).toLocaleString()} Ksh` : `${Math.round(22000 * 1.25).toLocaleString()} Ksh`);
     document.querySelector('#mounting-cost .price').textContent = mountingCostText;
     saveState();
