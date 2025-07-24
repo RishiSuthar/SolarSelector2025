@@ -668,7 +668,7 @@ function shareSummary() {
         `• Above quote includes solar mounting/structure\n` +
         `• Final quote will be provided after site survey\n\n` +
         `For any questions, please contact us at:\n` +
-        `📞 Phone: 0742196553\n` +
+        `📞 Phone: +254723984559\n` +
         `📧 Email: info@sangyug.com\n\n` +
         `Thank you for choosing Sangyug Solar!`
     );
@@ -708,7 +708,7 @@ function shareWhatsApp() {
         `• Above quote includes solar mounting/structure\n` +
         `• Final quote will be provided after site survey\n\n` +
         `For any questions, please contact us at:\n` +
-        `📞 Phone: 0742196553\n` +
+        `📞 Phone: +254723984559\n` +
         `📧 Email: info@sangyug.com\n\n` +
         `Thank you for choosing Sangyug Solar!`
     );
@@ -802,7 +802,7 @@ function downloadPDF() {
     doc.setTextColor(100, 100, 100);
     doc.text("Thank you for choosing Sangyug!", 105, yPosition, { align: 'center' });
     yPosition += 5;
-    doc.text("Contact: 0742196553 | info@sangyug.com", 105, yPosition, { align: 'center' });
+    doc.text("Contact: +254723984559 | info@sangyug.com", 105, yPosition, { align: 'center' });
     
     doc.save(`Sangyug_Solar_Quote_${new Date().toISOString().slice(0,10)}.pdf`);
 }
