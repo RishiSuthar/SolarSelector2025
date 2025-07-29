@@ -262,6 +262,7 @@ function updateBodyBackground(step) {
     document.body.classList.add(`${step}-active`);
 }
 
+
 function navigateToStep(step) {
     document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
     document.getElementById(`${step}-section`).classList.remove('hidden');
@@ -271,6 +272,14 @@ function navigateToStep(step) {
         document.getElementById('accessory-section').classList.remove('hidden');
         document.getElementById('environmental-section').classList.remove('hidden');
         document.getElementById('summary-section').classList.remove('hidden');
+        document.getElementById('energy-produced').textContent = '0 kWh/year';
+        document.getElementById('co2-reduced').textContent = '0 kg/year';
+        document.getElementById('trees-planted').textContent = '0 trees/year';
+        document.getElementById('co2-percentage').textContent = '0%';
+        document.getElementById('co2-progress').style.strokeDashoffset = '169.65';
+        document.getElementById('show-impact').style.display = 'block';
+        document.querySelectorAll('.environmental-item').forEach(item => item.classList.add('hidden'));
+        document.querySelector('.environmental-grid').classList.add('hidden');
         setTimeout(() => {
             document.getElementById('summary-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 2000);
@@ -645,11 +654,41 @@ function validateForm() {
 
 
 function updateEnvironmentalImpact() {
-    const { co2Reduced, treesPlanted } = calculateEnvironmentalImpact();
-    document.getElementById('co2-reduced').textContent = `${co2Reduced} kg/year`;
-    document.getElementById('trees-planted').textContent = `${treesPlanted} trees/year`;
-}
+    const impactItems = document.querySelectorAll('.environmental-item');
+    const environmentalGrid = document.querySelector('.environmental-grid');
+    impactItems.forEach(item => item.classList.add('hidden'));
+    environmentalGrid.classList.add('hidden');
 
+    const showImpactButton = document.getElementById('show-impact');
+    showImpactButton.style.display = 'block';
+    showImpactButton.addEventListener('click', () => {
+        showImpactButton.style.display = 'none';
+        environmentalGrid.classList.remove('hidden');
+        const { energyProduced, co2Reduced, treesPlanted, co2Percentage } = calculateEnvironmentalImpact();
+        const items = [
+            { id: 'energy-produced', value: energyProduced, suffix: ' kWh/year', element: document.querySelector('[data-impact="energy"]'), delay: 0 },
+            { id: 'co2-reduced', value: co2Reduced, suffix: ' kg/year', element: document.querySelector('[data-impact="co2"]'), delay: 800 },
+            { id: 'trees-planted', value: treesPlanted, suffix: ' trees/year', element: document.querySelector('[data-impact="trees"]'), delay: 1600 },
+            { id: 'co2-percentage', value: co2Percentage, suffix: '%', element: document.querySelector('[data-impact="offset"]'), delay: 2400 }
+        ];
+
+        items.forEach(item => {
+            setTimeout(() => {
+                item.element.classList.remove('hidden');
+                if (item.id !== 'co2-percentage') {
+                    animateCountUp(item.id, item.value, item.suffix, 1000);
+                } else {
+                    animateCountUp(item.id, item.value, item.suffix, 1000);
+                    const circumference = 169.65; // 2πr where r = 27
+                    const offset = circumference - (item.value / 100) * circumference;
+                    setTimeout(() => {
+                        document.getElementById('co2-progress').style.strokeDashoffset = offset;
+                    }, 0);
+                }
+            }, item.delay);
+        });
+    }, { once: true });
+}
 
 
 function shareSummary() {
@@ -838,8 +877,14 @@ function resetSelection() {
     document.getElementById('name-error').textContent = '';
     document.getElementById('email-error').textContent = '';
     document.getElementById('phone-error').textContent = '';
+    document.getElementById('energy-produced').textContent = '0 kWh/year';
     document.getElementById('co2-reduced').textContent = '0 kg/year';
     document.getElementById('trees-planted').textContent = '0 trees/year';
+    document.getElementById('co2-percentage').textContent = '0%';
+    document.getElementById('co2-progress').style.strokeDashoffset = '169.65';
+    document.getElementById('show-impact').style.display = 'block';
+    document.querySelectorAll('.environmental-item').forEach(item => item.classList.add('hidden'));
+    document.querySelector('.environmental-grid').classList.add('hidden');
     saveState();
 }
 
@@ -852,6 +897,7 @@ function calculateEnvironmentalImpact() {
     const systemEfficiency = 0.9; // 90% system efficiency
     const co2PerKwh = 0.7; // 0.7 kg CO2 per kWh
     const co2PerTree = 22; // 22 kg CO2 sequestered per tree per year
+    const typicalHouseholdCo2 = 5000; // Typical household CO2 footprint in kg/year
 
     // Calculate annual energy production (kWh)
     const annualKwh = state.selectedPanels * panelWattage * peakSunHours * 365 * systemEfficiency / 1000;
@@ -862,10 +908,43 @@ function calculateEnvironmentalImpact() {
     // Calculate equivalent trees planted
     const treesPlanted = co2Reduced / co2PerTree;
 
+    // Calculate CO2 reduction percentage relative to typical household
+    const co2Percentage = Math.min((co2Reduced / typicalHouseholdCo2) * 100, 100).toFixed(0);
+
     return {
-        co2Reduced: co2Reduced.toFixed(0), // Round to nearest integer
-        treesPlanted: treesPlanted.toFixed(0) // Round to nearest integer
+        energyProduced: annualKwh.toFixed(0),
+        co2Reduced: co2Reduced.toFixed(0),
+        treesPlanted: treesPlanted.toFixed(0),
+        co2Percentage: co2Percentage
     };
+}
+
+
+
+function animateCountUp(elementId, endValue, suffix, duration) {
+    const element = document.getElementById(elementId);
+    let startValue = 0;
+    const increment = endValue / (duration / 16); // 60 FPS
+    let currentValue = startValue;
+    let startTime = null;
+
+    function easeOutQuad(t) {
+        return 1 - (1 - t) * (1 - t); // Quadratic easing for smoother animation
+    }
+
+    function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+        currentValue = startValue + easeOutQuad(progress) * (endValue - startValue);
+        if (progress < 1) {
+            element.textContent = `${Math.round(currentValue)}${suffix}`;
+            requestAnimationFrame(step);
+        } else {
+            element.textContent = `${endValue}${suffix}`;
+        }
+    }
+
+    requestAnimationFrame(step);
 }
 
 

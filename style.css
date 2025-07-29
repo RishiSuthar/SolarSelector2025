@@ -1040,11 +1040,24 @@ body.summary-active {
 
 
 
+
+
+
 .environmental-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(180px, 300px));
+    display: flex;
+    flex-direction: row;
     justify-content: center;
     gap: 15px;
+    flex-wrap: wrap;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: opacity 0.5s ease-in-out, height 0.5s ease-in-out;
+}
+
+.environmental-grid:not(.hidden) {
+    opacity: 1;
+    height: auto;
 }
 
 .environmental-item {
@@ -1054,6 +1067,14 @@ body.summary-active {
     text-align: center;
     transition: var(--transition);
     border: 1px solid #6b7280;
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+    min-width: 180px;
+    max-width: 250px;
+}
+
+.environmental-item:not(.hidden) {
+    animation: fadeInUp 0.5s ease-in-out forwards;
 }
 
 .environmental-item:hover {
@@ -1069,7 +1090,88 @@ body.summary-active {
 
 .environmental-item .impact-value {
     font-weight: 600;
-    color: #22c55e;
+    color: var(--primary-light);
     margin-top: 8px;
     font-size: 1rem;
+}
+
+.progress-circle-container {
+    position: relative;
+    margin-top: 8px;
+}
+
+.progress-circle {
+    transform: rotate(-90deg);
+}
+
+.progress-circle-bg {
+    fill: none;
+    stroke: #6b7280;
+    stroke-width: 4;
+}
+
+.progress-circle-fill {
+    fill: none;
+    stroke: #22c55e;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 169.65; /* Circumference of circle with radius 27 (2πr) */
+    stroke-dashoffset: 169.65; /* Initially no progress */
+    transition: stroke-dashoffset 1s ease-in-out;
+}
+
+.progress-circle-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    color: var(--primary-light);
+    font-size: 0.9rem;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.9);
+    }
+    80% {
+        opacity: 1;
+        transform: translateY(-5px) scale(1.05);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.impact-value, .progress-circle-text {
+    display: inline-block;
+    animation: bounce 0.3s ease-in-out 1;
+}
+
+@media (max-width: 768px) {
+    .environmental-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(150px, 1fr));
+        gap: 10px;
+    }
+
+    .environmental-item {
+        min-width: 150px;
+        max-width: 200px;
+    }
+
+    .environmental-item .impact-value {
+        font-size: 0.9rem;
+    }
 }

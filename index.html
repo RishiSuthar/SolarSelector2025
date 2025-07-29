@@ -127,21 +127,43 @@
             </div>
         </section>
 
+
         <section id="environmental-section" class="section hidden">
             <div class="section-header">
                 <h2>Environmental Impact</h2>
                 <p>Your solar system's contribution to a greener planet</p>
             </div>
+            <div class="action-buttons">
+                <button id="show-impact" class="action-button">
+                    <i class="fas fa-leaf"></i> Show My Environmental Impact
+                </button>
+            </div>
             <div class="environmental-grid">
-                <div class="environmental-item">
+                <div class="environmental-item hidden" data-impact="energy">
+                    <i class="fas fa-bolt"></i>
+                    <div>Energy Produced</div>
+                    <div id="energy-produced" class="impact-value">0 kWh/year</div>
+                </div>
+                <div class="environmental-item hidden" data-impact="co2">
                     <i class="fas fa-leaf"></i>
                     <div>CO2 Emissions Reduced</div>
                     <div id="co2-reduced" class="impact-value">0 kg/year</div>
                 </div>
-                <div class="environmental-item">
+                <div class="environmental-item hidden" data-impact="trees">
                     <i class="fas fa-tree"></i>
                     <div>Equivalent Trees Planted</div>
                     <div id="trees-planted" class="impact-value">0 trees/year</div>
+                </div>
+                <div class="environmental-item hidden" data-impact="offset">
+                    <i class="fas fa-chart-pie"></i>
+                    <div>Carbon Footprint Offset</div>
+                    <div class="progress-circle-container">
+                        <svg class="progress-circle" width="80" height="80">
+                            <circle class="progress-circle-bg" cx="40" cy="40" r="36" />
+                            <circle id="co2-progress" class="progress-circle-fill" cx="40" cy="40" r="36" />
+                        </svg>
+                        <div id="co2-percentage" class="progress-circle-text">0%</div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -232,7 +254,7 @@
                 <span><i class="fas fa-globe"></i> www.sangyug.com</span>
                 <span><i class="fas fa-map-marker-alt"></i> The Big Bang - Ngara, Opp. Rainbow plaza</span>
             </div>
-            <p class="copyright">Solar System Selector v3.4.2 | Designed & Built by <a href="https://about.me/rishisuthar" target="_blank">Dynamo</a></p>
+            <p class="copyright">Solar System Selector v3.4.3 | Designed & Built by <a href="https://about.me/rishisuthar" target="_blank">Dynamo</a></p>
             <p class="copyright">© 2025 Sangyug Enterprises. All rights reserved.</p>
         </div>
     </footer>
