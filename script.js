@@ -656,39 +656,59 @@ function validateForm() {
 function updateEnvironmentalImpact() {
     const impactItems = document.querySelectorAll('.environmental-item');
     const environmentalGrid = document.querySelector('.environmental-grid');
-    impactItems.forEach(item => item.classList.add('hidden'));
+    impactItems.forEach(item => item.classList.add('hidden', 'revealed'));
     environmentalGrid.classList.add('hidden');
 
     const showImpactButton = document.getElementById('show-impact');
     showImpactButton.style.display = 'block';
-    showImpactButton.addEventListener('click', () => {
+
+    // Remove previous revealed classes
+    impactItems.forEach(item => item.classList.remove('revealed'));
+
+    showImpactButton.onclick = () => {
         showImpactButton.style.display = 'none';
         environmentalGrid.classList.remove('hidden');
         const { energyProduced, co2Reduced, treesPlanted, co2Percentage } = calculateEnvironmentalImpact();
         const items = [
             { id: 'energy-produced', value: energyProduced, suffix: ' kWh/year', element: document.querySelector('[data-impact="energy"]'), delay: 0 },
-            { id: 'co2-reduced', value: co2Reduced, suffix: ' kg/year', element: document.querySelector('[data-impact="co2"]'), delay: 800 },
-            { id: 'trees-planted', value: treesPlanted, suffix: ' trees/year', element: document.querySelector('[data-impact="trees"]'), delay: 1600 },
-            { id: 'co2-percentage', value: co2Percentage, suffix: '%', element: document.querySelector('[data-impact="offset"]'), delay: 2400 }
+            { id: 'co2-reduced', value: co2Reduced, suffix: ' kg/year', element: document.querySelector('[data-impact="co2"]'), delay: 600 },
+            { id: 'trees-planted', value: treesPlanted, suffix: ' trees/year', element: document.querySelector('[data-impact="trees"]'), delay: 1200 },
+            { id: 'co2-percentage', value: co2Percentage, suffix: '%', element: document.querySelector('[data-impact="offset"]'), delay: 1800 }
         ];
 
-        items.forEach(item => {
+        items.forEach((item, idx) => {
             setTimeout(() => {
                 item.element.classList.remove('hidden');
+                setTimeout(() => item.element.classList.add('revealed'), 50); // trigger transition
                 if (item.id !== 'co2-percentage') {
                     animateCountUp(item.id, item.value, item.suffix, 1000);
                 } else {
                     animateCountUp(item.id, item.value, item.suffix, 1000);
-                    const circumference = 169.65; // 2πr where r = 27
+                    // Animate progress circle
+                    const circumference = 226.19; // 2πr where r = 36
                     const offset = circumference - (item.value / 100) * circumference;
                     setTimeout(() => {
                         document.getElementById('co2-progress').style.strokeDashoffset = offset;
-                    }, 0);
+                    }, 200);
                 }
             }, item.delay);
         });
-    }, { once: true });
+
+        // Attach confetti click after all cards are revealed
+        setTimeout(() => {
+            document.querySelectorAll('.environmental-item.revealed').forEach(card => {
+                card.onclick = function(e) {
+                    burstConfetti(card, e);
+                };
+            });
+        }, 2200);
+    };
 }
+document.querySelectorAll('.environmental-item.revealed').forEach(card => {
+    card.addEventListener('click', function(e) {
+        burstConfetti(card, e);
+    });
+});
 
 
 function shareSummary() {
@@ -921,15 +941,55 @@ function calculateEnvironmentalImpact() {
 
 
 
+function burstConfetti(card, event) {
+    let x, y;
+    if (event && event.clientX !== undefined && event.clientY !== undefined) {
+        // Click position relative to the card
+        const rect = card.getBoundingClientRect();
+        x = event.clientX - rect.left;
+        y = event.clientY - rect.top;
+    } else {
+        // Center of the card
+        x = card.offsetWidth / 2;
+        y = card.offsetHeight / 2;
+    }
+
+    const burst = document.createElement('div');
+    burst.className = 'confetti-burst';
+    burst.style.position = 'absolute';
+    burst.style.left = x + 'px';
+    burst.style.top = y + 'px';
+    burst.style.transform = 'translate(-50%, -50%)';
+    burst.style.pointerEvents = 'none';
+    burst.innerHTML = `
+        <svg width="60" height="60">
+            <g>
+                <circle r="3" cx="30" cy="10" fill="#22c55e"/>
+                <circle r="2" cx="50" cy="30" fill="#56abff"/>
+                <circle r="2.5" cx="10" cy="30" fill="#facc15"/>
+                <circle r="2" cx="45" cy="45" fill="#22d3ee"/>
+                <circle r="2" cx="15" cy="45" fill="#f472b6"/>
+            </g>
+        </svg>
+    `;
+    card.appendChild(burst);
+    burst.animate([
+        { opacity: 1, transform: 'translate(-50%, -50%) scale(1)' },
+        { opacity: 0, transform: 'translate(-50%, -50%) scale(2.2)' }
+    ], { duration: 900, easing: 'cubic-bezier(.68,-0.55,.27,1.55)' });
+    setTimeout(() => burst.remove(), 900);
+}
+
+
 function animateCountUp(elementId, endValue, suffix, duration) {
     const element = document.getElementById(elementId);
     let startValue = 0;
-    const increment = endValue / (duration / 16); // 60 FPS
+    const increment = endValue / (duration / 16);
     let currentValue = startValue;
     let startTime = null;
 
     function easeOutQuad(t) {
-        return 1 - (1 - t) * (1 - t); // Quadratic easing for smoother animation
+        return 1 - (1 - t) * (1 - t);
     }
 
     function step(timestamp) {
@@ -941,11 +1001,14 @@ function animateCountUp(elementId, endValue, suffix, duration) {
             requestAnimationFrame(step);
         } else {
             element.textContent = `${endValue}${suffix}`;
+            burstConfetti(element);
         }
     }
-
     requestAnimationFrame(step);
 }
+
+
+
 
 
 document.addEventListener('DOMContentLoaded', () => {

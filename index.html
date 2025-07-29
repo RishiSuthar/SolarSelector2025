@@ -140,33 +140,47 @@
             </div>
             <div class="environmental-grid">
                 <div class="environmental-item hidden" data-impact="energy">
-                    <i class="fas fa-bolt"></i>
+                    <div class="icon-anim"><i class="fas fa-bolt"></i></div>
                     <div>Energy Produced</div>
                     <div id="energy-produced" class="impact-value">0 kWh/year</div>
                 </div>
                 <div class="environmental-item hidden" data-impact="co2">
-                    <i class="fas fa-leaf"></i>
+                    <div class="icon-anim"><i class="fas fa-leaf"></i></div>
                     <div>CO2 Emissions Reduced</div>
                     <div id="co2-reduced" class="impact-value">0 kg/year</div>
                 </div>
                 <div class="environmental-item hidden" data-impact="trees">
-                    <i class="fas fa-tree"></i>
+                    <div class="icon-anim"><i class="fas fa-tree"></i></div>
                     <div>Equivalent Trees Planted</div>
                     <div id="trees-planted" class="impact-value">0 trees/year</div>
                 </div>
                 <div class="environmental-item hidden" data-impact="offset">
-                    <i class="fas fa-chart-pie"></i>
+                    <div class="icon-anim"><i class="fas fa-chart-pie"></i></div>
                     <div>Carbon Footprint Offset</div>
                     <div class="progress-circle-container">
                         <svg class="progress-circle" width="80" height="80">
                             <circle class="progress-circle-bg" cx="40" cy="40" r="36" />
-                            <circle id="co2-progress" class="progress-circle-fill" cx="40" cy="40" r="36" />
+                            <circle id="co2-progress" class="progress-circle-fill" cx="40" cy="40" r="36" stroke="url(#animated-gradient)" />
                         </svg>
                         <div id="co2-percentage" class="progress-circle-text">0%</div>
                     </div>
                 </div>
             </div>
         </section>
+
+        <!-- SVG Gradient for animated progress circle -->
+        <svg width="0" height="0">
+        <defs>
+            <linearGradient id="animated-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#22c55e">
+                <animate attributeName="stop-color" values="#22c55e;#56abff;#22c55e" dur="2s" repeatCount="indefinite"/>
+            </stop>
+            <stop offset="100%" stop-color="#56abff">
+                <animate attributeName="stop-color" values="#56abff;#22c55e;#56abff" dur="2s" repeatCount="indefinite"/>
+            </stop>
+            </linearGradient>
+        </defs>
+        </svg>
 
         <section id="summary-section" class="section hidden">
             <div class="section-header">
@@ -254,7 +268,7 @@
                 <span><i class="fas fa-globe"></i> www.sangyug.com</span>
                 <span><i class="fas fa-map-marker-alt"></i> The Big Bang - Ngara, Opp. Rainbow plaza</span>
             </div>
-            <p class="copyright">Solar System Selector v3.4.3 | Designed & Built by <a href="https://about.me/rishisuthar" target="_blank">Dynamo</a></p>
+            <p class="copyright">Solar System Selector v3.4.4 | Designed & Built by <a href="https://about.me/rishisuthar" target="_blank">Dynamo</a></p>
             <p class="copyright">© 2025 Sangyug Enterprises. All rights reserved.</p>
         </div>
     </footer>
