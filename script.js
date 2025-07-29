@@ -265,10 +265,11 @@ function updateBodyBackground(step) {
 function navigateToStep(step) {
     document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
     document.getElementById(`${step}-section`).classList.remove('hidden');
-    
+
     if (step === 'summary') {
         document.getElementById('panel-section').classList.remove('hidden');
         document.getElementById('accessory-section').classList.remove('hidden');
+        document.getElementById('environmental-section').classList.remove('hidden');
         document.getElementById('summary-section').classList.remove('hidden');
         setTimeout(() => {
             document.getElementById('summary-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -280,7 +281,7 @@ function navigateToStep(step) {
         const scrollPosition = sectionRect.top + window.scrollY - (windowHeight / 2) + (sectionRect.height / 2);
         window.scrollTo({ top: scrollPosition, behavior: 'smooth' });
     }
-    
+
     updateProgressIndicator(step);
     updateBodyBackground(step);
 }
@@ -466,21 +467,27 @@ function selectBattery(battery, count, clickedElement) {
     state.selectedBattery = { ...battery, count };
     document.querySelectorAll('#battery-options .option').forEach(option => option.classList.remove('selected'));
     if (clickedElement) clickedElement.classList.add('selected');
+
     document.getElementById('panel-info').style.display = 'none';
     document.getElementById('panel-images').style.display = 'none';
     document.getElementById('panel-section').classList.add('hidden');
     document.getElementById('accessory-section').classList.add('hidden');
+    document.getElementById('environmental-section').classList.add('hidden');
     document.getElementById('summary-section').classList.add('hidden');
+
     navigateToStep('summary');
+
     document.getElementById('panel-info').style.display = 'block';
     document.getElementById('panel-images').style.display = 'flex';
     document.getElementById('panel-section').classList.remove('hidden');
     document.getElementById('accessory-section').classList.remove('hidden');
+    document.getElementById('environmental-section').classList.remove('hidden');
     document.getElementById('summary-section').classList.remove('hidden');
+
     updatePanelRequirement();
+    updateEnvironmentalImpact();
     saveState();
 }
-
 function updatePanelRequirement() {
     if (state.selectedCompany === 'Fortuner') {
         if (state.selectedInverter.kva === 0.7) {
@@ -520,7 +527,9 @@ function updateSummary() {
     const panelCost = state.selectedPanels * (8300 * 1.25); // Updated panel price
     const accessoryCost = getAccessoryCost();
     const totalCost = inverterCost + labourCost + batteryCost + panelCost + accessoryCost;
-    
+    updateEnvironmentalImpact();
+
+
     document.getElementById('summary').innerHTML = `
         <div class="summary-item">
             <span>Inverter: ${state.selectedCompany} ${state.selectedInverter.kva}kVA${state.selectedInverter.watts ? ` (${state.selectedInverter.watts}W)` : ''} - ${state.selectedInverter.voltage}V</span>
@@ -633,6 +642,15 @@ function validateForm() {
 
     return isValid;
 }
+
+
+function updateEnvironmentalImpact() {
+    const { co2Reduced, treesPlanted } = calculateEnvironmentalImpact();
+    document.getElementById('co2-reduced').textContent = `${co2Reduced} kg/year`;
+    document.getElementById('trees-planted').textContent = `${treesPlanted} trees/year`;
+}
+
+
 
 function shareSummary() {
     const name = document.getElementById('user-name').value;
@@ -820,8 +838,36 @@ function resetSelection() {
     document.getElementById('name-error').textContent = '';
     document.getElementById('email-error').textContent = '';
     document.getElementById('phone-error').textContent = '';
+    document.getElementById('co2-reduced').textContent = '0 kg/year';
+    document.getElementById('trees-planted').textContent = '0 trees/year';
     saveState();
 }
+
+
+
+
+function calculateEnvironmentalImpact() {
+    const panelWattage = 400; // Each panel is 400W
+    const peakSunHours = 4.1; // Average peak sun hours in Kenya
+    const systemEfficiency = 0.9; // 90% system efficiency
+    const co2PerKwh = 0.7; // 0.7 kg CO2 per kWh
+    const co2PerTree = 22; // 22 kg CO2 sequestered per tree per year
+
+    // Calculate annual energy production (kWh)
+    const annualKwh = state.selectedPanels * panelWattage * peakSunHours * 365 * systemEfficiency / 1000;
+
+    // Calculate CO2 reduction (kg/year)
+    const co2Reduced = annualKwh * co2PerKwh;
+
+    // Calculate equivalent trees planted
+    const treesPlanted = co2Reduced / co2PerTree;
+
+    return {
+        co2Reduced: co2Reduced.toFixed(0), // Round to nearest integer
+        treesPlanted: treesPlanted.toFixed(0) // Round to nearest integer
+    };
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
     loadState();
