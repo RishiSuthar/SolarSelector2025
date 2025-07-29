@@ -1285,3 +1285,13 @@ body.summary-active {
         padding: 14px 8px 12px 8px;
     }
 }
+
+
+.environmental-item.pop {
+    animation: popCard 0.3s cubic-bezier(.68,-0.55,.27,1.55);
+}
+@keyframes popCard {
+    0% { transform: scale(1);}
+    50% { transform: scale(1.08);}
+    100% { transform: scale(1);}
+}

@@ -944,42 +944,98 @@ function calculateEnvironmentalImpact() {
 function burstConfetti(card, event) {
     let x, y;
     if (event && event.clientX !== undefined && event.clientY !== undefined) {
-        // Click position relative to the card
         const rect = card.getBoundingClientRect();
         x = event.clientX - rect.left;
         y = event.clientY - rect.top;
     } else {
-        // Center of the card
         x = card.offsetWidth / 2;
         y = card.offsetHeight / 2;
     }
 
+    // Create burst container
     const burst = document.createElement('div');
     burst.className = 'confetti-burst';
     burst.style.position = 'absolute';
     burst.style.left = x + 'px';
     burst.style.top = y + 'px';
-    burst.style.transform = 'translate(-50%, -50%)';
     burst.style.pointerEvents = 'none';
-    burst.innerHTML = `
-        <svg width="60" height="60">
-            <g>
-                <circle r="3" cx="30" cy="10" fill="#22c55e"/>
-                <circle r="2" cx="50" cy="30" fill="#56abff"/>
-                <circle r="2.5" cx="10" cy="30" fill="#facc15"/>
-                <circle r="2" cx="45" cy="45" fill="#22d3ee"/>
-                <circle r="2" cx="15" cy="45" fill="#f472b6"/>
-            </g>
-        </svg>
-    `;
+    burst.style.width = '1px';
+    burst.style.height = '1px';
+    burst.style.zIndex = 10;
+
+    // SVG for confetti
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('width', 80);
+    svg.setAttribute('height', 80);
+    svg.style.overflow = 'visible';
+    svg.style.position = 'absolute';
+    svg.style.left = '-40px';
+    svg.style.top = '-40px';
+
+    // Confetti colors
+    const colors = ['#22c55e', '#56abff', '#facc15', '#22d3ee', '#f472b6', '#fff', '#1e40af'];
+
+    // Generate 18 confetti pieces
+    for (let i = 0; i < 18; i++) {
+        const angle = Math.random() * 2 * Math.PI;
+        const distance = 30 + Math.random() * 30;
+        const size = 6 + Math.random() * 6;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const shape = Math.random() > 0.5 ? 'circle' : 'rect';
+        let el;
+        if (shape === 'circle') {
+            el = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            el.setAttribute('r', size / 2);
+            el.setAttribute('cx', 40);
+            el.setAttribute('cy', 40);
+        } else {
+            el = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            el.setAttribute('width', size);
+            el.setAttribute('height', size);
+            el.setAttribute('x', 40 - size / 2);
+            el.setAttribute('y', 40 - size / 2);
+        }
+        el.setAttribute('fill', color);
+        el.style.opacity = 0.85;
+        el.style.transformOrigin = '40px 40px';
+        el.style.transition = 'transform 0.7s cubic-bezier(.68,-0.55,.27,1.55), opacity 0.7s';
+
+        // Animate each piece outward
+        setTimeout(() => {
+            el.style.transform =
+                `translate(${Math.cos(angle) * distance}px,${Math.sin(angle) * distance}px) ` +
+                `rotate(${Math.random() * 360}deg) scale(${0.7 + Math.random() * 0.6})`;
+            el.style.opacity = 0;
+        }, 10);
+
+        svg.appendChild(el);
+    }
+
+    // Add a flash effect
+    const flash = document.createElement('div');
+    flash.style.position = 'absolute';
+    flash.style.left = '50%';
+    flash.style.top = '50%';
+    flash.style.width = '40px';
+    flash.style.height = '40px';
+    flash.style.background = 'radial-gradient(circle, #fff8 0%, #56abff00 80%)';
+    flash.style.borderRadius = '50%';
+    flash.style.transform = 'translate(-50%, -50%) scale(0.5)';
+    flash.style.opacity = '0.7';
+    flash.style.pointerEvents = 'none';
+    flash.style.transition = 'opacity 0.5s, transform 0.5s';
+    burst.appendChild(flash);
+    setTimeout(() => {
+        flash.style.opacity = '0';
+        flash.style.transform = 'translate(-50%, -50%) scale(1.5)';
+    }, 10);
+    setTimeout(() => flash.remove(), 500);
+
+    burst.appendChild(svg);
     card.appendChild(burst);
-    burst.animate([
-        { opacity: 1, transform: 'translate(-50%, -50%) scale(1)' },
-        { opacity: 0, transform: 'translate(-50%, -50%) scale(2.2)' }
-    ], { duration: 900, easing: 'cubic-bezier(.68,-0.55,.27,1.55)' });
+
     setTimeout(() => burst.remove(), 900);
 }
-
 
 function animateCountUp(elementId, endValue, suffix, duration) {
     const element = document.getElementById(elementId);
