@@ -109,7 +109,7 @@ const fortunerInverters = [
         price: Math.round(16000 * 1.25), // 16000 * 1.25 = 20000
         labour: 15000, 
         img: 'images/fortunerinverter.png', 
-        specsLink: 'https://drive.google.com/file/d/1NIKjc2GB9cWkZen_SsY2zwsVAEI5ZQN4/view?usp=sharing',
+        specsLink: 'https://drive.google.com/file/d/1tADpzqTfynzL2vwvpaCsV0THI7UmEOuz/view?usp=sharing',
         appliances: [
             { name: 'LED Bulbs (10W)', count: 6 },
             { name: 'Fans', count: 1 },
@@ -131,7 +131,7 @@ const fortunerInverters = [
         price: Math.round(21000 * 1.25), // 21000 * 1.25 = 26250
         labour: 18000, 
         img: 'images/fortunerinverter.png', 
-        specsLink: 'https://drive.google.com/file/d/1ulFxLsOsGDjsFW-jEXBOjU6I1qDScmB0/view?usp=sharing',
+        specsLink: 'https://drive.google.com/file/d/1tADpzqTfynzL2vwvpaCsV0THI7UmEOuz/view?usp=sharing',
         appliances: [
             { name: 'LED Bulbs (10W)', count: 10 },
             { name: 'Fans', count: 1 },
