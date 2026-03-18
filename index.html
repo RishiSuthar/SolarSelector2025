@@ -11,10 +11,9 @@
 </head>
 <body>
 
-    <!-- Ambient canvas background -->
     <canvas id="ambient-canvas"></canvas>
+    <div id="toast-container" class="toast-container"></div>
 
-    <!-- Top navigation bar -->
     <nav class="topbar">
         <div class="topbar-inner">
             <a href="#" class="topbar-brand" id="brand-home">
@@ -42,28 +41,51 @@
                     <span class="pill-label">Quote</span>
                 </button>
             </div>
+            <div class="topbar-total" id="topbar-total">
+                <span class="topbar-total-label">Est.</span>
+                <span class="topbar-total-val" id="running-total">KSH 0</span>
+            </div>
         </div>
     </nav>
 
-    <!-- Main content area -->
     <main class="app-main">
 
-        <!-- STEP 1: Company -->
+        <!-- STEP 1: Brand -->
         <section id="company-section" class="panel visible" data-step="company">
             <div class="panel-header">
-                <span class="panel-tag">Step 1</span>
+                <span class="panel-tag">Step 1 of 4</span>
                 <h1>Choose Your Brand</h1>
-                <p>Select a manufacturer to begin building your solar system.</p>
+                <p>Select a manufacturer to start building your solar system.</p>
             </div>
+
+            <div class="needs-section">
+                <button id="needs-toggle" class="needs-toggle">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>Not sure what you need? <strong>Let us help</strong></span>
+                    <i class="fas fa-chevron-down needs-chevron"></i>
+                </button>
+                <div id="needs-panel" class="needs-panel">
+                    <p class="needs-intro">Select the appliances you want to power and we'll recommend the right system.</p>
+                    <div id="needs-grid" class="needs-grid"></div>
+                    <div class="needs-result hidden" id="needs-result">
+                        <div class="needs-wattage">
+                            <span class="needs-wattage-label">Your estimated load</span>
+                            <span class="needs-wattage-val" id="needs-wattage">0W</span>
+                        </div>
+                        <div class="needs-rec" id="needs-rec"></div>
+                    </div>
+                </div>
+            </div>
+
             <div id="company-options" class="brand-grid"></div>
         </section>
 
         <!-- STEP 2: Inverter -->
         <section id="inverter-section" class="panel" data-step="inverter">
             <div class="panel-header">
-                <span class="panel-tag">Step 2</span>
-                <h1>Pick an Inverter</h1>
-                <p>Choose the inverter that matches your power requirements.</p>
+                <span class="panel-tag">Step 2 of 4</span>
+                <h1>Pick Your Inverter</h1>
+                <p>Choose the inverter that matches your power needs.</p>
             </div>
             <div class="resource-links" id="inverter-links">
                 <a href="https://drive.google.com/file/d/1X_Azx91o4wRf9H45SUOGCV_l9N45dfT6/view?usp=sharing" target="_blank" rel="noopener" class="res-link kstar-only">
@@ -76,6 +98,11 @@
                     <i class="fas fa-star"></i> Features
                 </a>
             </div>
+            <div id="compare-bar" class="compare-bar hidden">
+                <span><i class="fas fa-columns"></i> <span id="compare-count">0</span> selected to compare</span>
+                <button id="compare-btn" class="cta-btn cta-small">Compare Now</button>
+                <button id="compare-clear" class="cta-btn cta-ghost cta-small">Clear</button>
+            </div>
             <div id="inverter-options" class="card-grid"></div>
             <button class="back-btn" id="back-from-inverter"><i class="fas fa-arrow-left"></i> Back</button>
         </section>
@@ -83,9 +110,9 @@
         <!-- STEP 3: Battery -->
         <section id="battery-section" class="panel" data-step="battery">
             <div class="panel-header">
-                <span class="panel-tag">Step 3</span>
-                <h1>Select a Battery</h1>
-                <p>Pick the energy storage that fits your needs.</p>
+                <span class="panel-tag">Step 3 of 4</span>
+                <h1>Select Your Battery</h1>
+                <p>Pick the energy storage that fits your needs and budget.</p>
             </div>
             <div id="battery-options" class="card-grid"></div>
             <button class="back-btn" id="back-from-battery"><i class="fas fa-arrow-left"></i> Back</button>
@@ -94,17 +121,23 @@
         <!-- STEP 4: Summary / Quote -->
         <section id="summary-section" class="panel" data-step="summary">
 
-            <!-- Panels required -->
+            <div class="quote-block" id="selection-overview">
+                <div class="quote-block-header">
+                    <i class="fas fa-clipboard-check"></i>
+                    <h2>Your System</h2>
+                </div>
+                <div id="selection-cards" class="selection-cards"></div>
+            </div>
+
             <div class="quote-block" id="panel-block">
                 <div class="quote-block-header">
                     <i class="fas fa-solar-panel"></i>
-                    <h2>Solar Panels Required</h2>
+                    <h2>Solar Panels</h2>
                 </div>
                 <div id="panel-info" class="panel-info-content"></div>
                 <div id="panel-images" class="panel-visual"></div>
             </div>
 
-            <!-- Accessories -->
             <div class="quote-block" id="accessory-block">
                 <div class="quote-block-header">
                     <i class="fas fa-toolbox"></i>
@@ -134,30 +167,60 @@
                 </div>
             </div>
 
-            <!-- Environmental impact -->
+            <div class="quote-block" id="savings-block">
+                <div class="quote-block-header">
+                    <i class="fas fa-piggy-bank"></i>
+                    <h2>Your Savings</h2>
+                </div>
+                <div class="savings-calculator">
+                    <div class="savings-input-row">
+                        <label for="monthly-bill">What's your monthly KPLC electricity bill?</label>
+                        <div class="savings-input-wrap">
+                            <span class="savings-prefix">KSH</span>
+                            <input type="number" id="monthly-bill" placeholder="e.g. 5000" min="0" step="500">
+                        </div>
+                    </div>
+                    <div id="savings-results" class="savings-results hidden">
+                        <div class="savings-card savings-monthly">
+                            <span class="savings-card-label">Monthly Savings</span>
+                            <span class="savings-card-val" id="monthly-savings">KSH 0</span>
+                        </div>
+                        <div class="savings-card savings-yearly">
+                            <span class="savings-card-label">Yearly Savings</span>
+                            <span class="savings-card-val" id="yearly-savings">KSH 0</span>
+                        </div>
+                        <div class="savings-card savings-payback">
+                            <span class="savings-card-label">Payback Period</span>
+                            <span class="savings-card-val" id="payback-period">&mdash;</span>
+                        </div>
+                        <div class="savings-card savings-10yr">
+                            <span class="savings-card-label">10-Year Net Savings</span>
+                            <span class="savings-card-val" id="ten-year-savings">KSH 0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="quote-block" id="env-block">
                 <div class="quote-block-header">
                     <i class="fas fa-leaf"></i>
                     <h2>Environmental Impact</h2>
                 </div>
-                <button id="show-impact" class="impact-trigger">
-                    <i class="fas fa-seedling"></i> Reveal My Impact
-                </button>
-                <div class="env-grid hidden" id="env-grid">
+                <div class="env-grid" id="env-grid">
                     <div class="env-card" data-impact="energy">
                         <div class="env-icon"><i class="fas fa-bolt"></i></div>
                         <span class="env-label">Energy Produced</span>
-                        <span id="energy-produced" class="env-value">0 kWh/year</span>
+                        <span id="energy-produced" class="env-value">0 kWh/yr</span>
                     </div>
                     <div class="env-card" data-impact="co2">
                         <div class="env-icon"><i class="fas fa-leaf"></i></div>
-                        <span class="env-label">CO₂ Reduced</span>
-                        <span id="co2-reduced" class="env-value">0 kg/year</span>
+                        <span class="env-label">CO&#8322; Reduced</span>
+                        <span id="co2-reduced" class="env-value">0 kg/yr</span>
                     </div>
                     <div class="env-card" data-impact="trees">
                         <div class="env-icon"><i class="fas fa-tree"></i></div>
                         <span class="env-label">Trees Equivalent</span>
-                        <span id="trees-planted" class="env-value">0 trees/year</span>
+                        <span id="trees-planted" class="env-value">0 trees/yr</span>
                     </div>
                     <div class="env-card" data-impact="offset">
                         <div class="env-icon"><i class="fas fa-chart-pie"></i></div>
@@ -173,7 +236,6 @@
                 </div>
             </div>
 
-            <!-- Cost summary -->
             <div class="quote-block" id="cost-block">
                 <div class="quote-block-header">
                     <i class="fas fa-receipt"></i>
@@ -217,6 +279,25 @@
                     <span id="total-cost" class="total-amount">0 KSH</span>
                 </div>
 
+                <div class="financing-row" id="financing-row">
+                    <span class="financing-label">Or pay from</span>
+                    <div class="financing-options">
+                        <button class="fin-opt" data-months="6">
+                            <span class="fin-amount" id="fin-6">&mdash;</span>
+                            <span class="fin-period">/ mo &times; 6</span>
+                        </button>
+                        <button class="fin-opt" data-months="12">
+                            <span class="fin-amount" id="fin-12">&mdash;</span>
+                            <span class="fin-period">/ mo &times; 12</span>
+                        </button>
+                        <button class="fin-opt" data-months="24">
+                            <span class="fin-amount" id="fin-24">&mdash;</span>
+                            <span class="fin-period">/ mo &times; 24</span>
+                        </button>
+                    </div>
+                    <p class="financing-note">Contact us to discuss flexible payment plans</p>
+                </div>
+
                 <div class="disclaimer">
                     <i class="fas fa-info-circle"></i>
                     <p>Quote includes solar mounting/structure. Final pricing confirmed after site survey.</p>
@@ -244,29 +325,26 @@
         </div>
     </div>
 
-    <!-- Welcome modal -->
-    <div id="welcome-modal" class="overlay hidden">
-        <div class="overlay-card welcome-card">
-            <div class="welcome-icon"><i class="fas fa-sun"></i></div>
-            <h2>Welcome to Sangyug Solar</h2>
-            <p>Build your perfect solar system in 4 simple steps. Choose your brand, inverter, battery, and get an instant quote.</p>
-            <button id="welcome-close" class="cta-btn wide">Let's Go</button>
+    <!-- Comparison modal -->
+    <div id="compare-modal" class="overlay hidden">
+        <div class="overlay-card overlay-wide">
+            <button class="overlay-close" aria-label="Close"><i class="fas fa-xmark"></i></button>
+            <h3>Inverter Comparison</h3>
+            <div id="compare-body" class="compare-grid"></div>
         </div>
     </div>
 
-    <!-- Scroll to top -->
     <button id="scroll-to-top" class="fab-top" aria-label="Scroll to top">
         <i class="fas fa-chevron-up"></i>
     </button>
 
-    <!-- Footer -->
     <footer class="site-footer">
         <div class="footer-inner">
             <div class="footer-links">
                 <a href="mailto:info@sangyug.com"><i class="fas fa-envelope"></i> info@sangyug.com</a>
                 <a href="tel:+254723984559"><i class="fas fa-phone"></i> +254 723 984 559</a>
                 <a href="https://www.sangyug.com" target="_blank" rel="noopener"><i class="fas fa-globe"></i> sangyug.com</a>
-                <span><i class="fas fa-map-marker-alt"></i> The Big Bang — Ngara, Opp. Rainbow Plaza</span>
+                <span><i class="fas fa-map-marker-alt"></i> The Big Bang &mdash; Ngara, Opp. Rainbow Plaza</span>
             </div>
             <div class="footer-credits">
                 <span>Crafted by <a href="https://dynamicdesignsca.netlify.app/" target="_blank" rel="noopener">Dynamic Designs</a></span>
