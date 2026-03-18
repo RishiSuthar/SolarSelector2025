@@ -3,274 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sangyug Solar System Selector</title>
+    <title>Sangyug Solar | Build Your System</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 </head>
 <body>
-    <header class="header">
-        <div class="header-container">
-            <img src="images/sangyuglogo.png" class="header-logo">
-            <h1>Solar System Maker</h1>
-        </div>
-    </header>
 
-    <div class="progress-container">
-        <div class="progress-bar">
-            <div class="progress-fill" id="progress-fill"></div>
-        </div>
-        <div class="progress-steps">
-            <div class="progress-step active" data-step="company">
-                <div class="step-icon"><i class="fas fa-building"></i></div>
-                <div class="step-label">Company</div>
-            </div>
-            <div class="progress-step" data-step="inverter">
-                <div class="step-icon"><i class="fas fa-bolt"></i></div>
-                <div class="step-label">Inverter</div>
-            </div>
-            <div class="progress-step" data-step="battery">
-                <div class="step-icon"><i class="fas fa-car-battery"></i></div>
-                <div class="step-label">Battery</div>
-            </div>
-            <div class="progress-step" data-step="summary">
-                <div class="step-icon"><i class="fas fa-file-alt"></i></div>
-                <div class="step-label">Summary</div>
-            </div>
-        </div>
-    </div>
+    <!-- Ambient canvas background -->
+    <canvas id="ambient-canvas"></canvas>
 
-    <main class="main-container">
-        <section id="company-section" class="section active">
-            <div class="section-header">
-                <h2>Select a Company</h2>
-                <p>Choose the manufacturer for your solar system</p>
-            </div>
-            <div id="company-options" class="options-grid"></div>
-            <div class="navigation-buttons">
-                <button class="action-button secondary" onclick="navigateBack()"><i class="fas fa-arrow-left"></i> Back</button>
-            </div>
-        </section>
-
-        <section id="inverter-section" class="section hidden">
-            <div class="section-header">
-                <h2>Select an Inverter</h2>
-                <p>Choose the inverter that matches your power needs</p>
-            </div>
-            <div class="links" id="inverter-links">
-                <a href="https://drive.google.com/file/d/1X_Azx91o4wRf9H45SUOGCV_l9N45dfT6/view?usp=sharing" target="_blank" class="link-button kstar-only">
-                    <i class="fas fa-book"></i> User Manual
-                </a>
-                <a href="https://drive.google.com/file/d/1sx29gQLQzLj1ThCVjoHGLXOGOZG-XCgi/view?usp=sharing" target="_blank" class="link-button kstar-only">
-                    <i class="fas fa-star"></i> Features
-                </a>
-                <a href="https://drive.google.com/file/d/1LGHqj75hovaBsraE4k5FIrT-4pDXfNzd/view?usp=sharing" target="_blank" class="link-button fortuner-only">
-                    <i class="fas fa-star"></i> Features
-                </a>
-            </div>
-            <div id="inverter-options" class="options-grid"></div>
-            <div class="navigation-buttons">
-                <button class="action-button secondary" onclick="navigateBack()"><i class="fas fa-arrow-left"></i> Back</button>
-            </div>
-        </section>
-
-        <section id="battery-section" class="section hidden">
-            <div class="section-header">
-                <h2>Select a Battery</h2>
-                <p>Choose the battery type for your energy storage</p>
-            </div>
-            <div id="battery-options" class="options-grid"></div>
-            <div class="navigation-buttons">
-                <button class="action-button secondary" onclick="navigateBack()"><i class="fas fa-arrow-left"></i> Back</button>
-            </div>
-        </section>
-
-        <section id="panel-section" class="section hidden">
-            <div class="section-header">
-                <h2>Solar Panels Required</h2>
-                <p>Based on your selection, here's what you'll need</p>
-            </div>
-            <div id="loading-summary" class="loading-container hidden">
-                <div class="spinner"></div>
-            </div>
-            <div id="panel-info" class="panel-info"></div>
-            <div id="panel-images" class="panel-images"></div>
-        </section>
-
-        <section id="accessory-section" class="section hidden">
-            <div class="section-header">
-                <h2>Included Accessories</h2>
-                <p>These items are included in your system package</p>
-            </div>
-            <div class="accessory-grid">
-                <div class="accessory-item">
-                    <i class="fas fa-toggle-on"></i>
-                    <div>Change Over Switch</div>
-                    <div class="price">5,000 Ksh</div>
-                </div>
-                <div class="accessory-item">
-                    <i class="fas fa-plug"></i>
-                    <div>DC MCCB</div>
-                    <div class="price">3,125 Ksh</div>
-                </div>
-                <div class="accessory-item">
-                    <i class="fas fa-sliders-h"></i>
-                    <div>AVS 30 AMPS</div>
-                    <div class="price">5,000 Ksh</div>
-                </div>
-                <div class="accessory-item" id="mounting-cost">
-                    <i class="fas fa-solar-panel"></i>
-                    <div>Mounting Structure & Cables</div>
-                    <div class="price">27,500 Ksh</div>
-                </div>
-            </div>
-        </section>
-
-
-        <section id="environmental-section" class="section hidden">
-            <div class="section-header">
-                <h2>Environmental Impact</h2>
-                <p>Your solar system's contribution to a greener planet</p>
-            </div>
-            <div class="action-buttons">
-                <button id="show-impact" class="action-button">
-                    <i class="fas fa-leaf"></i> Show My Environmental Impact
+    <!-- Top navigation bar -->
+    <nav class="topbar">
+        <div class="topbar-inner">
+            <a href="#" class="topbar-brand" id="brand-home">
+                <img src="images/sangyuglogo.png" alt="Sangyug" class="topbar-logo">
+                <span class="topbar-title">Sangyug Solar</span>
+            </a>
+            <div class="topbar-steps" id="topbar-steps">
+                <button class="step-pill active" data-step="company">
+                    <span class="pill-num">1</span>
+                    <span class="pill-label">Brand</span>
+                </button>
+                <span class="step-connector"></span>
+                <button class="step-pill" data-step="inverter">
+                    <span class="pill-num">2</span>
+                    <span class="pill-label">Inverter</span>
+                </button>
+                <span class="step-connector"></span>
+                <button class="step-pill" data-step="battery">
+                    <span class="pill-num">3</span>
+                    <span class="pill-label">Battery</span>
+                </button>
+                <span class="step-connector"></span>
+                <button class="step-pill" data-step="summary">
+                    <span class="pill-num">4</span>
+                    <span class="pill-label">Quote</span>
                 </button>
             </div>
-            <div class="environmental-grid">
-                <div class="environmental-item hidden" data-impact="energy">
-                    <div class="icon-anim"><i class="fas fa-bolt"></i></div>
-                    <div>Energy Produced</div>
-                    <div id="energy-produced" class="impact-value">0 kWh/year</div>
+        </div>
+    </nav>
+
+    <!-- Main content area -->
+    <main class="app-main">
+
+        <!-- STEP 1: Company -->
+        <section id="company-section" class="panel visible" data-step="company">
+            <div class="panel-header">
+                <span class="panel-tag">Step 1</span>
+                <h1>Choose Your Brand</h1>
+                <p>Select a manufacturer to begin building your solar system.</p>
+            </div>
+            <div id="company-options" class="brand-grid"></div>
+        </section>
+
+        <!-- STEP 2: Inverter -->
+        <section id="inverter-section" class="panel" data-step="inverter">
+            <div class="panel-header">
+                <span class="panel-tag">Step 2</span>
+                <h1>Pick an Inverter</h1>
+                <p>Choose the inverter that matches your power requirements.</p>
+            </div>
+            <div class="resource-links" id="inverter-links">
+                <a href="https://drive.google.com/file/d/1X_Azx91o4wRf9H45SUOGCV_l9N45dfT6/view?usp=sharing" target="_blank" rel="noopener" class="res-link kstar-only">
+                    <i class="fas fa-book-open"></i> User Manual
+                </a>
+                <a href="https://drive.google.com/file/d/1sx29gQLQzLj1ThCVjoHGLXOGOZG-XCgi/view?usp=sharing" target="_blank" rel="noopener" class="res-link kstar-only">
+                    <i class="fas fa-star"></i> Features
+                </a>
+                <a href="https://drive.google.com/file/d/1LGHqj75hovaBsraE4k5FIrT-4pDXfNzd/view?usp=sharing" target="_blank" rel="noopener" class="res-link fortuner-only">
+                    <i class="fas fa-star"></i> Features
+                </a>
+            </div>
+            <div id="inverter-options" class="card-grid"></div>
+            <button class="back-btn" id="back-from-inverter"><i class="fas fa-arrow-left"></i> Back</button>
+        </section>
+
+        <!-- STEP 3: Battery -->
+        <section id="battery-section" class="panel" data-step="battery">
+            <div class="panel-header">
+                <span class="panel-tag">Step 3</span>
+                <h1>Select a Battery</h1>
+                <p>Pick the energy storage that fits your needs.</p>
+            </div>
+            <div id="battery-options" class="card-grid"></div>
+            <button class="back-btn" id="back-from-battery"><i class="fas fa-arrow-left"></i> Back</button>
+        </section>
+
+        <!-- STEP 4: Summary / Quote -->
+        <section id="summary-section" class="panel" data-step="summary">
+
+            <!-- Panels required -->
+            <div class="quote-block" id="panel-block">
+                <div class="quote-block-header">
+                    <i class="fas fa-solar-panel"></i>
+                    <h2>Solar Panels Required</h2>
                 </div>
-                <div class="environmental-item hidden" data-impact="co2">
-                    <div class="icon-anim"><i class="fas fa-leaf"></i></div>
-                    <div>CO2 Emissions Reduced</div>
-                    <div id="co2-reduced" class="impact-value">0 kg/year</div>
+                <div id="panel-info" class="panel-info-content"></div>
+                <div id="panel-images" class="panel-visual"></div>
+            </div>
+
+            <!-- Accessories -->
+            <div class="quote-block" id="accessory-block">
+                <div class="quote-block-header">
+                    <i class="fas fa-toolbox"></i>
+                    <h2>Included Accessories</h2>
                 </div>
-                <div class="environmental-item hidden" data-impact="trees">
-                    <div class="icon-anim"><i class="fas fa-tree"></i></div>
-                    <div>Equivalent Trees Planted</div>
-                    <div id="trees-planted" class="impact-value">0 trees/year</div>
-                </div>
-                <div class="environmental-item hidden" data-impact="offset">
-                    <div class="icon-anim"><i class="fas fa-chart-pie"></i></div>
-                    <div>Carbon Footprint Offset</div>
-                    <div class="progress-circle-container">
-                        <svg class="progress-circle" width="80" height="80">
-                            <circle class="progress-circle-bg" cx="40" cy="40" r="36" />
-                            <circle id="co2-progress" class="progress-circle-fill" cx="40" cy="40" r="36" stroke="url(#animated-gradient)" />
-                        </svg>
-                        <div id="co2-percentage" class="progress-circle-text">0%</div>
+                <div class="acc-grid">
+                    <div class="acc-card">
+                        <i class="fas fa-toggle-on"></i>
+                        <span class="acc-name">Change Over Switch</span>
+                        <span class="acc-price">5,000 Ksh</span>
+                    </div>
+                    <div class="acc-card">
+                        <i class="fas fa-plug"></i>
+                        <span class="acc-name">DC MCCB</span>
+                        <span class="acc-price">3,125 Ksh</span>
+                    </div>
+                    <div class="acc-card">
+                        <i class="fas fa-sliders-h"></i>
+                        <span class="acc-name">AVS 30 AMPS</span>
+                        <span class="acc-price">5,000 Ksh</span>
+                    </div>
+                    <div class="acc-card" id="mounting-cost">
+                        <i class="fas fa-solar-panel"></i>
+                        <span class="acc-name">Mounting & Cables</span>
+                        <span class="acc-price">27,500 Ksh</span>
                     </div>
                 </div>
             </div>
+
+            <!-- Environmental impact -->
+            <div class="quote-block" id="env-block">
+                <div class="quote-block-header">
+                    <i class="fas fa-leaf"></i>
+                    <h2>Environmental Impact</h2>
+                </div>
+                <button id="show-impact" class="impact-trigger">
+                    <i class="fas fa-seedling"></i> Reveal My Impact
+                </button>
+                <div class="env-grid hidden" id="env-grid">
+                    <div class="env-card" data-impact="energy">
+                        <div class="env-icon"><i class="fas fa-bolt"></i></div>
+                        <span class="env-label">Energy Produced</span>
+                        <span id="energy-produced" class="env-value">0 kWh/year</span>
+                    </div>
+                    <div class="env-card" data-impact="co2">
+                        <div class="env-icon"><i class="fas fa-leaf"></i></div>
+                        <span class="env-label">CO₂ Reduced</span>
+                        <span id="co2-reduced" class="env-value">0 kg/year</span>
+                    </div>
+                    <div class="env-card" data-impact="trees">
+                        <div class="env-icon"><i class="fas fa-tree"></i></div>
+                        <span class="env-label">Trees Equivalent</span>
+                        <span id="trees-planted" class="env-value">0 trees/year</span>
+                    </div>
+                    <div class="env-card" data-impact="offset">
+                        <div class="env-icon"><i class="fas fa-chart-pie"></i></div>
+                        <span class="env-label">Carbon Offset</span>
+                        <div class="ring-wrap">
+                            <svg class="ring-svg" viewBox="0 0 80 80">
+                                <circle class="ring-track" cx="40" cy="40" r="34"/>
+                                <circle id="co2-progress" class="ring-fill" cx="40" cy="40" r="34"/>
+                            </svg>
+                            <span id="co2-percentage" class="ring-text">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cost summary -->
+            <div class="quote-block" id="cost-block">
+                <div class="quote-block-header">
+                    <i class="fas fa-receipt"></i>
+                    <h2>Your Quote</h2>
+                </div>
+                <div class="user-form">
+                    <div class="form-row">
+                        <div class="field">
+                            <label for="user-name">Full Name</label>
+                            <input type="text" id="user-name" placeholder="Jane Doe" autocomplete="name">
+                            <span class="field-error" id="name-error"></span>
+                        </div>
+                        <div class="field">
+                            <label for="user-email">Email</label>
+                            <input type="email" id="user-email" placeholder="jane@example.com" autocomplete="email">
+                            <span class="field-error" id="email-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="field phone-field">
+                            <label for="user-phone">Phone</label>
+                            <div class="phone-wrap">
+                                <select id="country-code">
+                                    <option value="+254" data-length="9">KE +254</option>
+                                    <option value="+1" data-length="10">US +1</option>
+                                    <option value="+44" data-length="10">UK +44</option>
+                                    <option value="+91" data-length="10">IN +91</option>
+                                    <option value="+234" data-length="10">NG +234</option>
+                                </select>
+                                <input type="tel" id="user-phone" placeholder="712345678" autocomplete="tel">
+                            </div>
+                            <span class="field-error" id="phone-error"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="summary" class="breakdown"></div>
+
+                <div class="total-bar">
+                    <span class="total-label">Total Estimated Cost</span>
+                    <span id="total-cost" class="total-amount">0 KSH</span>
+                </div>
+
+                <div class="disclaimer">
+                    <i class="fas fa-info-circle"></i>
+                    <p>Quote includes solar mounting/structure. Final pricing confirmed after site survey.</p>
+                </div>
+
+                <div class="cta-row">
+                    <button id="share-summary" class="cta-btn"><i class="fas fa-envelope"></i> Email Quote</button>
+                    <button id="share-whatsapp" class="cta-btn cta-green"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                    <button id="download-pdf" class="cta-btn cta-red"><i class="fas fa-file-pdf"></i> Download PDF</button>
+                    <button id="reset-selection" class="cta-btn cta-ghost"><i class="fas fa-rotate-right"></i> Start Over</button>
+                </div>
+            </div>
+
+            <button class="back-btn" id="back-from-summary"><i class="fas fa-arrow-left"></i> Back</button>
         </section>
 
-        <!-- SVG Gradient for animated progress circle -->
-        <svg width="0" height="0">
-        <defs>
-            <linearGradient id="animated-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#22c55e">
-                <animate attributeName="stop-color" values="#22c55e;#56abff;#22c55e" dur="2s" repeatCount="indefinite"/>
-            </stop>
-            <stop offset="100%" stop-color="#56abff">
-                <animate attributeName="stop-color" values="#56abff;#22c55e;#56abff" dur="2s" repeatCount="indefinite"/>
-            </stop>
-            </linearGradient>
-        </defs>
-        </svg>
-
-        <section id="summary-section" class="section hidden">
-            <div class="section-header">
-                <h2>Your Solar System Summary</h2>
-                <p>Here's your complete system configuration</p>
-            </div>
-            <div class="user-info-form">
-                <h3>Your Details</h3>
-                <div class="input-group">
-                    <input type="text" id="user-name" placeholder="Enter your full name" required>
-                    <div class="error-message" id="name-error"></div>
-                </div>
-                <div class="input-group">
-                    <input type="email" id="user-email" placeholder="Enter your email address" required>
-                    <div class="error-message" id="email-error"></div>
-                </div>
-                <div class="input-group phone-group">
-                    <select id="country-code" class="country-code">
-                        <option value="+254" data-length="9">Kenya (+254)</option>
-                        <option value="+1" data-length="10">United States (+1)</option>
-                        <option value="+44" data-length="10">United Kingdom (+44)</option>
-                        <option value="+91" data-length="10">India (+91)</option>
-                        <option value="+234" data-length="10">Nigeria (+234)</option>
-                    </select>
-                    <input type="tel" id="user-phone" placeholder="Enter your phone number">
-                    <div class="error-message" id="phone-error"></div>
-                </div>
-            </div>
-            <div id="summary" class="summary-content"></div>
-            <div class="total-cost-container">
-                <div class="total-cost-label">Total Estimated Cost:</div>
-                <div id="total-cost" class="total-cost-amount">0 KSH</div>
-            </div>
-            <div class="quote">
-                <i class="fas fa-info-circle"></i>
-                <p>Please note: The above quote includes solar mounting/structure. The final quote can be given after the site survey is completed.</p>
-            </div>
-            <div class="action-buttons">
-                <button id="share-summary" class="action-button">
-                    <i class="fas fa-envelope"></i> Email Summary
-                </button>
-                <button id="share-whatsapp" class="action-button">
-                    <i class="fab fa-whatsapp"></i> Share on WhatsApp
-                </button>
-                <button id="download-pdf" class="action-button">
-                    <i class="fas fa-file-pdf"></i> Download PDF
-                </button>
-                <button id="reset-selection" class="action-button secondary">
-                    <i class="fas fa-redo"></i> Reset Selection
-                </button>
-            </div>
-        </section>
     </main>
 
-    <!-- Modal for Appliance Compatibility -->
-    <div id="appliance-modal" class="modal hidden">
-        <div class="modal-content">
-            <span class="modal-close">×</span>
+    <!-- Appliance compatibility modal -->
+    <div id="appliance-modal" class="overlay hidden">
+        <div class="overlay-card">
+            <button class="overlay-close" aria-label="Close"><i class="fas fa-xmark"></i></button>
             <h3 id="modal-title">Appliance Compatibility</h3>
             <div id="modal-body"></div>
         </div>
     </div>
 
-    <button id="scroll-to-top" class="scroll-to-top">
-        <i class="fas fa-arrow-up"></i>
-    </button>
-
-
-
-    <div id="welcome-modal" class="modal hidden">
-        <div class="modal-content">
-            <h2>Welcome to Sangyug Solar Selector</h2>
-            <p>Explore and customize your solar inverter system with ease. Select your preferred brand, inverter, and battery to get an instant quote tailored to your needs!</p>
-            <button id="welcome-close" class="btn">Got it</button>
+    <!-- Welcome modal -->
+    <div id="welcome-modal" class="overlay hidden">
+        <div class="overlay-card welcome-card">
+            <div class="welcome-icon"><i class="fas fa-sun"></i></div>
+            <h2>Welcome to Sangyug Solar</h2>
+            <p>Build your perfect solar system in 4 simple steps. Choose your brand, inverter, battery, and get an instant quote.</p>
+            <button id="welcome-close" class="cta-btn wide">Let's Go</button>
         </div>
     </div>
 
+    <!-- Scroll to top -->
+    <button id="scroll-to-top" class="fab-top" aria-label="Scroll to top">
+        <i class="fas fa-chevron-up"></i>
+    </button>
 
-
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-contact">
-                <span><i class="fas fa-envelope"></i> info@sangyug.com | marketing@sangyug.com</span>
-                <span><i class="fas fa-phone"></i>+254723984559</span>
-                <span><i class="fas fa-globe"></i> www.sangyug.com</span>
-                <span><i class="fas fa-map-marker-alt"></i> The Big Bang - Ngara, Opp. Rainbow plaza</span>
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-links">
+                <a href="mailto:info@sangyug.com"><i class="fas fa-envelope"></i> info@sangyug.com</a>
+                <a href="tel:+254723984559"><i class="fas fa-phone"></i> +254 723 984 559</a>
+                <a href="https://www.sangyug.com" target="_blank" rel="noopener"><i class="fas fa-globe"></i> sangyug.com</a>
+                <span><i class="fas fa-map-marker-alt"></i> The Big Bang — Ngara, Opp. Rainbow Plaza</span>
             </div>
-            <p class="copyright">Solar System Selector v3.5.0 | A proudly crafted project by <a href="https://dynamicdesignsca.netlify.app/" target="_blank">Dynamic Designs</a></p>
-            <p class="copyright">© 2025 Sangyug Enterprises. All rights reserved.</p>
-        </div> 
+            <div class="footer-credits">
+                <span>Crafted by <a href="https://dynamicdesignsca.netlify.app/" target="_blank" rel="noopener">Dynamic Designs</a></span>
+                <span>&copy; 2025 Sangyug Enterprises</span>
+            </div>
+        </div>
     </footer>
 
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
