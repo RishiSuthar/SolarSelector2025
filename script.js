@@ -1234,16 +1234,11 @@ function goTo(step) {
     var target = $('#' + sectionId);
     if (target) target.classList.add('visible');
     state.step = step;
-    // Show/hide topbar based on mode
-    var topbar = $('#main-topbar');
-    if (topbar) {
-        topbar.style.display = step === 'landing' ? 'none' : '';
-    }
     // Show/hide guided load summary (fixed bar) only on appliances step
     var loadBar = $('#guided-load-summary');
     if (loadBar) loadBar.style.display = step === 'appliances' ? '' : 'none';
+    updatePills();
     if (step !== 'landing') {
-        updatePills();
         updateRunningTotal();
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1261,7 +1256,14 @@ function updatePills() {
     var steps = config.map(function(s) { return s.id; });
     var ci = steps.indexOf(state.step);
     var container = $('#topbar-steps');
+    var bar = document.getElementById('step-progress-bar');
     if (!container) return;
+
+    // Hide the progress bar on landing
+    if (bar) {
+        bar.style.display = (state.step === 'landing') ? 'none' : 'flex';
+    }
+
     container.innerHTML = '';
     config.forEach(function(s, i) {
         if (i > 0) {
@@ -3272,38 +3274,11 @@ function resetAll() {
     toast('Starting fresh', 'info');
 }
 
-/* ---------- ambient canvas ---------- */
-function initCanvas() {
-    var c = document.getElementById('ambient-canvas');
-    if (!c) return;
-    var ctx = c.getContext('2d');
-    var w, h, particles = [];
-    function resize() { w = c.width = window.innerWidth; h = c.height = window.innerHeight; }
-    resize(); window.addEventListener('resize', resize);
-    for (var i = 0; i < 50; i++) {
-        particles.push({ x: Math.random() * (w || 1000), y: Math.random() * (h || 800), r: 1 + Math.random() * 2.5, dx: (Math.random() - 0.5) * 0.3, dy: (Math.random() - 0.5) * 0.3, o: 0.15 + Math.random() * 0.35 });
-    }
-    function draw() {
-        ctx.clearRect(0, 0, w, h);
-        for (var j = 0; j < particles.length; j++) {
-            var p = particles[j];
-            p.x += p.dx; p.y += p.dy;
-            if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
-            if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
-            ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            ctx.fillStyle = 'hsla(210,80%,70%,' + p.o + ')'; ctx.fill();
-        }
-        requestAnimationFrame(draw);
-    }
-    draw();
-}
-
 /* ---------- boot ---------- */
 document.addEventListener('DOMContentLoaded', function() {
     pricingState.usdToKesAdjusted = getAdjustedUsdToKes(pricingState.usdToKesRaw);
     applyExchangeRatePricing();
 
-    initCanvas();
     renderFxRatePill();
     renderPhaseSelection();
     renderNeeds();

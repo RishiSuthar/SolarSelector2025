@@ -6,22 +6,21 @@
     <title>Sangyug Solar | Build Your System</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 </head>
 <body>
 
-    <canvas id="ambient-canvas"></canvas>
     <div id="toast-container" class="toast-container"></div>
 
     <nav class="topbar" id="main-topbar">
         <div class="topbar-inner">
-            <button class="topbar-home-btn" id="topbar-home" title="Back to Home"><i class="fas fa-house"></i> Home</button>
             <a href="#" class="topbar-brand" id="brand-home">
                 <img src="images/sangyuglogo.png" alt="Sangyug" class="topbar-logo">
             </a>
-            <div class="topbar-steps" id="topbar-steps">
-                <!-- Pills rendered dynamically by JS -->
+            <div class="topbar-nav-links">
+                <button class="topbar-nav-btn" id="topbar-home" title="Back to Home"><i class="fas fa-house"></i> Home</button>
+                <a href="case-studies.html" class="topbar-nav-btn"><i class="fas fa-clipboard-check"></i> Case Studies</a>
             </div>
             <div class="topbar-total" id="topbar-total">
                 <span class="topbar-rate" id="fx-rate-pill">USD/KES: --</span>
@@ -29,6 +28,13 @@
             </div>
         </div>
     </nav>
+
+    <!-- Step progress bar (below navbar) -->
+    <div class="step-progress-bar" id="step-progress-bar">
+        <div class="step-progress-inner" id="topbar-steps">
+            <!-- Pills rendered dynamically by JS -->
+        </div>
+    </div>
 
     <main class="app-main">
 
@@ -100,7 +106,7 @@
                     </div>
                 </div>
                 <button class="cta-btn guided-next-btn" id="guided-next-from-appliances" disabled>
-                    <span>See My Recommendations</span> <i class="fas fa-arrow-right"></i>
+                    <span>Finish</span> <i class="fas fa-arrow-right"></i>
                 </button>
             </div>
 
@@ -152,25 +158,6 @@
                 <span class="panel-tag" id="company-step-tag">Step 2</span>
                 <h1>Choose Your Brand</h1>
                 <p>Select a manufacturer to start building your solar system.</p>
-            </div>
-
-            <div class="needs-section">
-                <button id="needs-toggle" class="needs-toggle">
-                    <i class="fas fa-lightbulb"></i>
-                    <span>Not sure what you need? <strong>Let us help</strong></span>
-                    <i class="fas fa-chevron-down needs-chevron"></i>
-                </button>
-                <div id="needs-panel" class="needs-panel">
-                    <p class="needs-intro">Select the appliances you want to power and we'll recommend the right system.</p>
-                    <div id="needs-grid" class="needs-grid"></div>
-                    <div class="needs-result hidden" id="needs-result">
-                        <div class="needs-wattage">
-                            <span class="needs-wattage-label">Your estimated load</span>
-                            <span class="needs-wattage-val" id="needs-wattage">0W</span>
-                        </div>
-                        <div class="needs-rec" id="needs-rec"></div>
-                    </div>
-                </div>
             </div>
 
             <div id="company-options" class="brand-grid"></div>

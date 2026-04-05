@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Studies | Sangyug Solar</title>
+    <link rel="stylesheet" href="case-studies.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav class="cs-nav">
+        <div class="cs-nav-inner">
+            <a href="index.html" class="cs-nav-brand">
+                <img src="images/sangyuglogo.png" alt="Sangyug Solar" class="cs-nav-logo">
+            </a>
+            <div class="cs-nav-links">
+                <a href="index.html" class="cs-nav-link">System Builder</a>
+                <a href="case-studies.html" class="cs-nav-link active">Case Studies</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="cs-hero">
+        <div class="cs-hero-content">
+            <span class="cs-hero-tag">Real Projects. Real Results.</span>
+            <h1>Our Work</h1>
+            <p>Installations across Kenya — homes, businesses, and farms running on solar every day.</p>
+        </div>
+    </header>
+
+    <!-- STATS BAR -->
+    <section class="cs-stats">
+        <div class="cs-stats-inner">
+            <div class="cs-stat">
+                <span class="cs-stat-num" data-target="127">0</span>
+                <span class="cs-stat-label">Installations</span>
+            </div>
+            <div class="cs-stat">
+                <span class="cs-stat-num" data-target="840">0</span>
+                <span class="cs-stat-label">kW Deployed</span>
+            </div>
+            <div class="cs-stat">
+                <span class="cs-stat-num" data-target="6">0</span>
+                <span class="cs-stat-label">Counties Served</span>
+            </div>
+            <div class="cs-stat">
+                <span class="cs-stat-num" data-target="98">0</span>
+                <span class="cs-stat-label">% Client Satisfaction</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- FILTERS -->
+    <section class="cs-filters">
+        <div class="cs-filters-inner">
+            <button class="cs-filter active" data-filter="all">All</button>
+            <button class="cs-filter" data-filter="residential">Residential</button>
+            <button class="cs-filter" data-filter="commercial">Commercial</button>
+            <button class="cs-filter" data-filter="agricultural">Agricultural</button>
+        </div>
+    </section>
+
+    <!-- CASE STUDIES GRID -->
+    <section class="cs-grid-section">
+        <div class="cs-grid" id="cs-grid">
+            <!-- Cards injected by JS -->
+        </div>
+    </section>
+
+    <!-- SINGLE CASE STUDY DETAIL (overlay) -->
+    <div class="cs-detail-overlay" id="cs-detail-overlay">
+        <div class="cs-detail" id="cs-detail">
+            <button class="cs-detail-close" id="cs-detail-close"><i class="fas fa-times"></i></button>
+            <div class="cs-detail-body" id="cs-detail-body">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <section class="cs-cta">
+        <div class="cs-cta-inner">
+            <h2>Ready to go solar?</h2>
+            <p>Use our system builder to spec out exactly what you need — or talk to us directly.</p>
+            <div class="cs-cta-btns">
+                <a href="index.html" class="cs-cta-btn primary"><i class="fas fa-solar-panel"></i> Build Your System</a>
+                <a href="https://wa.me/254700000000" class="cs-cta-btn secondary" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="cs-footer">
+        <div class="cs-footer-inner">
+            <div class="cs-footer-brand">
+                <img src="images/sangyuglogo.png" alt="Sangyug Solar" class="cs-footer-logo">
+                <p>Powering Kenya with clean, affordable solar energy.</p>
+            </div>
+            <div class="cs-footer-col">
+                <h4>Quick Links</h4>
+                <a href="index.html">System Builder</a>
+                <a href="case-studies.html">Case Studies</a>
+            </div>
+            <div class="cs-footer-col">
+                <h4>Contact</h4>
+                <a href="mailto:info@sangyugsolar.com">info@sangyugsolar.com</a>
+                <a href="tel:+254700000000">+254 700 000 000</a>
+            </div>
+        </div>
+        <div class="cs-footer-bottom">
+            <span>&copy; 2025 Sangyug Solar. All rights reserved.</span>
+        </div>
+    </footer>
+
+    <script src="case-studies.js"></script>
+</body>
+</html>
