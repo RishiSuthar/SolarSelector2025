@@ -21,38 +21,31 @@
                 <span class="topbar-title">Sangyug Solar</span>
             </a>
             <div class="topbar-steps" id="topbar-steps">
-                <button class="step-pill active" data-step="company">
-                    <span class="pill-num">1</span>
-                    <span class="pill-label">Brand</span>
-                </button>
-                <span class="step-connector"></span>
-                <button class="step-pill" data-step="inverter">
-                    <span class="pill-num">2</span>
-                    <span class="pill-label">Inverter</span>
-                </button>
-                <span class="step-connector"></span>
-                <button class="step-pill" data-step="battery">
-                    <span class="pill-num">3</span>
-                    <span class="pill-label">Battery</span>
-                </button>
-                <span class="step-connector"></span>
-                <button class="step-pill" data-step="summary">
-                    <span class="pill-num">4</span>
-                    <span class="pill-label">Quote</span>
-                </button>
+                <!-- Pills rendered dynamically by JS -->
             </div>
             <div class="topbar-total" id="topbar-total">
                 <span class="topbar-rate" id="fx-rate-pill">USD/KES: --</span>
+                <span class="topbar-running" id="running-total">KSH 0</span>
             </div>
         </div>
     </nav>
 
     <main class="app-main">
 
-        <!-- STEP 1: Brand -->
-        <section id="company-section" class="panel visible" data-step="company">
+        <!-- STEP: Phase Selection -->
+        <section id="phase-section" class="panel visible" data-step="phase">
             <div class="panel-header">
-                <span class="panel-tag">Step 1 of 4</span>
+                <span class="panel-tag" id="phase-step-tag">Step 1</span>
+                <h1>Choose Your System Type</h1>
+                <p>Select the phase type that matches your installation.</p>
+            </div>
+            <div id="phase-options" class="brand-grid"></div>
+        </section>
+
+        <!-- STEP: Brand -->
+        <section id="company-section" class="panel" data-step="company">
+            <div class="panel-header">
+                <span class="panel-tag" id="company-step-tag">Step 2</span>
                 <h1>Choose Your Brand</h1>
                 <p>Select a manufacturer to start building your solar system.</p>
             </div>
@@ -79,12 +72,12 @@
             <div id="company-options" class="brand-grid"></div>
         </section>
 
-        <!-- STEP 2: Inverter -->
+        <!-- STEP: Inverter / Package -->
         <section id="inverter-section" class="panel" data-step="inverter">
             <div class="panel-header">
-                <span class="panel-tag">Step 2 of 4</span>
-                <h1>Pick Your Inverter</h1>
-                <p>Choose the inverter that matches your power needs.</p>
+                <span class="panel-tag" id="inverter-step-tag">Step 3</span>
+                <h1 id="inverter-heading">Pick Your System</h1>
+                <p id="inverter-subtitle">Choose the system that matches your power needs.</p>
             </div>
             <div class="resource-links" id="inverter-links">
                 <a href="https://drive.google.com/file/d/1X_Azx91o4wRf9H45SUOGCV_l9N45dfT6/view?usp=sharing" target="_blank" rel="noopener" class="res-link kstar-only">
@@ -106,18 +99,18 @@
             <button class="back-btn" id="back-from-inverter"><i class="fas fa-arrow-left"></i> Back</button>
         </section>
 
-        <!-- STEP 3: Battery -->
+        <!-- STEP: Battery -->
         <section id="battery-section" class="panel" data-step="battery">
             <div class="panel-header">
-                <span class="panel-tag">Step 3 of 4</span>
-                <h1>Select Your Battery</h1>
-                <p>Pick the energy storage that fits your needs and budget.</p>
+                <span class="panel-tag" id="battery-step-tag">Step 4</span>
+                <h1 id="battery-heading">Select Your Battery</h1>
+                <p id="battery-subtitle">Pick the energy storage that fits your needs and budget.</p>
             </div>
             <div id="battery-options" class="card-grid"></div>
             <button class="back-btn" id="back-from-battery"><i class="fas fa-arrow-left"></i> Back</button>
         </section>
 
-        <!-- STEP 4: Summary / Quote -->
+        <!-- STEP: Summary / Quote -->
         <section id="summary-section" class="panel" data-step="summary">
 
             <div class="quote-block" id="selection-overview">
@@ -138,32 +131,7 @@
             </div>
 
             <div class="quote-block" id="accessory-block">
-                <div class="quote-block-header">
-                    <i class="fas fa-toolbox"></i>
-                    <h2>Included Accessories</h2>
-                </div>
-                <div class="acc-grid">
-                    <div class="acc-card">
-                        <i class="fas fa-toggle-on"></i>
-                        <span class="acc-name">Change Over Switch</span>
-                        <span class="acc-price" id="acc-changeover-price">5,000 Ksh</span>
-                    </div>
-                    <div class="acc-card">
-                        <i class="fas fa-plug"></i>
-                        <span class="acc-name">DC MCCB</span>
-                        <span class="acc-price" id="acc-dc-mccb-price">3,125 Ksh</span>
-                    </div>
-                    <div class="acc-card">
-                        <i class="fas fa-sliders-h"></i>
-                        <span class="acc-name">AVS 30 AMPS</span>
-                        <span class="acc-price" id="acc-avs-price">5,000 Ksh</span>
-                    </div>
-                    <div class="acc-card" id="mounting-cost">
-                        <i class="fas fa-solar-panel"></i>
-                        <span class="acc-name">Mounting & Cables</span>
-                        <span class="acc-price">27,500 Ksh</span>
-                    </div>
-                </div>
+                <!-- Rendered dynamically by JS -->
             </div>
 
             <div class="quote-block" id="savings-block">

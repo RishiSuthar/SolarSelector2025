@@ -1,17 +1,20 @@
 /* ===================================================
-   SANGYUG SOLAR SELECTOR v2
+   SANGYUG SOLAR SELECTOR v3 — Single & Three Phase
    =================================================== */
 
 /* ---------- state ---------- */
 const state = {
+    phase: '',
     company: '',
     inverter: null,
     battery: null,
     panels: 0,
-    step: 'company',
+    panelType: null,
+    step: 'phase',
     needs: {},
     totalWatts: 0,
-    compareList: []
+    compareList: [],
+    atessMasterCount: 3
 };
 
 const pricingState = {
@@ -21,27 +24,57 @@ const pricingState = {
     lastUpdated: null
 };
 
-/* ---------- needs assessment appliances ---------- */
+/* ---------- appliances ---------- */
 const APPLIANCES = [
-    { id: 'bulbs',   name: 'LED Lights (\u00d710)', watts: 100,  icon: 'fa-lightbulb' },
-    { id: 'tv',      name: 'Television',            watts: 120,  icon: 'fa-tv' },
-    { id: 'fridge',  name: 'Fridge',                watts: 150,  icon: 'fa-temperature-low' },
-    { id: 'fan',     name: 'Fans (\u00d72)',         watts: 150,  icon: 'fa-fan' },
-    { id: 'laptop',  name: 'Laptop',                watts: 65,   icon: 'fa-laptop' },
-    { id: 'router',  name: 'WiFi Router',           watts: 15,   icon: 'fa-wifi' },
-    { id: 'phone',   name: 'Phone Charging',        watts: 25,   icon: 'fa-mobile-screen' },
-    { id: 'micro',   name: 'Microwave',             watts: 1200, icon: 'fa-fire' },
-    { id: 'iron',    name: 'Iron',                  watts: 1000, icon: 'fa-shirt' },
-    { id: 'washer',  name: 'Washing Machine',       watts: 500,  icon: 'fa-soap' },
-    { id: 'pump',    name: 'Water Pump',            watts: 1000, icon: 'fa-faucet' },
-    { id: 'blender', name: 'Blender',               watts: 400,  icon: 'fa-blender' }
+    { id: 'bulbs', name: 'LED Lights (×10)', watts: 100, icon: 'fa-lightbulb' },
+    { id: 'tv', name: 'Television', watts: 120, icon: 'fa-tv' },
+    { id: 'fridge', name: 'Fridge', watts: 150, icon: 'fa-temperature-low' },
+    { id: 'fan', name: 'Fans (×2)', watts: 150, icon: 'fa-fan' },
+    { id: 'laptop', name: 'Laptop', watts: 65, icon: 'fa-laptop' },
+    { id: 'router', name: 'WiFi Router', watts: 15, icon: 'fa-wifi' },
+    { id: 'phone', name: 'Phone Charging', watts: 25, icon: 'fa-mobile-screen' },
+    { id: 'micro', name: 'Microwave', watts: 1200, icon: 'fa-fire' },
+    { id: 'iron', name: 'Iron', watts: 1000, icon: 'fa-shirt' },
+    { id: 'washer', name: 'Washing Machine', watts: 500, icon: 'fa-soap' },
+    { id: 'pump', name: 'Water Pump', watts: 1000, icon: 'fa-faucet' },
+    { id: 'blender', name: 'Blender', watts: 400, icon: 'fa-blender' }
 ];
 
-/* ---------- product data ---------- */
-const kstarInverters = [
+/* ---------- panel types ---------- */
+const PANEL_180W = {
+    watts: 180, usdPrice: 48,
+    specsLink: 'https://drive.google.com/file/d/1RJgy3w_LLnalE5Mf1eh13oB0Z1Gi1EIP/view?usp=sharing',
+    warranty: '15 years'
+};
+const PANEL_600W = {
+    watts: 600, usdPrice: 88.461538,
+    specsLink: 'https://drive.google.com/file/d/14w98znycd4Y4-quOsoSItp4ulKUkpoCv/view?usp=sharing',
+    warranty: '15 years'
+};
+const PANEL_600W_ATESS = {
+    watts: 600, usdPrice: 89,
+    specsLink: 'https://drive.google.com/file/d/14w98znycd4Y4-quOsoSItp4ulKUkpoCv/view?usp=sharing',
+    warranty: '15 years'
+};
+
+/* ---------- pricing constants ---------- */
+const EXCHANGE_RATE_API_KEY = '13f783aa03f37bceb9f21476';
+const USD_PRICES = {
+    changeOverSwitch: 38.461538,
+    acCable: 24.038462,
+    mountingPerPanel: 35,
+    accessories: {
+        dcMccb: 38.461538,
+        avs30Amps: 38.461538
+    }
+};
+
+/* ---------- product data: single phase Kstar ---------- */
+const kstarSingleInverters = [
+    /* --- Night Series --- */
     {
-        kva: 3.6, voltage: 24, maxWatts: 3600,
-        bestFor: 'Medium home (2\u20133 bedrooms)',
+        series: 'Night Series', kva: 3.6, voltage: 24, maxWatts: 3600,
+        bestFor: 'Medium home (2–3 bedrooms)',
         usdPrice: 423.076923, usdLabour: 267.692308,
         price: 0, labour: 0,
         img: 'images/kstarinverter.png',
@@ -61,8 +94,8 @@ const kstarInverters = [
         }
     },
     {
-        kva: 3.6, voltage: 48, maxWatts: 3600,
-        bestFor: 'Medium-large home (3\u20134 bedrooms)',
+        series: 'Night Series', kva: 3.6, voltage: 48, maxWatts: 3600,
+        bestFor: 'Medium-large home (3–4 bedrooms)',
         usdPrice: 484.615385, usdLabour: 267.692308,
         price: 0, labour: 0,
         img: 'images/kstarinverter.png',
@@ -82,7 +115,7 @@ const kstarInverters = [
         }
     },
     {
-        kva: 6.0, voltage: 48, maxWatts: 6000,
+        series: 'Night Series', kva: 6.0, voltage: 48, maxWatts: 6000,
         bestFor: 'Large home / Small office',
         usdPrice: 576.923077, usdLabour: 356.923077,
         price: 0, labour: 0,
@@ -101,9 +134,79 @@ const kstarInverters = [
             batteryCompatibility: 'Tubular, Lead-acid, Lithium',
             features: ['High power capacity', 'Pure sine wave output', 'Wide input voltage range', 'Overcurrent protection', 'Parallel up to 6 units']
         }
+    },
+    /* --- Sky Series --- */
+    {
+        series: 'Sky Series', kva: 1.0, watts: 900, voltage: 12, maxWatts: 900,
+        bestFor: 'Small home / Basic lighting',
+        usdPrice: 138, usdLabour: 360,
+        price: 0, labour: 0,
+        img: 'images/kstarinverter.png',
+        specsLink: 'https://drive.google.com/file/d/1pajnFqcUG5AezxWMGE1Ic4lyKYe4NKyK/view?usp=sharing',
+        appliances: [
+            { name: 'LED Bulbs (10W)', count: 5 }, { name: 'Phone Charging', count: 3 },
+            { name: 'Router', count: 1 }, { name: 'Laptop', count: 1 },
+            { name: 'TV (up to 40")', count: 1 }
+        ],
+        details: {
+            efficiency: '93%',
+            batteryCompatibility: 'Tubular, Maintenance Free',
+            features: ['Compact design', 'Pure sine wave output', 'Cold start function', 'Overcurrent protection']
+        }
+    },
+    {
+        series: 'Sky Series', kva: 2.0, watts: 1600, voltage: 24, maxWatts: 1600,
+        bestFor: '1–2 bedroom apartment',
+        usdPrice: 158, usdLabour: 360,
+        price: 0, labour: 0,
+        img: 'images/kstarinverter.png',
+        specsLink: 'https://drive.google.com/file/d/1pajnFqcUG5AezxWMGE1Ic4lyKYe4NKyK/view?usp=sharing',
+        appliances: [
+            { name: 'LED Bulbs (10W)', count: 8 }, { name: 'Fan', count: 1 },
+            { name: 'Phone Charging', count: 3 }, { name: 'Router', count: 1 },
+            { name: 'Laptop', count: 1 }, { name: 'TV (up to 60")', count: 1 },
+            { name: 'Fridge (150W)', count: 1 }
+        ],
+        details: {
+            efficiency: '93%',
+            batteryCompatibility: 'Tubular, Maintenance Free',
+            features: ['Compact design', 'Pure sine wave output', 'Cold start function', 'Overcurrent protection']
+        }
+    },
+    /* --- Residential ESS --- */
+    {
+        series: 'Residential ESS', kva: 10, model: 'HH10KS', watts: 10000, voltage: 48, maxWatts: 10000,
+        bestFor: 'Large home / Premium energy storage',
+        usdPrice: 884, usdLabour: 400,
+        price: 0, labour: 0,
+        img: 'images/kstarinverter.png',
+        specsLink: 'https://drive.google.com/file/d/1dBxgMwq7zowUCbcrv9SonuRn3xfDZL6a/view?usp=sharing',
+        essBattery: {
+            name: 'H-PACK-5.1A',
+            usdPrice: 841.50,
+            count: 4,
+            capacityEach: '5.12KWH',
+            totalCapacity: '20.48KWH',
+            warranty: '10 years',
+            specsLink: 'https://drive.google.com/file/d/1dBxgMwq7zowUCbcrv9SonuRn3xfDZL6a/view?usp=sharing',
+            notes: ['5.12KWH lithium battery pack, EVE grade A cell', '6000 times cycle life, 10 years performance warranty', 'Floor stand, Wall attach, Rack mount', 'Up to 8pcs connected in parallel']
+        },
+        appliances: [
+            { name: 'LED Bulbs (10W)', count: 30 }, { name: 'Fans', count: 4 },
+            { name: 'Fridge (150W)', count: 2 }, { name: 'TV (up to 100")', count: 3 },
+            { name: 'Laptop', count: 3 }, { name: 'Router', count: 1 },
+            { name: 'Microwave', count: 1 }, { name: 'Washing Machine', count: 1 },
+            { name: 'Water Pump', count: 1 }, { name: 'Phone Charging', count: 5 }
+        ],
+        details: {
+            efficiency: '97%',
+            batteryCompatibility: 'H-PACK-5.1A Lithium (included)',
+            features: ['10KW 48V hybrid inverter with CT', '4.3 inch touch color screen', '5 years warranty', 'PV voltage 120-500VDC, 2 MPPT', 'Up to 6pcs connected in parallel']
+        }
     }
 ];
 
+/* ---------- product data: single phase Fortuner ---------- */
 const fortunerInverters = [
     {
         kva: 0.7, watts: 450, voltage: 12, maxWatts: 450,
@@ -124,7 +227,7 @@ const fortunerInverters = [
     },
     {
         kva: 1.5, watts: 1200, voltage: 24, maxWatts: 1200,
-        bestFor: '1\u20132 bedroom apartment',
+        bestFor: '1–2 bedroom apartment',
         usdPrice: 153.846154, usdLabour: 115.384615,
         price: 0, labour: 0,
         outOfStock: true,
@@ -143,7 +246,7 @@ const fortunerInverters = [
     },
     {
         kva: 2.2, watts: 1400, voltage: 24, maxWatts: 1400,
-        bestFor: '2\u20133 bedroom home',
+        bestFor: '2–3 bedroom home',
         usdPrice: 201.923077, usdLabour: 138.461538,
         price: 0, labour: 0,
         img: 'images/fortunerinverter.png',
@@ -185,35 +288,207 @@ const fortunerInverters = [
     }
 ];
 
+/* ---------- product data: three phase Kstar packages ---------- */
+const kstarThreePhasePackages = [
+    {
+        id: 'e12kt-d22',
+        name: '12KW Outdoor System',
+        model: 'E12KT-D22',
+        watts: 12000,
+        bestFor: 'Medium commercial / Large residential',
+        usdPackagePrice: 6630,
+        packagePrice: 0,
+        usdLabour: 700,
+        labour: 0,
+        img: 'images/kstarinverter.png',
+        specsLink: 'https://drive.google.com/file/d/1p6HgHgYygmONaS1qNxSOMYtnST8WAqgU/view?usp=sharing',
+        panelCount: 25,
+        panelUsd: 88.461538,
+        inverterNotes: [
+            '3-phase 12KW hybrid inverter with CT built-in',
+            'Connect with 48V battery, 400VAC',
+            '200% DC/AC ratio, 100% unbalanced output',
+            'IP66 protection, 10 years warranty',
+            'Plug and play, wireless connection',
+            'MAX Charge/discharge current 200A/240A',
+            'Up to 4pcs in parallel'
+        ],
+        batteries: {
+            name: 'BP48100P1-G2',
+            count: 4,
+            capacityEach: '5.12KWH',
+            totalCapacity: '20.48KWH',
+            warranty: '10 years',
+            specsLink: 'https://drive.google.com/file/d/1p6HgHgYygmONaS1qNxSOMYtnST8WAqgU/view?usp=sharing',
+            notes: ['5.12KWH lithium battery pack, EVE grade A cell', '6000 times cycle life, 10 years performance warranty', 'Stackable design, no wiring required', 'Up to 8pcs in parallel for three phase, IP66 protection']
+        }
+    },
+    {
+        id: 'kstar-50kw',
+        name: '50KW Commercial System',
+        model: '50KW Inverter',
+        watts: 50000,
+        bestFor: 'Large commercial / Industrial',
+        usdPackagePrice: 30000,
+        packagePrice: 0,
+        usdLabour: 2000,
+        labour: 0,
+        img: 'images/kstarinverter.png',
+        specsLink: 'https://drive.google.com/file/d/1BL0VGGz-oEFnJTpK7EMf_yfYzfCYdymt/view?usp=sharing',
+        panelCount: 60,
+        panelUsd: 88.461538,
+        inverterNotes: [
+            'Integrated with 75KWp MPPT Charge',
+            'Cloud control with 24/7 monitoring',
+            'Inverter 5 years warranty'
+        ],
+        batteries: {
+            name: '107KWH CATL Cell Cabinet',
+            count: 1,
+            capacityEach: '107KWH',
+            totalCapacity: '107KWH',
+            warranty: '10 years',
+            specsLink: 'https://drive.google.com/file/d/1Br2-ss9G3djLK8DT0LMNvgBjfVyQyHXj/view?usp=sharing',
+            notes: ['LFP Cabinet PN-1035G0045', '280Ah large capacity', 'Double Fire Suppression System Design', '1+1 Redundancy Design', 'Battery cycle ≥8000, 10 years warranty']
+        }
+    }
+];
+
+/* ---------- product data: three phase ATESS packages ---------- */
+const atessThreePhasePackages = [
+    {
+        id: 'atess-30kw',
+        name: '30KW + 30KWH Indoor System',
+        subtitle: 'Support work with Digital Generator',
+        model: 'HPS30000TL',
+        watts: 30000,
+        bestFor: 'Large commercial / Industrial',
+        usdInverterPrice: 5300,
+        inverterPrice: 0,
+        usdLabour: 2000,
+        labour: 0,
+        inverterWarranty: '10 years',
+        img: 'images/kstarinverter.png',
+        specsLink: 'https://drive.google.com/file/d/1NscCT6E6tA1oUVTwkFvkLYvVxUsSPhS3/view?usp=sharing',
+        panelCount: 60,
+        panelUsd: 89,
+        accessories: [
+            { name: 'ATS-S (Auto Transfer Switch)', usdPrice: 650, qty: 1, warranty: '3 years', specsLink: 'https://drive.google.com/file/d/1DNHwkw-DQ2CbwWrNnOgpn61k36ZAvQLt/view?usp=sharing' },
+            { name: 'MBMS With Screen (E222ZT0112700)', usdPrice: 590, qty: 1, warranty: '3 years', specsLink: 'https://drive.google.com/file/d/1njrux6z0ZGJfMECuQpp93I6Rv_02alIq/view?usp=sharing' },
+            { name: 'Master Battery Rack BR30C', usdPrice: 1700, qty: 1, warranty: '1 year' },
+            { name: 'Enerlog Monitoring Data Logger', usdPrice: 850, qty: 1, warranty: '1 year', specsLink: 'https://drive.google.com/file/d/1fVoy19wtn806HB2vOKH_rTBbFKiibguY/view?usp=sharing' },
+            { name: 'EnerWIFI (WiFi Logger)', usdPrice: 180, qty: 1, warranty: '1 year', specsLink: 'https://drive.google.com/file/d/1s3147FwQGOTXn55oFId-ukMSBu6DtVFE/view?usp=sharing' }
+        ],
+        battery: {
+            name: 'ESS-BM-51.2-100RPB',
+            usdPricePerUnit: 820,
+            warranty: '10 years',
+            specsLink: 'https://drive.google.com/file/d/16DJHPJGiJjE5gkqzzKsJT26x4XIzWb-0/view?usp=sharing',
+            configs: [
+                { masters: 1, totalUnits: 2, capacity: '10.24KWH' },
+                { masters: 2, totalUnits: 4, capacity: '20.48KWH' },
+                { masters: 3, totalUnits: 6, capacity: '30.72KWH' }
+            ]
+        },
+        inverterNotes: ['30KW hybrid inverter, indoor unit', '10 year warranty', 'Works with Digital Generator (DG)']
+    },
+    {
+        id: 'atess-20kw',
+        name: '20KW + 30KWH Indoor System',
+        subtitle: 'Support work with Digital Generator',
+        model: 'HPS20000TL',
+        watts: 20000,
+        bestFor: 'Medium-large commercial',
+        usdInverterPrice: 4000,
+        inverterPrice: 0,
+        usdLabour: 2000,
+        labour: 0,
+        inverterWarranty: '10 years',
+        img: 'images/kstarinverter.png',
+        specsLink: 'https://drive.google.com/file/d/1BWgGx_P3Y6cWLG1lJi1CjXVev8UCAkuA/view?usp=sharing',
+        panelCount: 34,
+        panelUsd: 89,
+        accessories: [
+            { name: 'ATS-S (Auto Transfer Switch)', usdPrice: 650, qty: 1, warranty: '3 years', specsLink: 'https://drive.google.com/file/d/1DNHwkw-DQ2CbwWrNnOgpn61k36ZAvQLt/view?usp=sharing' },
+            { name: 'MBMS With Screen (E222ZT0112700)', usdPrice: 590, qty: 1, warranty: '3 years', specsLink: 'https://drive.google.com/file/d/1njrux6z0ZGJfMECuQpp93I6Rv_02alIq/view?usp=sharing' },
+            { name: 'Master Battery Rack BR30C', usdPrice: 1700, qty: 1, warranty: '1 year' },
+            { name: 'Enerlog Monitoring Data Logger', usdPrice: 850, qty: 1, warranty: '1 year', specsLink: 'https://drive.google.com/file/d/1fVoy19wtn806HB2vOKH_rTBbFKiibguY/view?usp=sharing' },
+            { name: 'EnerWIFI (WiFi Logger)', usdPrice: 180, qty: 1, warranty: '1 year', specsLink: 'https://drive.google.com/file/d/1s3147FwQGOTXn55oFId-ukMSBu6DtVFE/view?usp=sharing' }
+        ],
+        battery: {
+            name: 'ESS-BM-51.2-100RPB',
+            usdPricePerUnit: 820,
+            warranty: '10 years',
+            specsLink: 'https://drive.google.com/file/d/16DJHPJGiJjE5gkqzzKsJT26x4XIzWb-0/view?usp=sharing',
+            configs: [
+                { masters: 1, totalUnits: 2, capacity: '10.24KWH' },
+                { masters: 2, totalUnits: 4, capacity: '20.48KWH' },
+                { masters: 3, totalUnits: 6, capacity: '30.72KWH' }
+            ]
+        },
+        inverterNotes: ['20KW hybrid inverter, indoor unit', '10 year warranty', 'Works with Digital Generator (DG)']
+    },
+    {
+        id: 'atess-15kw',
+        name: '15KW + 30KWH Indoor System',
+        subtitle: 'Support work with Digital Generator',
+        model: 'HPS15000TL',
+        watts: 15000,
+        bestFor: 'Small-medium commercial',
+        usdInverterPrice: 3660,
+        inverterPrice: 0,
+        usdLabour: 2000,
+        labour: 0,
+        inverterWarranty: '10 years',
+        img: 'images/kstarinverter.png',
+        specsLink: 'https://drive.google.com/file/d/1BWgGx_P3Y6cWLG1lJi1CjXVev8UCAkuA/view?usp=sharing',
+        panelCount: 26,
+        panelUsd: 89,
+        accessories: [
+            { name: 'ATS-S (Auto Transfer Switch)', usdPrice: 650, qty: 1, warranty: '3 years', specsLink: 'https://drive.google.com/file/d/1DNHwkw-DQ2CbwWrNnOgpn61k36ZAvQLt/view?usp=sharing' },
+            { name: 'MBMS With Screen (E222ZT0112700)', usdPrice: 590, qty: 1, warranty: '3 years', specsLink: 'https://drive.google.com/file/d/1njrux6z0ZGJfMECuQpp93I6Rv_02alIq/view?usp=sharing' },
+            { name: 'Master Battery Rack BR30C', usdPrice: 1700, qty: 1, warranty: '1 year' },
+            { name: 'EnerWIFI (WiFi Logger)', usdPrice: 180, qty: 1, warranty: '1 year', specsLink: 'https://drive.google.com/file/d/1s3147FwQGOTXn55oFId-ukMSBu6DtVFE/view?usp=sharing' }
+        ],
+        battery: {
+            name: 'ESS-BM-51.2-100RPB',
+            usdPricePerUnit: 820,
+            warranty: '10 years',
+            specsLink: 'https://drive.google.com/file/d/16DJHPJGiJjE5gkqzzKsJT26x4XIzWb-0/view?usp=sharing',
+            configs: [
+                { masters: 1, totalUnits: 2, capacity: '10.24KWH' },
+                { masters: 2, totalUnits: 4, capacity: '20.48KWH' },
+                { masters: 3, totalUnits: 6, capacity: '30.72KWH' }
+            ]
+        },
+        inverterNotes: ['15KW hybrid inverter, indoor unit', '10 year warranty', 'Works with Digital Generator (DG)']
+    }
+];
+
+/* ---------- batteries (single phase) ---------- */
 const batteries = [
     {
-        id: 'tubular',
-        name: 'Tubular 200AH',
-        shortDesc: 'Affordable & reliable. Needs topping up every 3\u20136 months.',
-        usdPrice: 173.076923,
-        price: 0,
+        id: 'tubular', name: 'Tubular 200AH',
+        shortDesc: 'Affordable & reliable. Needs topping up every 3–6 months.',
+        usdPrice: 173.076923, price: 0,
         img: 'images/battery-200ah-tubular.png',
         specsLink: 'https://drive.google.com/file/d/17stgG0eX-rTGS8QR9KdDVZ08OXjWJH47/view?usp=sharing',
         capacityWh: 2400, dod: 0.8, backupHours: 8.6, warranty: '1 year',
         voltagePerUnit: 12, type: 'lead-acid'
     },
     {
-        id: 'mf',
-        name: 'Maintenance Free 200AH',
+        id: 'mf', name: 'Maintenance Free 200AH',
         shortDesc: 'Sealed & zero maintenance. Great for indoor installation.',
-        usdPrice: 280.769231,
-        price: 0,
+        usdPrice: 280.769231, price: 0,
         img: 'images/battery-200ah-mf.png',
         specsLink: 'https://drive.google.com/file/d/1IiygyBHcx85JLY5W7wFI6gQBflkKHNh9/view?usp=sharing',
         capacityWh: 2400, dod: 0.8, backupHours: 8.6, warranty: '1 year',
         voltagePerUnit: 12, type: 'lead-acid'
     },
     {
-        id: 'lithium',
-        name: 'Lithium LFP 51.2V 100Ah',
+        id: 'lithium', name: 'Lithium LFP 51.2V 100Ah',
         shortDesc: 'Premium. 10-year warranty. 90% usable capacity.',
-        usdPrice: 923.076923,
-        price: 0,
+        usdPrice: 923.076923, price: 0,
         img: 'images/battery-100ah-lithium.png',
         specsLink: 'https://drive.google.com/file/d/194rpm8gHCgehwTyFhx35o35G-JwXVgCS/view?usp=sharing',
         capacityWh: 5120, dod: 0.9, backupHours: 20.7, warranty: '10 years',
@@ -222,30 +497,11 @@ const batteries = [
 ];
 
 /* ---------- helpers ---------- */
-const $ = s => document.querySelector(s);
-const $$ = s => document.querySelectorAll(s);
-const fmt = n => Number(n).toLocaleString();
-const EXCHANGE_RATE_API_KEY = '13f783aa03f37bceb9f21476';
-const USD_PRICES = {
-    panel: 88.461538,
-    changeOverSwitch: 38.461538,
-    acCable: 24.038462,
-    accessories: {
-        dcMccb: 38.461538,
-        avs30Amps: 38.461538
-    },
-    mounting: {
-        default: 211.538462,
-        kstar6kva48v: 384.615385,
-        fortuner1_5or2_2: 43.269231,
-        fortuner10kva: 524.038462
-    }
-};
+var $ = function(s) { return document.querySelector(s); };
+var $$ = function(s) { return document.querySelectorAll(s); };
+var fmt = function(n) { return Number(n).toLocaleString(); };
 
-let PANEL_PRICE = 0;
-let CHANGE_OVER_SWITCH_PRICE = 0;
-let AC_CABLE_PRICE = 0;
-
+/* ---------- pricing ---------- */
 function getAdjustedUsdToKes(rawRate) {
     return Math.round(rawRate) + 2;
 }
@@ -255,73 +511,156 @@ function usdToKes(usdAmount) {
 }
 
 function applyExchangeRatePricing() {
-    kstarInverters.forEach(function(inv) {
+    kstarSingleInverters.forEach(function(inv) {
         inv.price = usdToKes(inv.usdPrice);
         inv.labour = usdToKes(inv.usdLabour);
     });
-
     fortunerInverters.forEach(function(inv) {
         inv.price = usdToKes(inv.usdPrice);
         inv.labour = usdToKes(inv.usdLabour);
     });
-
+    kstarThreePhasePackages.forEach(function(pkg) {
+        pkg.packagePrice = usdToKes(pkg.usdPackagePrice);
+        pkg.labour = usdToKes(pkg.usdLabour);
+    });
+    atessThreePhasePackages.forEach(function(pkg) {
+        pkg.inverterPrice = usdToKes(pkg.usdInverterPrice);
+        pkg.labour = usdToKes(pkg.usdLabour);
+    });
     batteries.forEach(function(bat) {
         bat.price = usdToKes(bat.usdPrice);
     });
-
-    PANEL_PRICE = usdToKes(USD_PRICES.panel);
-    CHANGE_OVER_SWITCH_PRICE = usdToKes(USD_PRICES.changeOverSwitch);
-    AC_CABLE_PRICE = usdToKes(USD_PRICES.acCable);
 }
 
-function syncSelectedItemsWithLatestPricing() {
-    if (state.company && state.inverter) {
-        var invCatalog = state.company === 'Kstar' ? kstarInverters : fortunerInverters;
-        var refreshedInv = invCatalog.find(function(inv) {
-            return inv.kva === state.inverter.kva && inv.voltage === state.inverter.voltage;
-        });
-        if (refreshedInv) state.inverter = refreshedInv;
-    }
+function getPanelPrice() {
+    if (!state.panelType) return usdToKes(PANEL_600W.usdPrice);
+    return usdToKes(state.panelType.usdPrice);
+}
 
-    if (state.battery) {
-        var refreshedBat = batteries.find(function(bat) { return bat.id === state.battery.id; });
-        if (refreshedBat) {
-            state.battery = {
-                name: refreshedBat.name,
-                id: refreshedBat.id,
-                shortDesc: refreshedBat.shortDesc,
-                price: refreshedBat.price,
-                img: refreshedBat.img,
-                specsLink: refreshedBat.specsLink,
-                capacityWh: refreshedBat.capacityWh,
-                dod: refreshedBat.dod,
-                backupHours: refreshedBat.backupHours,
-                warranty: refreshedBat.warranty,
-                voltagePerUnit: refreshedBat.voltagePerUnit,
-                type: refreshedBat.type,
-                count: state.battery.count
-            };
-        }
+function getMountingCost() {
+    return usdToKes(USD_PRICES.mountingPerPanel) * state.panels;
+}
+
+function getSinglePhaseAccessoryCost() {
+    var base = usdToKes(USD_PRICES.changeOverSwitch) + usdToKes(USD_PRICES.accessories.dcMccb) + usdToKes(USD_PRICES.accessories.avs30Amps);
+    return base + getMountingCost();
+}
+
+function getAtessAccessoryCost() {
+    if (!state.inverter || !state.inverter.accessories) return 0;
+    var total = 0;
+    state.inverter.accessories.forEach(function(acc) {
+        total += usdToKes(acc.usdPrice) * acc.qty;
+    });
+    return total;
+}
+
+function getAtessBatteryCost() {
+    if (!state.inverter || !state.inverter.battery) return 0;
+    var cfg = state.inverter.battery.configs[state.atessMasterCount - 1];
+    return usdToKes(state.inverter.battery.usdPricePerUnit) * cfg.totalUnits;
+}
+
+function getEssBatteryCost() {
+    if (!state.inverter || !state.inverter.essBattery) return 0;
+    return usdToKes(state.inverter.essBattery.usdPrice) * state.inverter.essBattery.count;
+}
+
+function getTotal() {
+    if (state.phase === 'three') return getThreePhaseTotal();
+    return getSinglePhaseTotal();
+}
+
+function getSinglePhaseTotal() {
+    if (!state.inverter) return 0;
+    var inv = state.inverter;
+    var invCost = inv.price;
+    var labCost = inv.labour;
+    var panCost = state.panels * getPanelPrice();
+    var accCost = getSinglePhaseAccessoryCost();
+
+    if (inv.series === 'Residential ESS') {
+        var batCost = getEssBatteryCost();
+        return invCost + labCost + batCost + panCost + accCost;
     }
+    if (!state.battery) return 0;
+    var batCost2 = state.battery.price * state.battery.count;
+    return invCost + labCost + batCost2 + panCost + accCost;
+}
+
+function getThreePhaseTotal() {
+    if (!state.inverter) return 0;
+    if (state.company === 'Kstar') {
+        var pkg = state.inverter;
+        return pkg.packagePrice + (state.panels * getPanelPrice()) + getMountingCost() + pkg.labour;
+    }
+    if (state.company === 'ATESS') {
+        var inv = state.inverter;
+        return inv.inverterPrice + getAtessAccessoryCost() + getAtessBatteryCost() + (state.panels * getPanelPrice()) + getMountingCost() + inv.labour;
+    }
+    return 0;
+}
+
+function getNoSolarBreakdown() {
+    if (!state.inverter || state.phase === 'three') return null;
+    if (state.inverter.series === 'Residential ESS') return null;
+    if (!state.battery) return null;
+    var invCost = state.inverter.price;
+    var batCost = state.battery.price * state.battery.count;
+    var labourCost = Math.round(state.inverter.labour * 0.6);
+    var total = invCost + batCost + usdToKes(USD_PRICES.changeOverSwitch) + usdToKes(USD_PRICES.acCable) + labourCost;
+    return { inverter: invCost, battery: batCost, changeOver: usdToKes(USD_PRICES.changeOverSwitch), acCable: usdToKes(USD_PRICES.acCable), labour: labourCost, total: total };
 }
 
 function renderAccessoryStaticPrices() {
-    var changeOverEl = $('#acc-changeover-price');
-    if (changeOverEl) changeOverEl.textContent = fmt(CHANGE_OVER_SWITCH_PRICE) + ' Ksh';
-
-    var dcMccbEl = $('#acc-dc-mccb-price');
-    if (dcMccbEl) dcMccbEl.textContent = fmt(usdToKes(USD_PRICES.accessories.dcMccb)) + ' Ksh';
-
-    var avsEl = $('#acc-avs-price');
-    if (avsEl) avsEl.textContent = fmt(usdToKes(USD_PRICES.accessories.avs30Amps)) + ' Ksh';
+    var el;
+    el = $('#acc-changeover-price');
+    if (el) el.textContent = fmt(usdToKes(USD_PRICES.changeOverSwitch)) + ' Ksh';
+    el = $('#acc-dc-mccb-price');
+    if (el) el.textContent = fmt(usdToKes(USD_PRICES.accessories.dcMccb)) + ' Ksh';
+    el = $('#acc-avs-price');
+    if (el) el.textContent = fmt(usdToKes(USD_PRICES.accessories.avs30Amps)) + ' Ksh';
 }
 
 function getBrandInverterRange(companyName) {
-    var data = companyName === 'Kstar' ? kstarInverters : fortunerInverters;
-    var values = data.map(function(inv) { return inv.price; });
-    var min = Math.min.apply(null, values);
-    var max = Math.max.apply(null, values);
-    return 'Systems from KSH ' + fmt(min) + ' - ' + fmt(max);
+    var data;
+    if (state.phase === 'three') {
+        if (companyName === 'Kstar') data = kstarThreePhasePackages.map(function(p) { return p.packagePrice; });
+        else data = atessThreePhasePackages.map(function(p) { return p.inverterPrice; });
+    } else {
+        data = (companyName === 'Kstar' ? kstarSingleInverters : fortunerInverters).map(function(inv) { return inv.price; });
+    }
+    if (!data || !data.length) return '';
+    var min = Math.min.apply(null, data);
+    var max = Math.max.apply(null, data);
+    return 'Systems from KSH ' + fmt(min) + ' – ' + fmt(max);
+}
+
+function syncSelectedItemsWithLatestPricing() {
+    if (!state.inverter) return;
+    if (state.phase === 'three') {
+        if (state.company === 'Kstar') {
+            var match = kstarThreePhasePackages.find(function(p) { return p.id === state.inverter.id; });
+            if (match) state.inverter = match;
+        } else if (state.company === 'ATESS') {
+            var match2 = atessThreePhasePackages.find(function(p) { return p.id === state.inverter.id; });
+            if (match2) state.inverter = match2;
+        }
+    } else {
+        if (state.company === 'Kstar') {
+            var match3 = kstarSingleInverters.find(function(inv) { return inv.kva === state.inverter.kva && inv.voltage === state.inverter.voltage && inv.series === state.inverter.series; });
+            if (match3) state.inverter = match3;
+        } else {
+            var match4 = fortunerInverters.find(function(inv) { return inv.kva === state.inverter.kva && inv.voltage === state.inverter.voltage; });
+            if (match4) state.inverter = match4;
+        }
+    }
+    if (state.battery && state.battery.id) {
+        var br = batteries.find(function(b) { return b.id === state.battery.id; });
+        if (br) {
+            state.battery.price = br.price;
+        }
+    }
 }
 
 function refreshUiForLatestPricing() {
@@ -335,7 +674,7 @@ function refreshUiForLatestPricing() {
 function renderFxRatePill() {
     var fxEl = $('#fx-rate-pill');
     if (!fxEl) return;
-    fxEl.textContent = 'USD/KSH Exchange Rate: ' + pricingState.usdToKesRaw.toFixed(2);
+    fxEl.textContent = 'USD/KSH: ' + pricingState.usdToKesRaw.toFixed(2);
     fxEl.classList.toggle('live', pricingState.source !== 'fallback');
 }
 
@@ -345,8 +684,7 @@ async function fetchUsdToKesRate() {
     if (!response.ok) throw new Error('FX request failed: ' + response.status);
     var data = await response.json();
     var rate = data && data.conversion_rates ? Number(data.conversion_rates.KES) : NaN;
-    if (!Number.isFinite(rate) || rate <= 0) throw new Error('Invalid FX rate from ExchangeRate-API');
-
+    if (!Number.isFinite(rate) || rate <= 0) throw new Error('Invalid FX rate');
     pricingState.usdToKesRaw = rate;
     pricingState.usdToKesAdjusted = getAdjustedUsdToKes(rate);
     pricingState.source = 'exchangerate-api';
@@ -354,68 +692,23 @@ async function fetchUsdToKesRate() {
 }
 
 async function refreshExchangeRateAndPricing() {
-    try {
-        await fetchUsdToKesRate();
-    } catch (e) {
-        pricingState.source = 'fallback';
-    }
-
+    try { await fetchUsdToKesRate(); } catch (e) { pricingState.source = 'fallback'; }
     applyExchangeRatePricing();
     refreshUiForLatestPricing();
     saveState();
 }
 
-function getAccessoryCost() {
-    const base = usdToKes(USD_PRICES.changeOverSwitch) + usdToKes(USD_PRICES.accessories.dcMccb) + usdToKes(USD_PRICES.accessories.avs30Amps);
-    return base + getMountingCost();
-}
-
-function getMountingCost() {
-    if (!state.inverter) return 0;
-    if (state.company === 'Fortuner') {
-        if (state.inverter.kva === 1.5 || state.inverter.kva === 2.2) return usdToKes(USD_PRICES.mounting.fortuner1_5or2_2);
-        if (state.inverter.kva === 10.0) return usdToKes(USD_PRICES.mounting.fortuner10kva);
-        return usdToKes(USD_PRICES.mounting.default);
-    }
-    if (state.inverter.kva === 6.0 && state.inverter.voltage === 48) return usdToKes(USD_PRICES.mounting.kstar6kva48v);
-    return usdToKes(USD_PRICES.mounting.default);
-}
-
-function getTotal() {
-    if (!state.inverter || !state.battery) return 0;
-    return state.inverter.price + state.inverter.labour +
-           (state.battery.price * state.battery.count) +
-           (state.panels * PANEL_PRICE) +
-           getAccessoryCost();
-}
-
-function getNoSolarBreakdown() {
-    if (!state.inverter || !state.battery) return null;
-    var invCost = state.inverter.price;
-    var batCost = state.battery.price * state.battery.count;
-    var labourCost = Math.round(state.inverter.labour * 0.6);
-    var total = invCost + batCost + CHANGE_OVER_SWITCH_PRICE + AC_CABLE_PRICE + labourCost;
-    return {
-        inverter: invCost,
-        battery: batCost,
-        changeOver: CHANGE_OVER_SWITCH_PRICE,
-        acCable: AC_CABLE_PRICE,
-        labour: labourCost,
-        total: total
-    };
-}
-
+/* ---------- state persistence ---------- */
 function saveState() {
-    try { localStorage.setItem('solarState', JSON.stringify(state)); } catch (e) { /* quota */ }
+    try { localStorage.setItem('solarState', JSON.stringify(state)); } catch (e) {}
 }
 function clearState() {
-    try { localStorage.removeItem('solarState'); } catch (e) { /* noop */ }
+    try { localStorage.removeItem('solarState'); } catch (e) {}
 }
 
-/* ---------- toast system ---------- */
+/* ---------- toast ---------- */
 function toast(message, type, duration) {
-    type = type || 'info';
-    duration = duration || 3000;
+    type = type || 'info'; duration = duration || 3000;
     var container = $('#toast-container');
     if (!container) return;
     var el = document.createElement('div');
@@ -424,45 +717,76 @@ function toast(message, type, duration) {
     el.innerHTML = '<i class="fas ' + (icons[type] || icons.info) + '"></i><span>' + message + '</span>';
     container.appendChild(el);
     requestAnimationFrame(function() { el.classList.add('show'); });
-    setTimeout(function() {
-        el.classList.remove('show');
-        el.addEventListener('transitionend', function() { el.remove(); });
-    }, duration);
+    setTimeout(function() { el.classList.remove('show'); el.addEventListener('transitionend', function() { el.remove(); }); }, duration);
 }
 
 /* ---------- navigation ---------- */
-var STEPS = ['company', 'inverter', 'battery', 'summary'];
+function getStepConfig() {
+    if (!state.phase) {
+        return [
+            { id: 'phase', label: 'Phase' }, { id: 'company', label: 'Brand' },
+            { id: 'inverter', label: 'System' }, { id: 'battery', label: 'Battery' },
+            { id: 'summary', label: 'Quote' }
+        ];
+    }
+    if (state.phase === 'three') {
+        var steps = [
+            { id: 'phase', label: 'Phase' }, { id: 'company', label: 'Brand' },
+            { id: 'inverter', label: 'Package' }
+        ];
+        if (state.company === 'ATESS') steps.push({ id: 'battery', label: 'Battery' });
+        steps.push({ id: 'summary', label: 'Quote' });
+        return steps;
+    }
+    var steps2 = [
+        { id: 'phase', label: 'Phase' }, { id: 'company', label: 'Brand' },
+        { id: 'inverter', label: 'Inverter' }
+    ];
+    if (!(state.inverter && state.inverter.series === 'Residential ESS')) {
+        steps2.push({ id: 'battery', label: 'Battery' });
+    }
+    steps2.push({ id: 'summary', label: 'Quote' });
+    return steps2;
+}
+
+function getCurrentSteps() {
+    return getStepConfig().map(function(s) { return s.id; });
+}
 
 function resolveAccessibleStep(step) {
-    if (step === 'summary' && state.battery) return 'summary';
-    if (step === 'battery' && state.inverter) return 'battery';
-    if (step === 'inverter' && state.company) return 'inverter';
-    return 'company';
+    var steps = getCurrentSteps();
+    if (steps.indexOf(step) === -1) step = 'phase';
+    if (step === 'summary') {
+        if (state.phase === 'three' && state.company === 'Kstar') return state.inverter ? 'summary' : 'inverter';
+        if (state.phase === 'single' && state.inverter && state.inverter.series === 'Residential ESS') return state.inverter ? 'summary' : 'inverter';
+        if (state.phase === 'three' && state.company === 'ATESS') return state.inverter ? 'summary' : 'inverter';
+        return state.battery ? 'summary' : 'battery';
+    }
+    if (step === 'battery') {
+        if (steps.indexOf('battery') === -1) return 'summary';
+        return state.inverter ? 'battery' : 'inverter';
+    }
+    if (step === 'inverter') return state.company ? 'inverter' : 'company';
+    if (step === 'company') return state.phase ? 'company' : 'phase';
+    return 'phase';
 }
 
 function renderStep(step) {
-    if (step === 'company') renderCompanies();
-    else if (step === 'inverter' && state.company) renderInverters();
-    else if (step === 'battery' && state.inverter) renderBatteries();
-    else if (step === 'summary' && state.battery) renderSummary();
+    if (step === 'phase') renderPhaseSelection();
+    else if (step === 'company') renderCompanies();
+    else if (step === 'inverter') renderInverters();
+    else if (step === 'battery') renderBatteries();
+    else if (step === 'summary') renderSummary();
 }
 
 function goTo(step) {
     step = resolveAccessibleStep(step);
-
     renderStep(step);
-
-    var target = $('#' + step + '-section');
-
-    $$('.panel').forEach(function(panel) {
-        panel.classList.remove('visible', 'enter-right', 'enter-left', 'exit-left', 'exit-right');
-        panel.style.position = '';
-        panel.style.width = '';
+    $$('.panel').forEach(function(p) {
+        p.classList.remove('visible', 'enter-right', 'enter-left', 'exit-left', 'exit-right');
     });
-
-    if (!target) return;
-    target.classList.add('visible');
-
+    var target = $('#' + step + '-section');
+    if (target) target.classList.add('visible');
     state.step = step;
     updatePills();
     updateRunningTotal();
@@ -471,19 +795,30 @@ function goTo(step) {
 }
 
 function goBack() {
-    var i = STEPS.indexOf(state.step);
-    if (i > 0) goTo(STEPS[i - 1]);
+    var steps = getCurrentSteps();
+    var i = steps.indexOf(state.step);
+    if (i > 0) goTo(steps[i - 1]);
 }
 
 function updatePills() {
-    var ci = STEPS.indexOf(state.step);
-    $$('.step-pill').forEach(function(p, i) {
-        p.classList.remove('active', 'done');
-        if (i < ci) p.classList.add('done');
-        else if (i === ci) p.classList.add('active');
-    });
-    $$('.step-connector').forEach(function(c, i) {
-        c.classList.toggle('lit', i < ci);
+    var config = getStepConfig();
+    var steps = config.map(function(s) { return s.id; });
+    var ci = steps.indexOf(state.step);
+    var container = $('#topbar-steps');
+    if (!container) return;
+    container.innerHTML = '';
+    config.forEach(function(s, i) {
+        if (i > 0) {
+            var conn = document.createElement('span');
+            conn.className = 'step-connector' + (i <= ci ? ' lit' : '');
+            container.appendChild(conn);
+        }
+        var pill = document.createElement('button');
+        pill.className = 'step-pill' + (i < ci ? ' done' : (i === ci ? ' active' : ''));
+        pill.dataset.step = s.id;
+        pill.innerHTML = '<span class="pill-num">' + (i + 1) + '</span><span class="pill-label">' + s.label + '</span>';
+        pill.addEventListener('click', function() { goTo(s.id); });
+        container.appendChild(pill);
     });
 }
 
@@ -492,8 +827,6 @@ function updateRunningTotal() {
     if (!el) return;
     var total = getTotal();
     el.textContent = total > 0 ? 'KSH ' + fmt(total) : 'KSH 0';
-    var wrap = el.parentElement;
-    if (wrap) wrap.classList.toggle('has-value', total > 0);
 }
 
 /* ---------- needs assessment ---------- */
@@ -524,9 +857,7 @@ function renderNeeds() {
 
 function calcTotalWatts() {
     var total = 0;
-    APPLIANCES.forEach(function(app) {
-        if (state.needs[app.id]) total += app.watts;
-    });
+    APPLIANCES.forEach(function(app) { if (state.needs[app.id]) total += app.watts; });
     return total;
 }
 
@@ -536,46 +867,66 @@ function updateNeedsResult() {
     var wattEl = $('#needs-wattage');
     var recEl = $('#needs-rec');
     var resultEl = $('#needs-result');
-
     if (wattEl) wattEl.textContent = watts + 'W';
-
-    if (watts === 0) {
-        if (resultEl) resultEl.classList.add('hidden');
-        return;
-    }
+    if (watts === 0) { if (resultEl) resultEl.classList.add('hidden'); return; }
     if (resultEl) resultEl.classList.remove('hidden');
-
     var rec = '';
-    if (watts <= 450) {
-        rec = 'A <strong>Fortuner 0.7kVA</strong> can handle this load. Budget-friendly choice.';
-    } else if (watts <= 1200) {
-        rec = 'A <strong>Fortuner 0.7kVA</strong> can work, or go to <strong>Fortuner 2.2kVA</strong> for more headroom.';
-    } else if (watts <= 1400) {
-        rec = 'Consider a <strong>Fortuner 2.2kVA</strong> or <strong>Kstar 3.6kVA</strong> for headroom.';
-    } else if (watts <= 3600) {
-        rec = 'A <strong>Kstar 3.6kVA</strong> is the sweet spot for this load.';
-    } else if (watts <= 6000) {
-        rec = 'You need at least a <strong>Kstar 6.0kVA</strong> for this kind of load.';
-    } else {
-        rec = 'Heavy usage \u2014 consider a <strong>Kstar 6.0kVA</strong> system for reliable high-load support.';
-    }
+    if (watts <= 450) rec = 'A <strong>Fortuner 0.7kVA</strong> or <strong>Kstar Sky 1kVA</strong> can handle this load.';
+    else if (watts <= 900) rec = 'A <strong>Kstar Sky 1kVA</strong> is ideal for this load.';
+    else if (watts <= 1200) rec = 'A <strong>Kstar Sky 2kVA</strong> is the sweet spot, or <strong>Fortuner 2.2kVA</strong>.';
+    else if (watts <= 1600) rec = 'Consider a <strong>Kstar Sky 2kVA</strong> or <strong>Kstar Night 3.6kVA</strong>.';
+    else if (watts <= 3600) rec = 'A <strong>Kstar Night 3.6kVA</strong> is the sweet spot for this load.';
+    else if (watts <= 6000) rec = 'You need at least a <strong>Kstar Night 6.0kVA</strong>.';
+    else if (watts <= 10000) rec = 'A <strong>Kstar Residential ESS 10KW</strong> is ideal for this heavy load.';
+    else rec = 'Heavy usage — consider a <strong>Three Phase</strong> system for reliable high-load support.';
     if (recEl) recEl.innerHTML = rec;
 }
 
 /* ---------- renderers ---------- */
+function renderPhaseSelection() {
+    var wrap = $('#phase-options');
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    var phases = [
+        { id: 'single', name: 'Single Phase', icon: 'fa-house', tagline: 'For homes & small offices', desc: 'Kstar & Fortuner inverters with flexible battery options' },
+        { id: 'three', name: 'Three Phase', icon: 'fa-building', tagline: 'For commercial & industrial', desc: 'Kstar & ATESS complete power packages' }
+    ];
+    phases.forEach(function(p) {
+        var el = document.createElement('div');
+        el.className = 'brand-card' + (state.phase === p.id ? ' selected' : '');
+        el.innerHTML =
+            '<div class="brand-check"><i class="fas fa-check"></i></div>' +
+            '<div class="phase-icon-wrap"><i class="fas ' + p.icon + '"></i></div>' +
+            '<span class="brand-name">' + p.name + '</span>' +
+            '<span class="brand-tagline">' + p.tagline + '</span>' +
+            '<span class="brand-range">' + p.desc + '</span>';
+        el.addEventListener('click', function() { selectPhase(p.id); });
+        wrap.appendChild(el);
+    });
+}
+
 function renderCompanies() {
     var wrap = $('#company-options');
+    if (!wrap) return;
     wrap.innerHTML = '';
-    var brands = [
-        { name: 'Kstar', img: 'images/kstar-logo.png', tagline: 'Premium efficiency, proven reliability', range: getBrandInverterRange('Kstar') },
-        { name: 'Fortuner', img: 'images/fortuner-logo.png', tagline: 'Great value across all budgets', range: getBrandInverterRange('Fortuner') }
-    ];
+    var brands;
+    if (state.phase === 'three') {
+        brands = [
+            { name: 'Kstar', img: 'images/kstar-logo.png', tagline: 'Premium 3-phase packages', range: getBrandInverterRange('Kstar') },
+            { name: 'ATESS', img: 'images/atess-logo.png', tagline: 'Industrial-grade indoor systems', range: getBrandInverterRange('ATESS') }
+        ];
+    } else {
+        brands = [
+            { name: 'Kstar', img: 'images/kstar-logo.png', tagline: 'Premium efficiency, proven reliability', range: getBrandInverterRange('Kstar') },
+            { name: 'Fortuner', img: 'images/fortuner-logo.png', tagline: 'Great value across all budgets', range: getBrandInverterRange('Fortuner') }
+        ];
+    }
     brands.forEach(function(c) {
         var el = document.createElement('div');
         el.className = 'brand-card' + (state.company === c.name ? ' selected' : '');
         el.innerHTML =
             '<div class="brand-check"><i class="fas fa-check"></i></div>' +
-            '<img src="' + c.img + '" alt="' + c.name + '" class="brand-img" loading="lazy">' +
+            '<img src="' + c.img + '" alt="' + c.name + '" class="brand-img" loading="lazy" onerror="this.style.display=\'none\'">' +
             '<span class="brand-name">' + c.name + '</span>' +
             '<span class="brand-tagline">' + c.tagline + '</span>' +
             '<span class="brand-range">' + c.range + '</span>';
@@ -585,53 +936,58 @@ function renderCompanies() {
 }
 
 function renderInverters() {
-    var inverters = state.company === 'Kstar' ? kstarInverters : fortunerInverters;
+    if (state.phase === 'three') { renderThreePhasePackages(); return; }
+    renderSinglePhaseInverters();
+}
+
+function renderSinglePhaseInverters() {
+    var inverters = state.company === 'Kstar' ? kstarSingleInverters : fortunerInverters;
     var wrap = $('#inverter-options');
+    if (!wrap) return;
     wrap.innerHTML = '';
     state.compareList = [];
     updateCompareBar();
 
+    var linksEl = $('#inverter-links');
+    if (linksEl) linksEl.style.display = (state.company === 'Kstar' || state.company === 'Fortuner') ? '' : 'none';
     $$('.kstar-only').forEach(function(l) { l.style.display = state.company === 'Kstar' ? '' : 'none'; });
     $$('.fortuner-only').forEach(function(l) { l.style.display = state.company === 'Fortuner' ? '' : 'none'; });
 
     var userWatts = state.totalWatts;
-
-    // Determine best value (lowest price per watt)
-    var sorted = inverters.slice().sort(function(a, b) { return (a.price / a.maxWatts) - (b.price / b.maxWatts); });
-    var bestValueIdx = inverters.indexOf(sorted[0]);
-
-    // Determine recommended (smallest inverter that covers user needs)
-    var recommendedIdx = -1;
-    if (userWatts > 0) {
-        for (var i = 0; i < inverters.length; i++) {
-            if (inverters[i].maxWatts >= userWatts) { recommendedIdx = i; break; }
-        }
-        if (recommendedIdx === -1) recommendedIdx = inverters.length - 1;
-    }
+    var currentSeries = '';
 
     inverters.forEach(function(inv, idx) {
-        var sel = state.inverter && state.inverter.kva === inv.kva && state.inverter.voltage === inv.voltage;
+        // Series group header for Kstar
+        if (state.company === 'Kstar' && inv.series && inv.series !== currentSeries) {
+            currentSeries = inv.series;
+            var hdr = document.createElement('div');
+            hdr.className = 'series-header';
+            var seriesDesc = '';
+            if (currentSeries === 'Night Series') seriesDesc = 'High-efficiency hybrid inverters';
+            else if (currentSeries === 'Sky Series') seriesDesc = 'Compact & affordable';
+            else if (currentSeries === 'Residential ESS') seriesDesc = 'Premium energy storage system';
+            hdr.innerHTML = '<h3>' + currentSeries + '</h3><p>' + seriesDesc + '</p>';
+            wrap.appendChild(hdr);
+        }
+
+        var sel = state.inverter && state.inverter.kva === inv.kva && state.inverter.voltage === inv.voltage && (inv.series ? inv.series === state.inverter.series : true);
         var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
         var outOfStock = !!inv.outOfStock;
-
         var badge = '';
-        if (idx === recommendedIdx && userWatts > 0 && !outOfStock) {
-            badge = '<span class="card-badge badge-rec"><i class="fas fa-star"></i> Recommended</span>';
-        } else if (idx === bestValueIdx && !outOfStock) {
-            badge = '<span class="card-badge badge-value"><i class="fas fa-tags"></i> Best Value</span>';
-        }
         if (outOfStock) badge = '<span class="card-badge badge-out"><i class="fas fa-ban"></i> Out of Stock</span>';
+        else if (inv.series === 'Residential ESS') badge = '<span class="card-badge badge-premium"><i class="fas fa-gem"></i> Premium ESS</span>';
 
         var matchBar = '';
-        if (userWatts > 0) {
+        if (userWatts > 0 && !outOfStock) {
             var pct = Math.min(Math.round((inv.maxWatts / userWatts) * 100), 200);
             var enough = inv.maxWatts >= userWatts;
             matchBar =
-                '<div class="capacity-match">' +
-                    '<div class="match-bar"><div class="match-fill ' + (enough ? 'enough' : 'short') + '" style="width:' + Math.min(pct, 100) + '%"></div></div>' +
-                    '<span class="match-text ' + (enough ? 'enough' : 'short') + '">' + (enough ? '\u2713 Covers your ' + userWatts + 'W' : '\u26a0 Under your ' + userWatts + 'W needs') + '</span>' +
-                '</div>';
+                '<div class="capacity-match"><div class="match-bar"><div class="match-fill ' + (enough ? 'enough' : 'short') + '" style="width:' + Math.min(pct, 100) + '%"></div></div>' +
+                '<span class="match-text ' + (enough ? 'enough' : 'short') + '">' + (enough ? '✓ Covers your ' + userWatts + 'W' : '⚠ Under your ' + userWatts + 'W needs') + '</span></div>';
         }
+
+        var title = state.company + ' ' + (inv.series ? inv.series + ' ' : '') + inv.kva + 'kVA' + w + ' – ' + inv.voltage + 'V';
+        if (inv.model) title = state.company + ' ' + inv.series + ' ' + inv.model + ' ' + (inv.watts / 1000) + 'KW';
 
         var el = document.createElement('div');
         el.className = 'product-card' + (sel ? ' selected' : '') + (outOfStock ? ' out-of-stock' : '');
@@ -640,23 +996,22 @@ function renderInverters() {
             '<div class="card-check"><i class="fas fa-check"></i></div>' +
             '<div class="card-thumb"><img src="' + inv.img + '" alt="Inverter" loading="lazy"></div>' +
             '<div class="card-body">' +
-                '<span class="card-title">' + state.company + ' ' + inv.kva + 'kVA' + w + ' \u2013 ' + inv.voltage + 'V</span>' +
+                '<span class="card-title">' + title + '</span>' +
                 '<span class="card-subtitle">' + inv.bestFor + '</span>' +
                 '<span class="card-price">' + fmt(inv.price) + ' Ksh</span>' +
                 (outOfStock ? '<span class="card-meta stock-meta">Currently unavailable</span>' : '') +
-                '<span class="card-meta">Efficiency: ' + inv.details.efficiency + ' \u00b7 Max: ' + fmt(inv.maxWatts) + 'W</span>' +
+                '<span class="card-meta">Efficiency: ' + inv.details.efficiency + ' · Max: ' + fmt(inv.maxWatts) + 'W</span>' +
+                (inv.essBattery ? '<div class="ess-battery-banner"><i class="fas fa-car-battery"></i> Includes ' + inv.essBattery.count + '× ' + inv.essBattery.name + ' (' + inv.essBattery.totalCapacity + ') — no battery selection needed</div>' : '') +
                 matchBar +
                 '<div class="card-actions">' +
-                    '<a href="' + inv.specsLink + '" target="_blank" rel="noopener" class="card-link"><i class="fas fa-external-link-alt"></i> Specs</a>' +
-                    (outOfStock ? '<span class="card-link stock-meta"><i class="fas fa-lock"></i> Disabled</span>' : '<button class="card-link compat-btn" data-idx="' + idx + '"><i class="fas fa-plug"></i> What it powers</button><label class="card-link compare-check"><input type="checkbox" data-compare="' + idx + '"> Compare</label>') +
+                    '<a href="' + inv.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i class="fas fa-external-link-alt"></i> Specs</a>' +
+                    (inv.essBattery ? '<a href="' + inv.essBattery.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i class="fas fa-car-battery"></i> Battery Specs</a>' : '') +
+                    (outOfStock ? '<span class="card-link stock-meta"><i class="fas fa-lock"></i> Disabled</span>' : '<button class="card-link card-btn compat-btn" data-idx="' + idx + '"><i class="fas fa-info-circle"></i> More Info</button>') +
                 '</div>' +
             '</div>';
-
         el.addEventListener('click', function(e) {
             if (outOfStock) return;
-            if (!e.target.closest('a') && !e.target.closest('.compat-btn') && !e.target.closest('.compare-check')) {
-                selectInverter(inv);
-            }
+            if (!e.target.closest('a') && !e.target.closest('.compat-btn')) selectInverter(inv);
         });
         wrap.appendChild(el);
     });
@@ -666,109 +1021,84 @@ function renderInverters() {
             showApplianceModal(inverters[parseInt(btn.dataset.idx)]);
         });
     });
-
-    $$('.compare-check input').forEach(function(cb) {
-        cb.addEventListener('change', function() {
-            var idx = parseInt(cb.dataset.compare);
-            if (cb.checked) {
-                if (state.compareList.length < 3) {
-                    state.compareList.push(idx);
-                } else {
-                    cb.checked = false;
-                    toast('You can compare up to 3 inverters', 'warning');
-                }
-            } else {
-                state.compareList = state.compareList.filter(function(i) { return i !== idx; });
-            }
-            updateCompareBar();
-        });
-    });
 }
 
-function updateCompareBar() {
-    var bar = $('#compare-bar');
-    var count = $('#compare-count');
-    if (!bar) return;
-    if (state.compareList.length >= 2) {
-        bar.classList.remove('hidden');
-        if (count) count.textContent = state.compareList.length;
-    } else {
-        bar.classList.add('hidden');
-    }
-}
+function renderThreePhasePackages() {
+    var wrap = $('#inverter-options');
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    state.compareList = [];
+    updateCompareBar();
 
-function showComparison() {
-    var inverters = state.company === 'Kstar' ? kstarInverters : fortunerInverters;
-    var selected = state.compareList.map(function(i) { return inverters[i]; });
-    var body = $('#compare-body');
-    if (!body) return;
+    var linksEl = $('#inverter-links');
+    if (linksEl) linksEl.style.display = 'none';
 
-    var specs = ['kVA Rating', 'Voltage', 'Max Output', 'Efficiency', 'Price', 'Installation (+VAT)', 'Best For'];
-    var colCount = selected.length;
+    var packages = state.company === 'Kstar' ? kstarThreePhasePackages : atessThreePhasePackages;
 
-    var html = '<div class="compare-table" style="grid-template-columns:120px repeat(' + colCount + ',1fr)">';
-    html += '<div class="compare-row compare-header"><div class="compare-cell"></div>';
-    selected.forEach(function(inv) {
-        var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
-        html += '<div class="compare-cell"><img src="' + inv.img + '" alt="" class="compare-img"><strong>' + inv.kva + 'kVA' + w + '</strong></div>';
-    });
-    html += '</div>';
+    packages.forEach(function(pkg) {
+        var sel = state.inverter && state.inverter.id === pkg.id;
+        var pkgPrice = state.company === 'Kstar' ? pkg.packagePrice : pkg.inverterPrice;
+        var priceLabel = state.company === 'Kstar' ? 'Package (Inverter + Battery)' : 'Inverter';
 
-    var rows = selected.map(function(inv) {
-        return [
-            inv.kva + ' kVA',
-            inv.voltage + 'V',
-            fmt(inv.maxWatts) + 'W',
-            inv.details.efficiency,
-            fmt(inv.price) + ' Ksh',
-            fmt(inv.labour) + ' Ksh',
-            inv.bestFor
-        ];
-    });
+        var features = '';
+        if (pkg.inverterNotes) {
+            features = '<div class="pkg-features"><ul>' + pkg.inverterNotes.map(function(n) { return '<li><i class="fas fa-check"></i> ' + n + '</li>'; }).join('') + '</ul></div>';
+        }
 
-    specs.forEach(function(spec, si) {
-        html += '<div class="compare-row"><div class="compare-cell compare-label">' + spec + '</div>';
-        rows.forEach(function(r) {
-            html += '<div class="compare-cell">' + r[si] + '</div>';
+        var batInfo = '';
+        if (state.company === 'Kstar' && pkg.batteries) {
+            batInfo = '<span class="card-meta"><i class="fas fa-car-battery"></i> Includes ' + pkg.batteries.count + '× ' + pkg.batteries.name + ' (' + pkg.batteries.totalCapacity + ')</span>';
+        }
+        if (state.company === 'ATESS' && pkg.battery) {
+            batInfo = '<span class="card-meta"><i class="fas fa-car-battery"></i> ' + pkg.battery.name + ' — configurable 1–3 master pairs</span>';
+        }
+
+        var el = document.createElement('div');
+        el.className = 'product-card pkg-card' + (sel ? ' selected' : '');
+        el.innerHTML =
+            '<span class="card-badge badge-premium"><i class="fas fa-bolt"></i> 3-Phase</span>' +
+            '<div class="card-check"><i class="fas fa-check"></i></div>' +
+            '<div class="card-thumb"><img src="' + pkg.img + '" alt="Package" loading="lazy"></div>' +
+            '<div class="card-body">' +
+                '<span class="card-title">' + state.company + ' ' + pkg.name + '</span>' +
+                '<span class="card-subtitle">' + pkg.bestFor + '</span>' +
+                '<span class="card-price">' + fmt(pkgPrice) + ' Ksh <small>(' + priceLabel + ')</small></span>' +
+                '<span class="card-meta"><i class="fas fa-solar-panel"></i> ' + pkg.panelCount + '× 600W Solar Panels</span>' +
+                batInfo +
+                features +
+                '<div class="card-actions">' +
+                    '<a href="' + pkg.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i class="fas fa-external-link-alt"></i> Specs</a>' +
+                    (pkg.batteries && pkg.batteries.specsLink ? '<a href="' + pkg.batteries.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i class="fas fa-car-battery"></i> Battery Specs</a>' : '') +
+                '</div>' +
+            '</div>';
+        el.addEventListener('click', function(e) {
+            if (!e.target.closest('a')) selectPackage(pkg);
         });
-        html += '</div>';
+        wrap.appendChild(el);
     });
-    html += '</div>';
-
-    body.innerHTML = html;
-    $('#compare-modal').classList.remove('hidden');
 }
 
 function renderBatteries() {
+    if (state.phase === 'three' && state.company === 'ATESS') { renderAtessBatteryConfig(); return; }
+    renderSinglePhaseBatteries();
+}
+
+function renderSinglePhaseBatteries() {
     var wrap = $('#battery-options');
+    if (!wrap) return;
     wrap.innerHTML = '';
     var inv = state.inverter;
     if (!inv) return;
 
-    var bestValueBat = null;
-    var bestCostPerKwh = Infinity;
-    batteries.forEach(function(bat) {
-        var info = getBatteryCompat(bat);
-        if (info && info.compatible) {
-            var costPerKwh = (bat.price * info.count) / (bat.capacityWh * bat.dod * info.count / 1000);
-            if (costPerKwh < bestCostPerKwh) {
-                bestCostPerKwh = costPerKwh;
-                bestValueBat = bat.id;
-            }
-        }
-    });
-
     batteries.forEach(function(bat) {
         var info = getBatteryCompat(bat);
         if (!info) return;
-
         var count = info.count;
         var compatible = info.compatible;
         var reason = info.reason;
+        var sel = state.battery && state.battery.id === bat.id && state.battery.count === count;
 
-        var sel = state.battery && state.battery.name === bat.name && state.battery.count === count;
         var el = document.createElement('div');
-
         if (!compatible) {
             el.className = 'product-card incompatible';
             el.innerHTML =
@@ -776,24 +1106,12 @@ function renderBatteries() {
                 '<div class="card-body">' +
                     '<span class="card-title">' + bat.name + '</span>' +
                     '<span class="card-price">' + fmt(bat.price) + ' Ksh/unit</span>' +
-                    '<div class="incompat-reason">' +
-                        '<i class="fas fa-ban"></i>' +
-                        '<span>' + reason + '</span>' +
-                    '</div>' +
+                    '<div class="incompat-reason"><i class="fas fa-ban"></i><span>' + reason + '</span></div>' +
                 '</div>';
         } else {
-            var backup = (bat.backupHours * count).toFixed(1);
             var totalCost = bat.price * count;
-            var costPerKwh = ((bat.price * count) / (bat.capacityWh * bat.dod * count / 1000)).toFixed(0);
-
             var badge = '';
-            if (bat.id === bestValueBat && bat.type !== 'lithium') {
-                badge = '<span class="card-badge badge-value"><i class="fas fa-tags"></i> Best Value</span>';
-            }
-            if (bat.type === 'lithium') {
-                badge = '<span class="card-badge badge-premium"><i class="fas fa-gem"></i> Premium</span>';
-            }
-
+            if (bat.type === 'lithium') badge = '<span class="card-badge badge-premium"><i class="fas fa-gem"></i> Premium</span>';
             el.className = 'product-card' + (sel ? ' selected' : '');
             el.innerHTML =
                 badge +
@@ -802,220 +1120,496 @@ function renderBatteries() {
                 '<div class="card-body">' +
                     '<span class="card-title">' + bat.name + '</span>' +
                     '<span class="card-subtitle">' + bat.shortDesc + '</span>' +
-                    '<span class="card-price">' + fmt(bat.price) + ' Ksh <small>\u00d7 ' + count + ' = ' + fmt(totalCost) + ' Ksh</small></span>' +
-                    '<span class="card-meta">~' + backup + ' hrs backup \u00b7 ' + bat.warranty + ' warranty</span>' +
-                    '<span class="card-meta">' + fmt(costPerKwh) + ' Ksh/kWh \u00b7 ' + reason + '</span>' +
-                    '<div class="card-actions">' +
-                        '<a href="' + bat.specsLink + '" target="_blank" rel="noopener" class="card-link"><i class="fas fa-external-link-alt"></i> Specs</a>' +
-                    '</div>' +
+                    '<span class="card-price">' + fmt(bat.price) + ' Ksh <small>× ' + count + ' = ' + fmt(totalCost) + ' Ksh</small></span>' +
+                    '<span class="card-meta">~' + (bat.backupHours * count).toFixed(1) + ' hrs backup · ' + bat.warranty + ' warranty</span>' +
+                    '<span class="card-meta">' + reason + '</span>' +
+                    '<div class="card-actions"><a href="' + bat.specsLink + '" target="_blank" rel="noopener" class="card-link"><i class="fas fa-external-link-alt"></i> Specs</a></div>' +
                 '</div>';
             el.addEventListener('click', function(e) {
                 if (!e.target.closest('a')) selectBattery(bat, count);
             });
         }
-
         wrap.appendChild(el);
     });
 }
 
-/* ---------- battery compatibility ---------- */
+function renderAtessBatteryConfig() {
+    var wrap = $('#battery-options');
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    var inv = state.inverter;
+    if (!inv || !inv.battery) return;
+
+    var header = document.createElement('div');
+    header.className = 'battery-config-header';
+    header.innerHTML = '<p>Configure your battery storage. Each master pairs with one slave unit.</p>';
+    wrap.appendChild(header);
+
+    inv.battery.configs.forEach(function(cfg) {
+        var sel = state.atessMasterCount === cfg.masters;
+        var unitPrice = usdToKes(inv.battery.usdPricePerUnit);
+        var totalPrice = unitPrice * cfg.totalUnits;
+        var el = document.createElement('div');
+        el.className = 'product-card' + (sel ? ' selected' : '');
+        el.innerHTML =
+            (cfg.masters === 3 ? '<span class="card-badge badge-rec"><i class="fas fa-star"></i> Maximum</span>' : '') +
+            '<div class="card-check"><i class="fas fa-check"></i></div>' +
+            '<div class="card-thumb"><img src="images/battery-100ah-lithium.png" alt="Battery" loading="lazy"></div>' +
+            '<div class="card-body">' +
+                '<span class="card-title">' + cfg.masters + ' Master + ' + cfg.masters + ' Slave</span>' +
+                '<span class="card-subtitle">' + cfg.totalUnits + ' batteries total · ' + cfg.capacity + '</span>' +
+                '<span class="card-price">' + fmt(unitPrice) + ' Ksh <small>× ' + cfg.totalUnits + ' = ' + fmt(totalPrice) + ' Ksh</small></span>' +
+                '<span class="card-meta">' + inv.battery.warranty + ' warranty · ' + inv.battery.name + '</span>' +
+                '<div class="card-actions"><a href="' + inv.battery.specsLink + '" target="_blank" rel="noopener" class="card-link"><i class="fas fa-external-link-alt"></i> Specs</a></div>' +
+            '</div>';
+        el.addEventListener('click', function(e) {
+            if (!e.target.closest('a')) selectAtessBatteryConfig(cfg.masters);
+        });
+        wrap.appendChild(el);
+    });
+}
+
+/* ---------- battery compatibility (single phase) ---------- */
 function getBatteryCompat(bat) {
     var inv = state.inverter;
     if (!inv) return null;
 
     if (state.company === 'Kstar') {
-        if (inv.kva === 3.6 && inv.voltage === 24) {
-            if (bat.type === 'lithium') return { count: 0, compatible: false, reason: 'Not compatible \u2014 this 24V inverter doesn\u2019t support lithium batteries' };
-            return { count: 2, compatible: true, reason: '2 units in series for 24V system' };
+        // Sky Series
+        if (inv.series === 'Sky Series') {
+            if (bat.type === 'lithium') return { count: 0, compatible: false, reason: 'Not compatible — Sky Series does not support lithium' };
+            if (inv.kva === 1.0) return { count: 1, compatible: true, reason: '1 unit for 12V system' };
+            if (inv.kva === 2.0) return { count: 2, compatible: true, reason: '2 units in series for 24V system' };
         }
-        if (inv.kva === 3.6 && inv.voltage === 48) {
-            if (bat.type === 'lithium') return { count: 1, compatible: true, reason: '51.2V lithium matches your 48V system directly' };
-            return { count: 4, compatible: true, reason: '4 units in series for 48V system' };
+        // Night Series
+        if (inv.series === 'Night Series') {
+            if (inv.kva === 3.6 && inv.voltage === 24) {
+                if (bat.type === 'lithium') return { count: 0, compatible: false, reason: 'Not compatible — 24V inverter doesn\'t support lithium' };
+                return { count: 2, compatible: true, reason: '2 units in series for 24V system' };
+            }
+            if (inv.kva === 3.6 && inv.voltage === 48) {
+                if (bat.type === 'lithium') return { count: 1, compatible: true, reason: '51.2V lithium matches your 48V system' };
+                return { count: 4, compatible: true, reason: '4 units in series for 48V system' };
+            }
+            if (inv.kva === 6.0 && inv.voltage === 48) {
+                if (bat.type === 'lithium') return { count: 2, compatible: true, reason: '2 lithium units for extended capacity' };
+                return { count: 4, compatible: true, reason: '4 units in series for 48V system' };
+            }
         }
-        if (inv.kva === 6.0 && inv.voltage === 48) {
-            if (bat.type === 'lithium') return { count: 2, compatible: true, reason: '2 lithium units for extended capacity' };
-            return { count: 4, compatible: true, reason: '4 units in series for 48V system' };
-        }
-    } else {
-        if (inv.kva === 0.7 && inv.voltage === 12) {
-            if (bat.type === 'lithium') return { count: 0, compatible: false, reason: 'Not compatible \u2014 12V system can\u2019t use 51.2V lithium' };
-            return { count: 1, compatible: true, reason: '1 unit for 12V system' };
-        }
-        if ((inv.kva === 1.5 || inv.kva === 2.2) && inv.voltage === 24) {
-            if (bat.type === 'lithium') return { count: 0, compatible: false, reason: 'Not compatible \u2014 this inverter doesn\u2019t support lithium chemistry' };
-            return { count: 2, compatible: true, reason: '2 units in series for 24V system' };
-        }
-        if (inv.kva === 10.0 && inv.voltage === 48) {
-            if (bat.type === 'lithium') return { count: 0, compatible: false, reason: 'Not compatible \u2014 this inverter doesn\u2019t support lithium chemistry' };
-            return { count: 4, compatible: true, reason: '4 units in series for 48V system' };
-        }
+        // ESS handled separately (no battery step)
+        return null;
+    }
+
+    // Fortuner
+    if (inv.kva === 0.7 && inv.voltage === 12) {
+        if (bat.type === 'lithium') return { count: 0, compatible: false, reason: 'Not compatible — 12V system can\'t use 51.2V lithium' };
+        return { count: 1, compatible: true, reason: '1 unit for 12V system' };
+    }
+    if ((inv.kva === 1.5 || inv.kva === 2.2) && inv.voltage === 24) {
+        if (bat.type === 'lithium') return { count: 0, compatible: false, reason: 'Not compatible — doesn\'t support lithium' };
+        return { count: 2, compatible: true, reason: '2 units in series for 24V system' };
+    }
+    if (inv.kva === 10.0 && inv.voltage === 48) {
+        if (bat.type === 'lithium') return { count: 0, compatible: false, reason: 'Not compatible — doesn\'t support lithium' };
+        return { count: 4, compatible: true, reason: '4 units in series for 48V system' };
     }
     return null;
 }
 
 /* ---------- selections ---------- */
+function selectPhase(id) {
+    state.phase = id;
+    state.company = '';
+    state.inverter = null;
+    state.battery = null;
+    state.panels = 0;
+    state.panelType = null;
+    state.compareList = [];
+    state.atessMasterCount = 3;
+    renderPhaseSelection();
+    toast((id === 'single' ? 'Single Phase' : 'Three Phase') + ' selected', 'success');
+    setTimeout(function() { goTo('company'); }, 250);
+    saveState();
+}
+
 function selectCompany(name) {
     state.company = name;
     state.inverter = null;
     state.battery = null;
+    state.panels = 0;
+    state.panelType = null;
     state.compareList = [];
+    state.atessMasterCount = 3;
     renderCompanies();
     toast(name + ' selected', 'success');
-    setTimeout(function() {
-        goTo('inverter');
-    }, 250);
+    setTimeout(function() { goTo('inverter'); }, 250);
     saveState();
 }
 
 function selectInverter(inv) {
-    if (inv.outOfStock) {
-        toast(inv.kva + 'kVA is currently out of stock', 'warning');
-        return;
-    }
+    if (inv.outOfStock) { toast(inv.kva + 'kVA is currently out of stock', 'warning'); return; }
     state.inverter = inv;
     state.battery = null;
     state.compareList = [];
-    renderInverters();
-    var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
-    toast(inv.kva + 'kVA' + w + ' inverter selected', 'success');
-    setTimeout(function() {
-        goTo('battery');
-    }, 250);
+    calcPanels();
+
+    if (inv.series === 'Residential ESS') {
+        toast('ESS ' + inv.model + ' selected with 4× H-PACK-5.1A batteries', 'success');
+        setTimeout(function() { goTo('summary'); }, 250);
+    } else {
+        var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
+        toast(inv.kva + 'kVA' + w + ' inverter selected', 'success');
+        setTimeout(function() { goTo('battery'); }, 250);
+    }
+    saveState();
+}
+
+function selectPackage(pkg) {
+    state.inverter = pkg;
+    state.battery = null;
+    state.compareList = [];
+    calcPanels();
+
+    if (state.company === 'Kstar') {
+        toast(pkg.name + ' package selected', 'success');
+        setTimeout(function() { goTo('summary'); }, 250);
+    } else {
+        state.atessMasterCount = 3;
+        toast(pkg.name + ' selected — configure your battery', 'success');
+        setTimeout(function() { goTo('battery'); }, 250);
+    }
     saveState();
 }
 
 function selectBattery(bat, count) {
-    state.battery = { name: bat.name, id: bat.id, shortDesc: bat.shortDesc, price: bat.price, img: bat.img, specsLink: bat.specsLink, capacityWh: bat.capacityWh, dod: bat.dod, backupHours: bat.backupHours, warranty: bat.warranty, voltagePerUnit: bat.voltagePerUnit, type: bat.type, count: count };
+    state.battery = {
+        name: bat.name, id: bat.id, shortDesc: bat.shortDesc,
+        price: bat.price, img: bat.img, specsLink: bat.specsLink,
+        capacityWh: bat.capacityWh, dod: bat.dod, backupHours: bat.backupHours,
+        warranty: bat.warranty, voltagePerUnit: bat.voltagePerUnit, type: bat.type,
+        count: count
+    };
     renderBatteries();
-    calcPanels();
-    toast(bat.name + ' \u00d7 ' + count + ' selected', 'success');
-    setTimeout(function() {
-        goTo('summary');
-    }, 250);
+    toast(bat.name + ' × ' + count + ' selected', 'success');
+    setTimeout(function() { goTo('summary'); }, 250);
+    saveState();
+}
+
+function selectAtessBatteryConfig(masters) {
+    state.atessMasterCount = masters;
+    renderAtessBatteryConfig();
+    var cfg = state.inverter.battery.configs[masters - 1];
+    toast(cfg.totalUnits + ' batteries (' + cfg.capacity + ') selected', 'success');
+    setTimeout(function() { goTo('summary'); }, 250);
     saveState();
 }
 
 /* ---------- panel calc ---------- */
 function calcPanels() {
-    if (state.company === 'Fortuner') {
-        if (state.inverter.kva === 0.7) state.panels = 0;
-        else if (state.inverter.kva === 1.5 || state.inverter.kva === 2.2) state.panels = 2;
-        else if (state.inverter.kva === 10.0) state.panels = 16;
-    } else {
-        state.panels = (state.inverter.kva === 6.0 && state.inverter.voltage === 48) ? 10 : 6;
+    if (state.phase === 'three') {
+        var pkg = state.inverter;
+        state.panels = pkg.panelCount;
+        if (state.company === 'ATESS') state.panelType = PANEL_600W_ATESS;
+        else state.panelType = PANEL_600W;
+        return;
     }
+    if (state.company === 'Fortuner') {
+        if (state.inverter.kva === 0.7) { state.panels = 3; state.panelType = PANEL_180W; }
+        else if (state.inverter.kva === 1.5 || state.inverter.kva === 2.2) { state.panels = 2; state.panelType = PANEL_600W; }
+        else if (state.inverter.kva === 10.0) { state.panels = 16; state.panelType = PANEL_600W; }
+    } else {
+        if (state.inverter.series === 'Sky Series') {
+            state.panels = state.inverter.kva === 1.0 ? 3 : 6;
+            state.panelType = PANEL_180W;
+        } else if (state.inverter.series === 'Residential ESS') {
+            state.panels = 20;
+            state.panelType = PANEL_600W;
+        } else {
+            state.panels = (state.inverter.kva === 6.0 && state.inverter.voltage === 48) ? 10 : 6;
+            state.panelType = PANEL_600W;
+        }
+    }
+}
+
+/* ---------- compare ---------- */
+function updateCompareBar() {
+    var bar = $('#compare-bar');
+    if (!bar) return;
+    bar.classList.toggle('hidden', state.compareList.length < 2);
+    var count = $('#compare-count');
+    if (count) count.textContent = state.compareList.length;
+}
+
+function showComparison() {
+    if (state.phase === 'three') return;
+    var inverters = state.company === 'Kstar' ? kstarSingleInverters : fortunerInverters;
+    var selected = state.compareList.map(function(i) { return inverters[i]; });
+    var body = $('#compare-body');
+    if (!body) return;
+    var specs = ['kVA Rating', 'Voltage', 'Max Output', 'Efficiency', 'Price', 'Installation (+VAT)', 'Best For'];
+    var colCount = selected.length;
+    var html = '<div class="compare-table" style="grid-template-columns:120px repeat(' + colCount + ',1fr)">';
+    html += '<div class="compare-row compare-header"><div class="compare-cell"></div>';
+    selected.forEach(function(inv) {
+        var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
+        html += '<div class="compare-cell"><img src="' + inv.img + '" alt="" class="compare-img"><strong>' + inv.kva + 'kVA' + w + '</strong></div>';
+    });
+    html += '</div>';
+    var rows = selected.map(function(inv) {
+        return [inv.kva + ' kVA', inv.voltage + 'V', fmt(inv.maxWatts) + 'W', inv.details.efficiency, fmt(inv.price) + ' Ksh', fmt(inv.labour) + ' Ksh', inv.bestFor];
+    });
+    specs.forEach(function(spec, si) {
+        html += '<div class="compare-row"><div class="compare-cell compare-label">' + spec + '</div>';
+        rows.forEach(function(r) { html += '<div class="compare-cell">' + r[si] + '</div>'; });
+        html += '</div>';
+    });
+    html += '</div>';
+    body.innerHTML = html;
+    $('#compare-modal').classList.remove('hidden');
 }
 
 /* ---------- summary ---------- */
 function renderSummary() {
     renderSelectionOverview();
     renderPanelInfo();
-    renderMountingCost();
+    renderAccessoriesBlock();
     renderCostBreakdown();
     renderFinancing();
     renderEnvironmentalImpact();
+    initSavingsCalc();
     updateRunningTotal();
 }
 
 function renderSelectionOverview() {
     var cards = $('#selection-cards');
     if (!cards) return;
-    var inv = state.inverter;
-    var bat = state.battery;
-    var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
+    var html = '';
 
-    cards.innerHTML =
-        '<div class="sel-card">' +
-            '<div class="sel-card-icon"><i class="fas fa-building"></i></div>' +
-            '<div class="sel-card-info">' +
-                '<span class="sel-card-label">Brand</span>' +
-                '<span class="sel-card-val">' + state.company + '</span>' +
-            '</div>' +
-            '<button class="sel-card-edit" data-goto="company"><i class="fas fa-pen"></i></button>' +
-        '</div>' +
-        '<div class="sel-card">' +
+    html += '<div class="sel-card">' +
+        '<div class="sel-card-icon"><i class="fas fa-wave-square"></i></div>' +
+        '<div class="sel-card-info"><span class="sel-card-label">Phase</span><span class="sel-card-val">' + (state.phase === 'single' ? 'Single Phase' : 'Three Phase') + '</span></div>' +
+        '<button class="sel-card-edit" data-goto="phase"><i class="fas fa-pen"></i></button></div>';
+
+    html += '<div class="sel-card">' +
+        '<div class="sel-card-icon"><i class="fas fa-building"></i></div>' +
+        '<div class="sel-card-info"><span class="sel-card-label">Brand</span><span class="sel-card-val">' + state.company + '</span></div>' +
+        '<button class="sel-card-edit" data-goto="company"><i class="fas fa-pen"></i></button></div>';
+
+    if (state.phase === 'three') {
+        html += '<div class="sel-card">' +
             '<div class="sel-card-icon"><i class="fas fa-bolt"></i></div>' +
-            '<div class="sel-card-info">' +
-                '<span class="sel-card-label">Inverter</span>' +
-                '<span class="sel-card-val">' + inv.kva + 'kVA' + w + ' \u2013 ' + inv.voltage + 'V</span>' +
-            '</div>' +
-            '<button class="sel-card-edit" data-goto="inverter"><i class="fas fa-pen"></i></button>' +
-        '</div>' +
-        '<div class="sel-card">' +
-            '<div class="sel-card-icon"><i class="fas fa-car-battery"></i></div>' +
-            '<div class="sel-card-info">' +
-                '<span class="sel-card-label">Battery</span>' +
-                '<span class="sel-card-val">' + bat.name + ' \u00d7 ' + bat.count + '</span>' +
-            '</div>' +
-            '<button class="sel-card-edit" data-goto="battery"><i class="fas fa-pen"></i></button>' +
-        '</div>';
+            '<div class="sel-card-info"><span class="sel-card-label">Package</span><span class="sel-card-val">' + state.company + ' ' + state.inverter.name + '</span></div>' +
+            '<button class="sel-card-edit" data-goto="inverter"><i class="fas fa-pen"></i></button></div>';
+        if (state.company === 'ATESS') {
+            var cfg = state.inverter.battery.configs[state.atessMasterCount - 1];
+            html += '<div class="sel-card">' +
+                '<div class="sel-card-icon"><i class="fas fa-car-battery"></i></div>' +
+                '<div class="sel-card-info"><span class="sel-card-label">Battery Config</span><span class="sel-card-val">' + cfg.totalUnits + '× ' + state.inverter.battery.name + ' (' + cfg.capacity + ')</span></div>' +
+                '<button class="sel-card-edit" data-goto="battery"><i class="fas fa-pen"></i></button></div>';
+        } else {
+            var bat = state.inverter.batteries;
+            html += '<div class="sel-card">' +
+                '<div class="sel-card-icon"><i class="fas fa-car-battery"></i></div>' +
+                '<div class="sel-card-info"><span class="sel-card-label">Battery (Included)</span><span class="sel-card-val">' + bat.count + '× ' + bat.name + ' (' + bat.totalCapacity + ')</span></div></div>';
+        }
+    } else {
+        var inv = state.inverter;
+        var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
+        var invLabel = inv.series ? inv.series + ' ' + inv.kva + 'kVA' + w : inv.kva + 'kVA' + w;
+        html += '<div class="sel-card">' +
+            '<div class="sel-card-icon"><i class="fas fa-bolt"></i></div>' +
+            '<div class="sel-card-info"><span class="sel-card-label">Inverter</span><span class="sel-card-val">' + invLabel + ' – ' + inv.voltage + 'V</span></div>' +
+            '<button class="sel-card-edit" data-goto="inverter"><i class="fas fa-pen"></i></button></div>';
 
+        if (inv.series === 'Residential ESS') {
+            html += '<div class="sel-card">' +
+                '<div class="sel-card-icon"><i class="fas fa-car-battery"></i></div>' +
+                '<div class="sel-card-info"><span class="sel-card-label">Battery (Included)</span><span class="sel-card-val">' + inv.essBattery.count + '× ' + inv.essBattery.name + ' (' + inv.essBattery.totalCapacity + ')</span></div></div>';
+        } else if (state.battery) {
+            html += '<div class="sel-card">' +
+                '<div class="sel-card-icon"><i class="fas fa-car-battery"></i></div>' +
+                '<div class="sel-card-info"><span class="sel-card-label">Battery</span><span class="sel-card-val">' + state.battery.name + ' × ' + state.battery.count + '</span></div>' +
+                '<button class="sel-card-edit" data-goto="battery"><i class="fas fa-pen"></i></button></div>';
+        }
+    }
+
+    cards.innerHTML = html;
     cards.querySelectorAll('.sel-card-edit').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            var step = btn.dataset.goto;
-            goTo(step);
-        });
+        btn.addEventListener('click', function() { goTo(btn.dataset.goto); });
     });
 }
 
 function renderPanelInfo() {
     var panelInfo = $('#panel-info');
     var panelImages = $('#panel-images');
+    if (!panelInfo) return;
+    var pw = state.panelType ? state.panelType.watts : 600;
+    var pp = getPanelPrice();
     if (state.panels > 0) {
         panelInfo.innerHTML =
-            '<p><strong>' + state.panels + '</strong> \u00d7 600W solar panels</p>' +
-            '<p class="price">' + fmt(PANEL_PRICE) + ' Ksh each \u00b7 Total: ' + fmt(state.panels * PANEL_PRICE) + ' Ksh</p>' +
-            '<a href="https://drive.google.com/file/d/14w98znycd4Y4-quOsoSItp4ulKUkpoCv/view?usp=sharing" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Panel Specs</a>';
+            '<p><strong>' + state.panels + '</strong> × ' + pw + 'W solar panels</p>' +
+            '<p class="price">' + fmt(pp) + ' Ksh each · Total: ' + fmt(state.panels * pp) + ' Ksh</p>' +
+            '<a href="' + (state.panelType ? state.panelType.specsLink : '#') + '" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Panel Specs</a>';
     } else {
         panelInfo.innerHTML = '<p>No solar panels needed for this configuration.</p>';
     }
-    panelImages.innerHTML = '';
-    for (var i = 0; i < state.panels; i++) {
-        var img = document.createElement('img');
-        img.src = 'images/solar-panel.png';
-        img.loading = 'lazy';
-        img.alt = 'Solar Panel';
-        panelImages.appendChild(img);
+    if (panelImages) {
+        panelImages.innerHTML = '';
+        var showCount = Math.min(state.panels, 20);
+        for (var i = 0; i < showCount; i++) {
+            var img = document.createElement('img');
+            img.src = 'images/solar-panel.png';
+            img.loading = 'lazy';
+            img.alt = 'Solar Panel';
+            panelImages.appendChild(img);
+        }
+        if (state.panels > 20) {
+            var more = document.createElement('span');
+            more.className = 'panel-more';
+            more.textContent = '+' + (state.panels - 20) + ' more';
+            panelImages.appendChild(more);
+        }
     }
 }
 
-function renderMountingCost() {
-    var mc = $('#mounting-cost');
-    if (mc) mc.querySelector('.acc-price').textContent = fmt(getMountingCost()) + ' Ksh';
+function renderAccessoriesBlock() {
+    var block = $('#accessory-block');
+    if (!block) return;
+
+    if (state.phase === 'three') {
+        if (state.company === 'ATESS') {
+            var accHtml = '<div class="quote-block-header"><i class="fas fa-toolbox"></i><h2>Package Accessories</h2></div><div class="acc-grid">';
+            state.inverter.accessories.forEach(function(acc) {
+                accHtml += '<div class="acc-card">' +
+                    '<i class="fas fa-microchip"></i>' +
+                    '<span class="acc-name">' + acc.name + '</span>' +
+                    '<span class="acc-price">' + fmt(usdToKes(acc.usdPrice)) + ' Ksh</span>' +
+                    '<span class="acc-warranty">' + acc.warranty + '</span>' +
+                    (acc.specsLink ? '<a href="' + acc.specsLink + '" target="_blank" rel="noopener" class="acc-specs-link"><i class="fas fa-external-link-alt"></i> Specs</a>' : '') +
+                '</div>';
+            });
+            accHtml += '<div class="acc-card"><i class="fas fa-solar-panel"></i><span class="acc-name">Mounting & Cables</span><span class="acc-price">' + fmt(getMountingCost()) + ' Ksh</span><span class="acc-warranty">' + state.panels + ' panels × ' + fmt(usdToKes(USD_PRICES.mountingPerPanel)) + ' Ksh</span></div>';
+            accHtml += '</div>';
+            block.innerHTML = accHtml;
+        } else {
+            block.innerHTML =
+                '<div class="quote-block-header"><i class="fas fa-toolbox"></i><h2>Included Items</h2></div>' +
+                '<div class="acc-grid">' +
+                    '<div class="acc-card"><i class="fas fa-solar-panel"></i><span class="acc-name">Mounting & Cables</span><span class="acc-price">' + fmt(getMountingCost()) + ' Ksh</span><span class="acc-warranty">' + state.panels + ' panels × ' + fmt(usdToKes(USD_PRICES.mountingPerPanel)) + ' Ksh</span></div>' +
+                '</div>';
+        }
+    } else {
+        block.innerHTML =
+            '<div class="quote-block-header"><i class="fas fa-toolbox"></i><h2>Included Accessories</h2></div>' +
+            '<div class="acc-grid">' +
+                '<div class="acc-card"><i class="fas fa-toggle-on"></i><span class="acc-name">Change Over Switch</span><span class="acc-price" id="acc-changeover-price">' + fmt(usdToKes(USD_PRICES.changeOverSwitch)) + ' Ksh</span></div>' +
+                '<div class="acc-card"><i class="fas fa-plug"></i><span class="acc-name">DC MCCB</span><span class="acc-price" id="acc-dc-mccb-price">' + fmt(usdToKes(USD_PRICES.accessories.dcMccb)) + ' Ksh</span></div>' +
+                '<div class="acc-card"><i class="fas fa-sliders-h"></i><span class="acc-name">AVS 30 AMPS</span><span class="acc-price" id="acc-avs-price">' + fmt(usdToKes(USD_PRICES.accessories.avs30Amps)) + ' Ksh</span></div>' +
+                '<div class="acc-card" id="mounting-cost"><i class="fas fa-solar-panel"></i><span class="acc-name">Mounting & Cables</span><span class="acc-price">' + fmt(getMountingCost()) + ' Ksh</span><span class="acc-warranty">' + state.panels + ' panels × ' + fmt(usdToKes(USD_PRICES.mountingPerPanel)) + ' Ksh</span></div>' +
+            '</div>';
+    }
 }
 
 function renderCostBreakdown() {
+    var summaryEl = $('#summary');
+    var totalEl = $('#total-cost');
+    var noSolarEl = $('#no-solar-summary');
+    if (!summaryEl) return;
+
+    if (state.phase === 'three') {
+        renderThreePhaseCostBreakdown(summaryEl, totalEl, noSolarEl);
+    } else {
+        renderSinglePhaseCostBreakdown(summaryEl, totalEl, noSolarEl);
+    }
+}
+
+function renderSinglePhaseCostBreakdown(summaryEl, totalEl, noSolarEl) {
     var inv = state.inverter;
-    var bat = state.battery;
+    var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
+    var invLabel = (inv.series ? inv.series + ' ' : '') + inv.kva + 'kVA' + w + ' – ' + inv.voltage + 'V';
     var invCost = inv.price;
     var labCost = inv.labour;
-    var batCost = bat.price * bat.count;
-    var panCost = state.panels * PANEL_PRICE;
-    var accCost = getAccessoryCost();
-    var total = invCost + labCost + batCost + panCost + accCost;
-    var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
+    var panCost = state.panels * getPanelPrice();
+    var accCost = getSinglePhaseAccessoryCost();
+    var batCost, batLabel;
 
-    $('#summary').innerHTML =
-        '<div class="row"><span>Inverter: ' + state.company + ' ' + inv.kva + 'kVA' + w + ' \u2013 ' + inv.voltage + 'V</span><span class="row-val">' + fmt(invCost) + ' Ksh</span></div>' +
-        '<div class="row"><span>Installation & Labour (+VAT)</span><span class="row-val">' + fmt(labCost) + ' Ksh</span></div>' +
-        '<div class="row"><span>Batteries: ' + bat.name + ' \u00d7 ' + bat.count + '</span><span class="row-val">' + fmt(batCost) + ' Ksh</span></div>' +
-        '<div class="row"><span>Solar Panels: ' + state.panels + ' panels</span><span class="row-val">' + fmt(panCost) + ' Ksh</span></div>' +
-        '<div class="row"><span>Accessories (included)</span><span class="row-val">' + fmt(accCost) + ' Ksh</span></div>';
-
-    $('#total-cost').textContent = fmt(total) + ' KSH';
-
-    var noSolar = getNoSolarBreakdown();
-    var noSolarEl = $('#no-solar-summary');
-    if (noSolarEl && noSolar) {
-        noSolarEl.innerHTML =
-            '<h3>Without Solar Panels Option</h3>' +
-            '<div class="row"><span>Inverter</span><span class="row-val">' + fmt(noSolar.inverter) + ' Ksh</span></div>' +
-            '<div class="row"><span>Batteries</span><span class="row-val">' + fmt(noSolar.battery) + ' Ksh</span></div>' +
-            '<div class="row"><span>Change Over Switch</span><span class="row-val">' + fmt(noSolar.changeOver) + ' Ksh</span></div>' +
-            '<div class="row"><span>AC Cable</span><span class="row-val">' + fmt(noSolar.acCable) + ' Ksh</span></div>' +
-            '<div class="row"><span>Installation & Labour</span><span class="row-val">' + fmt(noSolar.labour) + ' Ksh</span></div>' +
-            '<div class="no-solar-total"><span>Total Without Solar Panels</span><span>' + fmt(noSolar.total) + ' KSH</span></div>';
+    if (inv.series === 'Residential ESS') {
+        batCost = getEssBatteryCost();
+        batLabel = inv.essBattery.name + ' × ' + inv.essBattery.count;
+    } else {
+        batCost = state.battery.price * state.battery.count;
+        batLabel = state.battery.name + ' × ' + state.battery.count;
     }
+
+    var total = invCost + labCost + batCost + panCost + accCost;
+    var pw = state.panelType ? state.panelType.watts : 600;
+
+    summaryEl.innerHTML =
+        '<div class="row"><span>Inverter: ' + state.company + ' ' + invLabel + '</span><span class="row-val">' + fmt(invCost) + ' Ksh</span></div>' +
+        '<div class="row"><span>Installation & Labour (+VAT)</span><span class="row-val">' + fmt(labCost) + ' Ksh</span></div>' +
+        '<div class="row"><span>Batteries: ' + batLabel + '</span><span class="row-val">' + fmt(batCost) + ' Ksh</span></div>' +
+        '<div class="row"><span>Solar Panels: ' + state.panels + ' × ' + pw + 'W</span><span class="row-val">' + fmt(panCost) + ' Ksh</span></div>' +
+        '<div class="row"><span>Accessories & Mounting</span><span class="row-val">' + fmt(accCost) + ' Ksh</span></div>';
+
+    if (totalEl) totalEl.textContent = fmt(total) + ' KSH';
+
+    if (noSolarEl) {
+        var noSolar = getNoSolarBreakdown();
+        if (noSolar) {
+            noSolarEl.innerHTML =
+                '<h3>Without Solar Panels Option</h3>' +
+                '<div class="row"><span>Inverter</span><span class="row-val">' + fmt(noSolar.inverter) + ' Ksh</span></div>' +
+                '<div class="row"><span>Batteries</span><span class="row-val">' + fmt(noSolar.battery) + ' Ksh</span></div>' +
+                '<div class="row"><span>Change Over Switch</span><span class="row-val">' + fmt(noSolar.changeOver) + ' Ksh</span></div>' +
+                '<div class="row"><span>AC Cable</span><span class="row-val">' + fmt(noSolar.acCable) + ' Ksh</span></div>' +
+                '<div class="row"><span>Installation & Labour</span><span class="row-val">' + fmt(noSolar.labour) + ' Ksh</span></div>' +
+                '<div class="no-solar-total"><span>Total Without Solar Panels</span><span>' + fmt(noSolar.total) + ' KSH</span></div>';
+            noSolarEl.style.display = '';
+        } else {
+            noSolarEl.innerHTML = '';
+            noSolarEl.style.display = 'none';
+        }
+    }
+}
+
+function renderThreePhaseCostBreakdown(summaryEl, totalEl, noSolarEl) {
+    var inv = state.inverter;
+    var panCost = state.panels * getPanelPrice();
+    var mountCost = getMountingCost();
+    var labCost = inv.labour;
+    var html = '';
+
+    if (state.company === 'Kstar') {
+        var pkgCost = inv.packagePrice;
+        var total = pkgCost + panCost + mountCost + labCost;
+        html =
+            '<div class="row"><span>Package: ' + inv.name + ' (Inverter + ' + inv.batteries.count + '× ' + inv.batteries.name + ')</span><span class="row-val">' + fmt(pkgCost) + ' Ksh</span></div>' +
+            '<div class="row"><span>Solar Panels: ' + state.panels + ' × 600W</span><span class="row-val">' + fmt(panCost) + ' Ksh</span></div>' +
+            '<div class="row"><span>Mounting & Cables</span><span class="row-val">' + fmt(mountCost) + ' Ksh</span></div>' +
+            '<div class="row"><span>Installation & Labour (+VAT)</span><span class="row-val">' + fmt(labCost) + ' Ksh</span></div>';
+        if (totalEl) totalEl.textContent = fmt(total) + ' KSH';
+    } else {
+        var invCost = inv.inverterPrice;
+        var accCost = getAtessAccessoryCost();
+        var batCost = getAtessBatteryCost();
+        var cfg = inv.battery.configs[state.atessMasterCount - 1];
+        var total2 = invCost + accCost + batCost + panCost + mountCost + labCost;
+
+        html =
+            '<div class="row"><span>Inverter: ATESS ' + inv.model + '</span><span class="row-val">' + fmt(invCost) + ' Ksh</span></div>';
+        inv.accessories.forEach(function(acc) {
+            html += '<div class="row"><span>' + acc.name + '</span><span class="row-val">' + fmt(usdToKes(acc.usdPrice)) + ' Ksh</span></div>';
+        });
+        html +=
+            '<div class="row"><span>Batteries: ' + cfg.totalUnits + '× ' + inv.battery.name + ' (' + cfg.capacity + ')</span><span class="row-val">' + fmt(batCost) + ' Ksh</span></div>' +
+            '<div class="row"><span>Solar Panels: ' + state.panels + ' × 600W</span><span class="row-val">' + fmt(panCost) + ' Ksh</span></div>' +
+            '<div class="row"><span>Mounting & Cables</span><span class="row-val">' + fmt(mountCost) + ' Ksh</span></div>' +
+            '<div class="row"><span>Installation & Labour (+VAT)</span><span class="row-val">' + fmt(labCost) + ' Ksh</span></div>';
+        if (totalEl) totalEl.textContent = fmt(total2) + ' KSH';
+    }
+
+    summaryEl.innerHTML = html;
+    if (noSolarEl) { noSolarEl.innerHTML = ''; noSolarEl.style.display = 'none'; }
 }
 
 function renderFinancing() {
@@ -1027,53 +1621,10 @@ function renderFinancing() {
     if (el24) el24.textContent = 'KSH ' + fmt(Math.round(total * 1.1 / 24));
 }
 
-/* ---------- savings calculator ---------- */
-function initSavingsCalc() {
-    var input = $('#monthly-bill');
-    if (!input) return;
-    var debounce;
-    input.addEventListener('input', function() {
-        clearTimeout(debounce);
-        debounce = setTimeout(calculateSavings, 300);
-    });
-}
-
-function calculateSavings() {
-    var billInput = $('#monthly-bill');
-    var results = $('#savings-results');
-    if (!billInput || !results) return;
-
-    var bill = parseFloat(billInput.value) || 0;
-    if (bill <= 0 || state.panels === 0) {
-        results.classList.add('hidden');
-        return;
-    }
-
-    results.classList.remove('hidden');
-
-    var ratePerKwh = 25;
-    var impact = calcImpact();
-    var monthlyGen = impact.kwh / 12;
-    var monthlyGenValue = monthlyGen * ratePerKwh;
-    var offsetFactor = 0.85;
-    var monthlySaving = Math.min(monthlyGenValue * offsetFactor, bill * offsetFactor);
-    var yearlySaving = monthlySaving * 12;
-    var totalCost = getTotal();
-    var paybackYears = yearlySaving > 0 ? totalCost / yearlySaving : 0;
-    var tenYearNet = (yearlySaving * 10) - totalCost;
-
-    $('#monthly-savings').textContent = 'KSH ' + fmt(Math.round(monthlySaving));
-    $('#yearly-savings').textContent = 'KSH ' + fmt(Math.round(yearlySaving));
-    $('#payback-period').textContent = paybackYears > 0 ? paybackYears.toFixed(1) + ' years' : '\u2014';
-    var tenYrEl = $('#ten-year-savings');
-    tenYrEl.textContent = tenYearNet > 0 ? 'KSH ' + fmt(Math.round(tenYearNet)) : '\u2014';
-    tenYrEl.classList.toggle('positive', tenYearNet > 0);
-    tenYrEl.classList.toggle('negative', tenYearNet <= 0);
-}
-
 /* ---------- environmental impact ---------- */
 function calcImpact() {
-    var pw = 600, sunHrs = 4.1, eff = 0.9, co2Factor = 0.7, treeFactor = 22, householdCo2 = 5000;
+    var pw = state.panelType ? state.panelType.watts : 600;
+    var sunHrs = 4.1, eff = 0.9, co2Factor = 0.7, treeFactor = 22, householdCo2 = 5000;
     var kwh = state.panels * pw * sunHrs * 365 * eff / 1000;
     var co2 = kwh * co2Factor;
     var trees = co2 / treeFactor;
@@ -1083,12 +1634,8 @@ function calcImpact() {
 
 function renderEnvironmentalImpact() {
     var envBlock = $('#env-block');
-    if (state.panels === 0) {
-        if (envBlock) envBlock.style.display = 'none';
-        return;
-    }
+    if (state.panels === 0) { if (envBlock) envBlock.style.display = 'none'; return; }
     if (envBlock) envBlock.style.display = '';
-
     var impact = calcImpact();
     var cards = $$('#env-grid .env-card');
     var data = [
@@ -1097,7 +1644,6 @@ function renderEnvironmentalImpact() {
         { el: 'trees-planted', val: impact.trees, suf: ' trees/yr' },
         { el: 'co2-percentage', val: impact.pct, suf: '%' }
     ];
-
     data.forEach(function(d, i) {
         setTimeout(function() {
             if (cards[i]) cards[i].classList.add('show');
@@ -1127,36 +1673,61 @@ function countUp(id, end, suffix, dur) {
     requestAnimationFrame(tick);
 }
 
+/* ---------- savings ---------- */
+function initSavingsCalc() {
+    var input = $('#monthly-bill');
+    if (!input) return;
+    var debounce;
+    input.removeEventListener('input', input._savingsHandler);
+    input._savingsHandler = function() { clearTimeout(debounce); debounce = setTimeout(calculateSavings, 300); };
+    input.addEventListener('input', input._savingsHandler);
+}
+
+function calculateSavings() {
+    var billInput = $('#monthly-bill');
+    var results = $('#savings-results');
+    if (!billInput || !results) return;
+    var bill = parseFloat(billInput.value) || 0;
+    if (bill <= 0 || state.panels === 0) { results.classList.add('hidden'); return; }
+    results.classList.remove('hidden');
+    var ratePerKwh = 25;
+    var impact = calcImpact();
+    var monthlyGen = impact.kwh / 12;
+    var monthlyGenValue = monthlyGen * ratePerKwh;
+    var offsetFactor = 0.85;
+    var monthlySaving = Math.min(monthlyGenValue * offsetFactor, bill * offsetFactor);
+    var yearlySaving = monthlySaving * 12;
+    var totalCost = getTotal();
+    var paybackYears = yearlySaving > 0 ? totalCost / yearlySaving : 0;
+    var tenYearNet = (yearlySaving * 10) - totalCost;
+    $('#monthly-savings').textContent = 'KSH ' + fmt(Math.round(monthlySaving));
+    $('#yearly-savings').textContent = 'KSH ' + fmt(Math.round(yearlySaving));
+    $('#payback-period').textContent = paybackYears > 0 ? paybackYears.toFixed(1) + ' years' : '—';
+    var tenYrEl = $('#ten-year-savings');
+    tenYrEl.textContent = tenYearNet > 0 ? 'KSH ' + fmt(Math.round(tenYearNet)) : '—';
+    tenYrEl.classList.toggle('positive', tenYearNet > 0);
+    tenYrEl.classList.toggle('negative', tenYearNet <= 0);
+}
+
 /* ---------- appliance modal ---------- */
 function showApplianceModal(inv) {
     var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
-    $('#modal-title').textContent = state.company + ' ' + inv.kva + 'kVA' + w + ' \u2013 Compatible Appliances';
-
+    var seriesLabel = inv.series ? inv.series + ' ' : '';
+    $('#modal-title').textContent = state.company + ' ' + seriesLabel + inv.kva + 'kVA' + w + ' – Compatible Appliances';
     var featureList = inv.details.features.map(function(f) { return '<li><i class="fas fa-check"></i> ' + f + '</li>'; }).join('');
-
     $('#modal-body').innerHTML =
         '<ul class="compat-list">' + inv.appliances.map(function(a) {
-            return '<li><i class="fas fa-check-circle"></i> <strong>' + a.count + '\u00d7</strong> ' + a.name + '</li>';
+            return '<li><i class="fas fa-check-circle"></i> <strong>' + a.count + '×</strong> ' + a.name + '</li>';
         }).join('') + '</ul>' +
-        '<div class="detail-box">' +
-            '<p><strong>Efficiency:</strong> ' + inv.details.efficiency + '</p>' +
-            '<p><strong>Battery Support:</strong> ' + inv.details.batteryCompatibility + '</p>' +
-            '<p><strong>Max Output:</strong> ' + fmt(inv.maxWatts) + 'W continuous</p>' +
-        '</div>' +
-        '<div class="detail-box" style="margin-top:12px">' +
-            '<p><strong>Features:</strong></p>' +
-            '<ul class="feature-list">' + featureList + '</ul>' +
-        '</div>';
-
+        '<div class="detail-box"><p><strong>Efficiency:</strong> ' + inv.details.efficiency + '</p><p><strong>Battery Support:</strong> ' + inv.details.batteryCompatibility + '</p><p><strong>Max Output:</strong> ' + fmt(inv.maxWatts) + 'W continuous</p></div>' +
+        '<div class="detail-box" style="margin-top:12px"><p><strong>Features:</strong></p><ul class="feature-list">' + featureList + '</ul></div>';
     $('#appliance-modal').classList.remove('hidden');
 }
-
 function closeModal(modal) { modal.classList.add('hidden'); }
 
 /* ---------- form validation ---------- */
 function validateEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
 function validatePhone(p, len) { var d = p.replace(/\D/g, ''); return d.length === len && /^\d+$/.test(d); }
-
 function validateForm() {
     var name = $('#user-name').value.trim();
     var email = $('#user-email').value.trim();
@@ -1164,112 +1735,105 @@ function validateForm() {
     var cc = $('#country-code');
     var pLen = parseInt(cc.options[cc.selectedIndex].dataset.length);
     var ok = true;
-
     if (!name) { $('#name-error').textContent = 'Name is required'; ok = false; } else { $('#name-error').textContent = ''; }
     if (!email) { $('#email-error').textContent = 'Email is required'; ok = false; }
     else if (!validateEmail(email)) { $('#email-error').textContent = 'Enter a valid email'; ok = false; }
     else { $('#email-error').textContent = ''; }
     if (phone && !validatePhone(phone, pLen)) { $('#phone-error').textContent = 'Must be ' + pLen + ' digits'; ok = false; }
     else { $('#phone-error').textContent = ''; }
-
     if (!ok) toast('Please fill in the required fields', 'error');
     return ok;
 }
 
-/* ---------- share / export ---------- */
+/* ---------- share / export helpers ---------- */
 function buildText() {
-    var name  = $('#user-name').value || 'Customer';
+    var name = $('#user-name').value || 'Customer';
     var email = $('#user-email').value || '';
     var phone = $('#user-phone').value ? $('#country-code').value + $('#user-phone').value : 'Not provided';
-    var inv   = state.inverter;
-    var bat   = state.battery;
-    var w     = inv.watts ? ' (' + inv.watts + 'W)' : '';
-    var invTxt = state.company + ' ' + inv.kva + 'kVA' + w + ' \u2013 ' + inv.voltage + 'V';
-    var total  = $('#total-cost').textContent;
-    var noSolar = getNoSolarBreakdown();
-    return { name: name, email: email, phone: phone, invTxt: invTxt, total: total, bat: bat, inv: inv, noSolar: noSolar };
+    var total = $('#total-cost').textContent;
+    return { name: name, email: email, phone: phone, total: total };
+}
+
+function buildQuoteLines() {
+    var lines = [];
+    var pw = state.panelType ? state.panelType.watts : 600;
+
+    if (state.phase === 'three') {
+        if (state.company === 'Kstar') {
+            var pkg = state.inverter;
+            lines.push({ label: 'Package: Kstar ' + pkg.name, value: fmt(pkg.packagePrice) + ' Ksh' });
+            lines.push({ label: '  Includes: ' + pkg.batteries.count + '× ' + pkg.batteries.name + ' (' + pkg.batteries.totalCapacity + ')', value: '' });
+            lines.push({ label: 'Solar Panels: ' + state.panels + ' × 600W', value: fmt(state.panels * getPanelPrice()) + ' Ksh' });
+            lines.push({ label: 'Mounting & Cables', value: fmt(getMountingCost()) + ' Ksh' });
+            lines.push({ label: 'Installation & Labour (+VAT)', value: fmt(pkg.labour) + ' Ksh' });
+        } else {
+            var inv = state.inverter;
+            var cfg = inv.battery.configs[state.atessMasterCount - 1];
+            lines.push({ label: 'Inverter: ATESS ' + inv.model, value: fmt(inv.inverterPrice) + ' Ksh' });
+            inv.accessories.forEach(function(acc) {
+                lines.push({ label: acc.name, value: fmt(usdToKes(acc.usdPrice)) + ' Ksh' });
+            });
+            lines.push({ label: 'Batteries: ' + cfg.totalUnits + '× ' + inv.battery.name + ' (' + cfg.capacity + ')', value: fmt(getAtessBatteryCost()) + ' Ksh' });
+            lines.push({ label: 'Solar Panels: ' + state.panels + ' × 600W', value: fmt(state.panels * getPanelPrice()) + ' Ksh' });
+            lines.push({ label: 'Mounting & Cables', value: fmt(getMountingCost()) + ' Ksh' });
+            lines.push({ label: 'Installation & Labour (+VAT)', value: fmt(inv.labour) + ' Ksh' });
+        }
+    } else {
+        var inv2 = state.inverter;
+        var w = inv2.watts ? ' (' + inv2.watts + 'W)' : '';
+        var ser = inv2.series ? inv2.series + ' ' : '';
+        lines.push({ label: 'Inverter: ' + state.company + ' ' + ser + inv2.kva + 'kVA' + w + ' – ' + inv2.voltage + 'V', value: fmt(inv2.price) + ' Ksh' });
+        lines.push({ label: 'Installation & Labour (+VAT)', value: fmt(inv2.labour) + ' Ksh' });
+
+        if (inv2.series === 'Residential ESS') {
+            lines.push({ label: 'Batteries: ' + inv2.essBattery.count + '× ' + inv2.essBattery.name, value: fmt(getEssBatteryCost()) + ' Ksh' });
+        } else if (state.battery) {
+            lines.push({ label: 'Batteries: ' + state.battery.name + ' × ' + state.battery.count, value: fmt(state.battery.price * state.battery.count) + ' Ksh' });
+        }
+        lines.push({ label: 'Solar Panels: ' + state.panels + ' × ' + pw + 'W', value: fmt(state.panels * getPanelPrice()) + ' Ksh' });
+        lines.push({ label: 'Accessories & Mounting', value: fmt(getSinglePhaseAccessoryCost()) + ' Ksh' });
+    }
+    return lines;
 }
 
 function shareSummary() {
     if (!validateForm()) return;
     var d = buildText();
+    var lines = buildQuoteLines();
+    var body = 'Solar System Quote for ' + d.name + '\n\nEmail: ' + d.email + '\nPhone: ' + d.phone + '\n\nSYSTEM BREAKDOWN\n';
+    lines.forEach(function(l) { body += l.label + (l.value ? ': ' + l.value : '') + '\n'; });
+    body += '\nTOTAL: ' + d.total + '\n\nFinal pricing confirmed after site survey.\nContact: +254723984559 | info@sangyug.com\nThank you for choosing Sangyug Solar!';
     var subj = encodeURIComponent('Sangyug Solar Quote for ' + d.name);
-    var body = encodeURIComponent(
-        'Solar System Quote for ' + d.name + '\n\n' +
-        'Email: ' + d.email + '\n' +
-        'Phone: ' + d.phone + '\n\n' +
-        'INVERTER\n' +
-        'Model: ' + d.invTxt + '\n' +
-        'Price: ' + fmt(d.inv.price) + ' Ksh\n' +
-        'Installation (+VAT): ' + fmt(d.inv.labour) + ' Ksh\n\n' +
-        'BATTERY\n' +
-        'Type: ' + d.bat.name + ' \u00d7' + d.bat.count + '\n' +
-        'Price: ' + fmt(d.bat.price * d.bat.count) + ' Ksh\n' +
-        'Backup: ~' + (d.bat.backupHours * d.bat.count).toFixed(1) + ' hrs (200 W load)\n\n' +
-        'SOLAR PANELS\n' +
-        'Quantity: ' + state.panels + ' panels\n' +
-        'Price: ' + fmt(state.panels * PANEL_PRICE) + ' Ksh\n\n' +
-        'ACCESSORIES\n' +
-        'Included: ' + fmt(getAccessoryCost()) + ' Ksh\n\n' +
-        'TOTAL: ' + d.total + '\n\n' +
-        'WITHOUT SOLAR PANELS OPTION\n' +
-        'Inverter: ' + fmt(d.noSolar.inverter) + ' Ksh\n' +
-        'Batteries: ' + fmt(d.noSolar.battery) + ' Ksh\n' +
-        'Change Over Switch: ' + fmt(d.noSolar.changeOver) + ' Ksh\n' +
-        'AC Cable: ' + fmt(d.noSolar.acCable) + ' Ksh\n' +
-        'Installation & Labour: ' + fmt(d.noSolar.labour) + ' Ksh\n' +
-        'Total Without Solar Panels: ' + fmt(d.noSolar.total) + ' KSH\n\n' +
-        'Quote includes solar mounting/structure.\n' +
-        'Final pricing confirmed after site survey.\n\n' +
-        'Contact: +254723984559 | info@sangyug.com\n' +
-        'Thank you for choosing Sangyug Solar!'
-    );
-    window.open('mailto:?subject=' + subj + '&body=' + body, '_blank');
-    toast('Opening email client\u2026', 'info');
+    window.open('mailto:?subject=' + subj + '&body=' + encodeURIComponent(body), '_blank');
+    toast('Opening email client…', 'info');
 }
 
 function shareWhatsApp() {
     if (!validateForm()) return;
     var d = buildText();
-    var txt = encodeURIComponent(
-        '*Solar System Quote for ' + d.name + '*\n\n' +
-        'Email: ' + d.email + '\n' +
-        'Phone: ' + d.phone + '\n\n' +
-        '*INVERTER*\n' +
-        'Model: ' + d.invTxt + '\n' +
-        'Price: ' + fmt(d.inv.price) + ' Ksh\n' +
-        'Installation (+VAT): ' + fmt(d.inv.labour) + ' Ksh\n\n' +
-        '*BATTERY*\n' +
-        'Type: ' + d.bat.name + ' \u00d7' + d.bat.count + '\n' +
-        'Price: ' + fmt(d.bat.price * d.bat.count) + ' Ksh\n' +
-        'Backup: ~' + (d.bat.backupHours * d.bat.count).toFixed(1) + ' hrs (200 W load)\n\n' +
-        '*SOLAR PANELS*\n' +
-        'Quantity: ' + state.panels + ' panels\n' +
-        'Price: ' + fmt(state.panels * PANEL_PRICE) + ' Ksh\n\n' +
-        '*ACCESSORIES*\n' +
-        'Included: ' + fmt(getAccessoryCost()) + ' Ksh\n\n' +
-        '*TOTAL: ' + d.total + '*\n\n' +
-        'Quote includes solar mounting/structure.\n' +
-        'Final pricing confirmed after site survey.\n\n' +
-        'Contact: +254723984559 | info@sangyug.com\n' +
-        'Thank you for choosing Sangyug Solar!'
-    );
-    window.open('https://wa.me/?text=' + txt, '_blank');
-    toast('Opening WhatsApp\u2026', 'success');
+    var lines = buildQuoteLines();
+    var txt = '*Solar System Quote for ' + d.name + '*\n\nEmail: ' + d.email + '\nPhone: ' + d.phone + '\n\n*SYSTEM BREAKDOWN*\n';
+    lines.forEach(function(l) { txt += l.label + (l.value ? ': ' + l.value : '') + '\n'; });
+    txt += '\n*TOTAL: ' + d.total + '*\n\nFinal pricing confirmed after site survey.\nContact: +254723984559 | info@sangyug.com\nThank you for choosing Sangyug Solar!';
+    window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank');
+    toast('Opening WhatsApp…', 'success');
 }
 
+/* ---------- PDF generation ---------- */
 function downloadPDF() {
     if (!validateForm()) return;
     if (!window.jspdf) { toast('PDF library still loading. Try again in a moment.', 'warning'); return; }
 
     var jsPDF = window.jspdf.jsPDF;
     var doc = new jsPDF();
-    var blue = [30, 120, 220];
-    var dark = [40, 40, 40];
-    var gray = [100, 100, 100];
+    var blue = [30, 120, 220], dark = [40, 40, 40], gray = [100, 100, 100];
     var y = 20;
     var d = buildText();
+    var pw = state.panelType ? state.panelType.watts : 600;
 
+    function checkPage(needed) { if (y + needed > 275) { doc.addPage(); y = 20; } }
+
+    // Header
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(22); doc.setTextColor(blue[0], blue[1], blue[2]);
     doc.text('SANGYUG SOLAR', 105, y, { align: 'center' }); y += 8;
@@ -1278,6 +1842,7 @@ function downloadPDF() {
     doc.setDrawColor(blue[0], blue[1], blue[2]); doc.setLineWidth(0.8);
     doc.line(15, y, 195, y); y += 14;
 
+    // Customer
     doc.setFontSize(10); doc.setTextColor(dark[0], dark[1], dark[2]);
     doc.setFont('helvetica', 'bold');
     doc.text('PREPARED FOR', 20, y); y += 6;
@@ -1285,75 +1850,152 @@ function downloadPDF() {
     doc.text('Name: ' + d.name, 20, y); y += 5;
     doc.text('Email: ' + d.email, 20, y); y += 5;
     doc.text('Phone: ' + d.phone, 20, y);
-    doc.text('Date: ' + new Date().toLocaleDateString('en-GB'), 150, y - 10); y += 12;
+    doc.text('Date: ' + new Date().toLocaleDateString('en-GB'), 150, y - 10); y += 5;
+    doc.text('System: ' + (state.phase === 'single' ? 'Single Phase' : 'Three Phase') + ' — ' + state.company, 20, y); y += 12;
 
+    // Divider
     doc.setDrawColor(230, 230, 230); doc.setLineWidth(0.3); doc.line(20, y, 190, y); y += 8;
+
+    // System breakdown header
     doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
     doc.setTextColor(blue[0], blue[1], blue[2]);
     doc.text('SYSTEM BREAKDOWN', 20, y); y += 10;
 
-    doc.setFillColor(240, 245, 255);
-    doc.rect(20, y - 4, 170, 8, 'F');
+    // Table header
+    doc.setFillColor(240, 245, 255); doc.rect(20, y - 4, 170, 8, 'F');
     doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
     doc.setTextColor(dark[0], dark[1], dark[2]);
     doc.text('Item', 22, y);
     doc.text('Amount (Ksh)', 168, y, { align: 'right' }); y += 10;
 
+    // Build rows
+    var pdfRows = buildQuoteLines();
     doc.setFont('helvetica', 'normal');
-    var inv = state.inverter;
-    var bat = state.battery;
-    var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
-
-    var pdfRows = [
-        ['Inverter: ' + state.company + ' ' + inv.kva + 'kVA' + w + ' \u2013 ' + inv.voltage + 'V', fmt(inv.price)],
-        ['Installation & Labour (+VAT)', fmt(inv.labour)],
-        ['Batteries: ' + bat.name + ' \u00d7 ' + bat.count, fmt(bat.price * bat.count)],
-        ['Solar Panels: ' + state.panels + ' \u00d7 600W', fmt(state.panels * PANEL_PRICE)],
-        ['Accessories (included)', fmt(getAccessoryCost())]
-    ];
-
     pdfRows.forEach(function(r, i) {
+        checkPage(10);
         if (i % 2 === 1) { doc.setFillColor(248, 248, 252); doc.rect(20, y - 4, 170, 8, 'F'); }
-        doc.text(r[0], 22, y);
-        doc.text(r[1], 168, y, { align: 'right' }); y += 8;
+        doc.text(r.label.substring(0, 70), 22, y);
+        if (r.value) doc.text(r.value, 168, y, { align: 'right' });
+        y += 8;
     });
 
-    y += 4;
-    doc.setFillColor(blue[0], blue[1], blue[2]);
-    doc.rect(20, y - 5, 170, 12, 'F');
+    // Total
+    y += 4; checkPage(20);
+    doc.setFillColor(blue[0], blue[1], blue[2]); doc.rect(20, y - 5, 170, 12, 'F');
     doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
     doc.setTextColor(255, 255, 255);
     doc.text('TOTAL ESTIMATED COST', 22, y + 2);
     doc.text(d.total, 168, y + 2, { align: 'right' }); y += 20;
 
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
-    doc.setTextColor(blue[0], blue[1], blue[2]);
-    doc.text('WITHOUT SOLAR PANELS OPTION', 20, y); y += 8;
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
-    doc.setTextColor(dark[0], dark[1], dark[2]);
-    var noSolar = d.noSolar;
-    var noSolarRows = [
-        ['Inverter', fmt(noSolar.inverter)],
-        ['Batteries', fmt(noSolar.battery)],
-        ['Change Over Switch', fmt(noSolar.changeOver)],
-        ['AC Cable', fmt(noSolar.acCable)],
-        ['Installation & Labour', fmt(noSolar.labour)]
-    ];
-    noSolarRows.forEach(function(r, i) {
-        if (i % 2 === 1) { doc.setFillColor(248, 248, 252); doc.rect(20, y - 4, 170, 8, 'F'); }
-        doc.text(r[0], 22, y);
-        doc.text(r[1], 168, y, { align: 'right' }); y += 8;
-    });
+    // No Solar option (single phase only)
+    var noSolar = getNoSolarBreakdown();
+    if (noSolar) {
+        checkPage(60);
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+        doc.setTextColor(blue[0], blue[1], blue[2]);
+        doc.text('WITHOUT SOLAR PANELS OPTION', 20, y); y += 8;
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+        doc.setTextColor(dark[0], dark[1], dark[2]);
+        var nsRows = [
+            ['Inverter', fmt(noSolar.inverter)], ['Batteries', fmt(noSolar.battery)],
+            ['Change Over Switch', fmt(noSolar.changeOver)], ['AC Cable', fmt(noSolar.acCable)],
+            ['Installation & Labour', fmt(noSolar.labour)]
+        ];
+        nsRows.forEach(function(r, i) {
+            if (i % 2 === 1) { doc.setFillColor(248, 248, 252); doc.rect(20, y - 4, 170, 8, 'F'); }
+            doc.text(r[0], 22, y); doc.text(r[1], 168, y, { align: 'right' }); y += 8;
+        });
+        doc.setFillColor(220, 235, 255); doc.rect(20, y - 4, 170, 9, 'F');
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+        doc.setTextColor(blue[0], blue[1], blue[2]);
+        doc.text('Total Without Solar Panels', 22, y + 2);
+        doc.text(fmt(noSolar.total) + ' KSH', 168, y + 2, { align: 'right' }); y += 14;
+    }
 
-    doc.setFillColor(220, 235, 255);
-    doc.rect(20, y - 4, 170, 9, 'F');
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
-    doc.setTextColor(blue[0], blue[1], blue[2]);
-    doc.text('Total Without Solar Panels', 22, y + 2);
-    doc.text(fmt(noSolar.total) + ' KSH', 168, y + 2, { align: 'right' });
-    y += 14;
+    // System details for three phase
+    if (state.phase === 'three') {
+        checkPage(50);
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+        doc.setTextColor(blue[0], blue[1], blue[2]);
+        doc.text('SYSTEM DETAILS', 20, y); y += 8;
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+        doc.setTextColor(dark[0], dark[1], dark[2]);
 
+        if (state.company === 'Kstar') {
+            var pkg = state.inverter;
+            doc.setFont('helvetica', 'bold');
+            doc.text('Inverter:', 22, y); y += 6;
+            doc.setFont('helvetica', 'normal');
+            pkg.inverterNotes.forEach(function(note) {
+                checkPage(8);
+                doc.text('• ' + note, 26, y); y += 5;
+            });
+            y += 4;
+            doc.setFont('helvetica', 'bold');
+            doc.text('Battery: ' + pkg.batteries.count + '× ' + pkg.batteries.name, 22, y); y += 6;
+            doc.setFont('helvetica', 'normal');
+            pkg.batteries.notes.forEach(function(note) {
+                checkPage(8);
+                doc.text('• ' + note, 26, y); y += 5;
+            });
+            y += 8;
+        } else {
+            var inv = state.inverter;
+            doc.setFont('helvetica', 'bold');
+            doc.text('Inverter: ATESS ' + inv.model, 22, y); y += 6;
+            doc.setFont('helvetica', 'normal');
+            inv.inverterNotes.forEach(function(note) {
+                checkPage(8);
+                doc.text('• ' + note, 26, y); y += 5;
+            });
+            y += 3;
+            doc.setFont('helvetica', 'bold');
+            doc.text('Accessories:', 22, y); y += 6;
+            doc.setFont('helvetica', 'normal');
+            inv.accessories.forEach(function(acc) {
+                checkPage(8);
+                doc.text('• ' + acc.name + ' — ' + fmt(usdToKes(acc.usdPrice)) + ' Ksh (' + acc.warranty + ')', 26, y); y += 5;
+            });
+            y += 3;
+            var cfg = inv.battery.configs[state.atessMasterCount - 1];
+            doc.setFont('helvetica', 'bold');
+            doc.text('Battery: ' + cfg.totalUnits + '× ' + inv.battery.name + ' (' + cfg.capacity + ')', 22, y); y += 6;
+            doc.setFont('helvetica', 'normal');
+            doc.text('• 51.2V, 100Ah lithium modules', 26, y); y += 5;
+            doc.text('• ' + cfg.masters + ' Master + ' + cfg.masters + ' Slave configuration', 26, y); y += 5;
+            doc.text('• ' + inv.battery.warranty + ' warranty', 26, y); y += 8;
+        }
+    }
+
+    // ESS details
+    if (state.phase === 'single' && state.inverter.series === 'Residential ESS') {
+        checkPage(50);
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+        doc.setTextColor(blue[0], blue[1], blue[2]);
+        doc.text('SYSTEM DETAILS', 20, y); y += 8;
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+        doc.setTextColor(dark[0], dark[1], dark[2]);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Inverter: Kstar HH10KS', 22, y); y += 6;
+        doc.setFont('helvetica', 'normal');
+        state.inverter.details.features.forEach(function(f) {
+            checkPage(8);
+            doc.text('• ' + f, 26, y); y += 5;
+        });
+        y += 3;
+        doc.setFont('helvetica', 'bold');
+        doc.text('Battery: ' + state.inverter.essBattery.count + '× ' + state.inverter.essBattery.name, 22, y); y += 6;
+        doc.setFont('helvetica', 'normal');
+        state.inverter.essBattery.notes.forEach(function(n) {
+            checkPage(8);
+            doc.text('• ' + n, 26, y); y += 5;
+        });
+        y += 8;
+    }
+
+    // Environmental Impact
     if (state.panels > 0) {
+        checkPage(40);
         doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
         doc.setTextColor(blue[0], blue[1], blue[2]);
         doc.text('ENVIRONMENTAL IMPACT', 20, y); y += 8;
@@ -1365,6 +2007,8 @@ function downloadPDF() {
         doc.text('Equivalent to planting ' + fmt(impact.trees) + ' trees per year', 22, y); y += 14;
     }
 
+    // Notes
+    checkPage(40);
     doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
     doc.setTextColor(blue[0], blue[1], blue[2]);
     doc.text('IMPORTANT NOTES', 20, y); y += 8;
@@ -1372,14 +2016,20 @@ function downloadPDF() {
     doc.setTextColor(dark[0], dark[1], dark[2]);
     doc.text('1. Quote includes solar mounting structure and all listed accessories.', 22, y); y += 6;
     doc.text('2. Final pricing confirmed after site survey by our technical team.', 22, y); y += 6;
-    doc.text('3. Installation typically completed within 2\u20135 business days.', 22, y); y += 16;
+    doc.text('3. Installation typically completed within 2–5 business days.', 22, y); y += 6;
+    if (state.phase === 'three') {
+        doc.text('4. Cable accessories and additional wiring quoted after site survey.', 22, y); y += 6;
+    }
+    y += 10;
 
+    // Footer
+    checkPage(25);
     doc.setDrawColor(blue[0], blue[1], blue[2]); doc.setLineWidth(0.5);
     doc.line(15, y, 195, y); y += 8;
     doc.setFontSize(9); doc.setTextColor(gray[0], gray[1], gray[2]);
     doc.text('Thank you for choosing Sangyug Solar!', 105, y, { align: 'center' }); y += 5;
     doc.text('+254 723 984 559 | info@sangyug.com | www.sangyug.com', 105, y, { align: 'center' }); y += 5;
-    doc.text('The Big Bang \u2014 Ngara, Opp. Rainbow Plaza, Nairobi', 105, y, { align: 'center' });
+    doc.text('The Big Bang — Ngara, Opp. Rainbow Plaza, Nairobi', 105, y, { align: 'center' });
 
     var safeName = d.name.replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, '_');
     doc.save('Sangyug_Solar_Quote_' + safeName + '_' + new Date().toISOString().slice(0, 10) + '.pdf');
@@ -1388,19 +2038,18 @@ function downloadPDF() {
 
 /* ---------- reset ---------- */
 function resetAll() {
-    state.company = ''; state.inverter = null; state.battery = null;
-    state.panels = 0; state.compareList = [];
+    state.phase = ''; state.company = ''; state.inverter = null;
+    state.battery = null; state.panels = 0; state.panelType = null;
+    state.compareList = []; state.atessMasterCount = 3;
+    state.needs = {}; state.totalWatts = 0;
     clearState();
-    var fields = ['user-name', 'user-email', 'user-phone'];
-    fields.forEach(function(id) { var el = $('#' + id); if (el) el.value = ''; });
-    var errors = ['name-error', 'email-error', 'phone-error'];
-    errors.forEach(function(id) { var el = $('#' + id); if (el) el.textContent = ''; });
+    ['user-name', 'user-email', 'user-phone'].forEach(function(id) { var el = $('#' + id); if (el) el.value = ''; });
+    ['name-error', 'email-error', 'phone-error'].forEach(function(id) { var el = $('#' + id); if (el) el.textContent = ''; });
     var billInput = $('#monthly-bill');
     if (billInput) billInput.value = '';
     var savingsResults = $('#savings-results');
     if (savingsResults) savingsResults.classList.add('hidden');
-    renderCompanies();
-    goTo('company');
+    goTo('phase');
     toast('Starting fresh', 'info');
 }
 
@@ -1409,23 +2058,12 @@ function initCanvas() {
     var c = document.getElementById('ambient-canvas');
     if (!c) return;
     var ctx = c.getContext('2d');
-    var w, h;
-    var particles = [];
-
+    var w, h, particles = [];
     function resize() { w = c.width = window.innerWidth; h = c.height = window.innerHeight; }
-    resize();
-    window.addEventListener('resize', resize);
-
+    resize(); window.addEventListener('resize', resize);
     for (var i = 0; i < 50; i++) {
-        particles.push({
-            x: Math.random() * (w || 1000), y: Math.random() * (h || 800),
-            r: 1 + Math.random() * 2.5,
-            dx: (Math.random() - 0.5) * 0.3,
-            dy: (Math.random() - 0.5) * 0.3,
-            o: 0.15 + Math.random() * 0.35
-        });
+        particles.push({ x: Math.random() * (w || 1000), y: Math.random() * (h || 800), r: 1 + Math.random() * 2.5, dx: (Math.random() - 0.5) * 0.3, dy: (Math.random() - 0.5) * 0.3, o: 0.15 + Math.random() * 0.35 });
     }
-
     function draw() {
         ctx.clearRect(0, 0, w, h);
         for (var j = 0; j < particles.length; j++) {
@@ -1433,10 +2071,8 @@ function initCanvas() {
             p.x += p.dx; p.y += p.dy;
             if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
             if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            ctx.fillStyle = 'hsla(210,80%,70%,' + p.o + ')';
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = 'hsla(210,80%,70%,' + p.o + ')'; ctx.fill();
         }
         requestAnimationFrame(draw);
     }
@@ -1450,39 +2086,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     initCanvas();
     renderFxRatePill();
-    renderAccessoryStaticPrices();
-    renderCompanies();
+    renderPhaseSelection();
     renderNeeds();
-    initSavingsCalc();
 
-    // Restore saved state
+    // Restore state
     try {
         var saved = localStorage.getItem('solarState');
         if (saved) {
             var s = JSON.parse(saved);
+            if (!s.phase) s.phase = 'single';
             Object.assign(state, s);
-            if (state.battery) calcPanels();
+            if (state.inverter && !state.panelType) calcPanels();
         }
-    } catch (e) { /* ignore corrupt state */ }
+    } catch (e) {}
 
-    // Startup navigation: hash takes priority, then saved step; both are access-checked
     var hash = location.hash.slice(1);
-    var requestedStep = (hash && STEPS.indexOf(hash) !== -1) ? hash : (state.step || 'company');
+    var steps = getCurrentSteps();
+    var requestedStep = (hash && steps.indexOf(hash) !== -1) ? hash : (state.step || 'phase');
     goTo(requestedStep);
 
     refreshExchangeRateAndPricing();
 
     // Back buttons
-    $('#back-from-inverter').addEventListener('click', goBack);
-    $('#back-from-battery').addEventListener('click', goBack);
-    $('#back-from-summary').addEventListener('click', goBack);
-
-    // Step pills
-    $$('.step-pill').forEach(function(p) {
-        p.addEventListener('click', function() {
-            goTo(p.dataset.step);
-        });
-    });
+    var backInv = $('#back-from-inverter');
+    if (backInv) backInv.addEventListener('click', goBack);
+    var backBat = $('#back-from-battery');
+    if (backBat) backBat.addEventListener('click', goBack);
+    var backSum = $('#back-from-summary');
+    if (backSum) backSum.addEventListener('click', goBack);
 
     // Needs toggle
     var needsToggle = $('#needs-toggle');
@@ -1495,12 +2126,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // CTA buttons
-    $('#share-summary').addEventListener('click', shareSummary);
-    $('#share-whatsapp').addEventListener('click', shareWhatsApp);
-    $('#download-pdf').addEventListener('click', downloadPDF);
-    $('#reset-selection').addEventListener('click', resetAll);
+    var shareBtn = $('#share-summary');
+    if (shareBtn) shareBtn.addEventListener('click', shareSummary);
+    var waBtn = $('#share-whatsapp');
+    if (waBtn) waBtn.addEventListener('click', shareWhatsApp);
+    var pdfBtn = $('#download-pdf');
+    if (pdfBtn) pdfBtn.addEventListener('click', downloadPDF);
+    var resetBtn = $('#reset-selection');
+    if (resetBtn) resetBtn.addEventListener('click', resetAll);
 
-    // Comparison
+    // Compare
     var compareBtn = $('#compare-btn');
     if (compareBtn) compareBtn.addEventListener('click', showComparison);
     var compareClear = $('#compare-clear');
@@ -1518,43 +2153,42 @@ document.addEventListener('DOMContentLoaded', function() {
         m.addEventListener('click', function(e) { if (e.target === m) closeModal(m); });
     });
 
-    // Financing buttons
+    // Financing
     $$('.fin-opt').forEach(function(btn) {
         btn.addEventListener('click', function() {
-            var months = btn.dataset.months;
-            toast('Contact us at +254 723 984 559 for ' + months + '-month payment plans', 'info', 4000);
+            toast('Contact us at +254 723 984 559 for ' + btn.dataset.months + '-month payment plans', 'info', 4000);
         });
     });
 
     // Scroll to top
     var fab = $('#scroll-to-top');
-    window.addEventListener('scroll', function() { fab.classList.toggle('visible', window.scrollY > 300); });
-    fab.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    if (fab) {
+        window.addEventListener('scroll', function() { fab.classList.toggle('visible', window.scrollY > 300); });
+        fab.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    }
 
     // Brand home reset
-    $('#brand-home').addEventListener('click', function(e) { e.preventDefault(); resetAll(); });
+    var brandHome = $('#brand-home');
+    if (brandHome) brandHome.addEventListener('click', function(e) { e.preventDefault(); resetAll(); });
 
     // Live form validation
-    $('#user-name').addEventListener('input', function() {
-        $('#name-error').textContent = this.value.trim() ? '' : 'Name is required';
-    });
-    $('#user-email').addEventListener('input', function() {
-        var v = this.value.trim();
-        $('#email-error').textContent = !v ? 'Email is required' : !validateEmail(v) ? 'Enter a valid email' : '';
-    });
+    var nameInput = $('#user-name');
+    if (nameInput) nameInput.addEventListener('input', function() { $('#name-error').textContent = this.value.trim() ? '' : 'Name is required'; });
+    var emailInput = $('#user-email');
+    if (emailInput) emailInput.addEventListener('input', function() { var v = this.value.trim(); $('#email-error').textContent = !v ? 'Email is required' : !validateEmail(v) ? 'Enter a valid email' : ''; });
     var phoneCheck = function() {
         var cc = $('#country-code');
         var pLen = parseInt(cc.options[cc.selectedIndex].dataset.length);
         var v = $('#user-phone').value.trim();
         $('#phone-error').textContent = v && !validatePhone(v, pLen) ? 'Must be ' + pLen + ' digits' : '';
     };
-    $('#user-phone').addEventListener('input', phoneCheck);
-    $('#country-code').addEventListener('change', phoneCheck);
+    var phoneInput = $('#user-phone');
+    if (phoneInput) phoneInput.addEventListener('input', phoneCheck);
+    var ccSelect = $('#country-code');
+    if (ccSelect) ccSelect.addEventListener('change', phoneCheck);
 
     // Escape closes modals
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            $$('.overlay:not(.hidden)').forEach(function(m) { closeModal(m); });
-        }
+        if (e.key === 'Escape') $$('.overlay:not(.hidden)').forEach(function(m) { closeModal(m); });
     });
 });

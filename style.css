@@ -1,5 +1,5 @@
 /* ===================================================
-   SANGYUG SOLAR SELECTOR v2
+   SANGYUG SOLAR SELECTOR v3
    =================================================== */
 
 :root {
@@ -418,7 +418,27 @@ a:hover{color:var(--accent)}
     transition:color .2s;background:none;border:none;
     cursor:pointer;
 }
+.product-card .card-link.card-btn{
+    background:hsla(210 80% 56% / .1);border:1px solid hsla(210 80% 56% / .25);
+    border-radius:var(--radius-sm);padding:5px 10px;
+    transition:all .2s;
+}
+.product-card .card-link.card-btn:hover{
+    background:hsla(210 80% 56% / .2);border-color:var(--accent);color:var(--accent);
+}
 .product-card .card-link:hover{color:var(--accent)}
+
+/* ---------- ESS battery included banner ---------- */
+.ess-battery-banner{
+    font-size:.82rem;font-weight:600;
+    color:var(--accent);
+    background:hsla(210 80% 56% / .08);
+    border:1px solid hsla(210 80% 56% / .2);
+    border-radius:var(--radius-sm);
+    padding:8px 10px;margin-top:4px;
+    display:flex;align-items:center;gap:6px;
+}
+
 .compare-check{cursor:pointer !important}
 .compare-check input{width:14px;height:14px;cursor:pointer;accent-color:var(--accent)}
 .product-card .card-check{
@@ -634,7 +654,7 @@ a:hover{color:var(--accent)}
     box-shadow:var(--shadow-sm);
     border-color:hsla(210 80% 60% / .2);
 }
-.acc-card i{font-size:1.5rem;color:var(--accent-soft);margin-bottom:10px;display:block}
+.acc-card > i{font-size:1.2rem;color:var(--accent-soft);margin-bottom:10px;display:block}
 .acc-card .acc-name{display:block;font-size:.88rem;font-weight:500;color:var(--text-0);margin-bottom:6px}
 .acc-card .acc-price{display:block;font-size:.9rem;font-weight:700;color:var(--accent-soft)}
 
@@ -1048,4 +1068,84 @@ a:hover{color:var(--accent)}
     .compare-cell{padding:8px 6px;font-size:.78rem}
     .toast-container{top:70px;right:10px;left:10px}
     .toast{font-size:.82rem;padding:10px 14px}
+    .series-header{grid-column:1/-1}
+    .battery-config-header{grid-column:1/-1}
+    .pkg-features{max-height:none}
+}
+
+/* ---------- phase selection icon ---------- */
+.phase-icon-wrap{
+    width:64px;height:64px;
+    border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),var(--accent-soft));
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.7rem;color:#fff;
+    margin:0 auto 8px;
+    box-shadow:0 4px 20px var(--accent-glow);
+    transition:transform var(--dur) var(--ease-spring);
+}
+.brand-card:hover .phase-icon-wrap{transform:scale(1.1)}
+
+/* ---------- series group header ---------- */
+.series-header{
+    grid-column:1/-1;
+    padding:18px 0 8px;
+    border-bottom:1px solid var(--glass-border);
+    margin-bottom:4px;
+}
+.series-header h3{
+    font-size:1.15rem;font-weight:700;
+    color:var(--accent);
+    letter-spacing:.02em;
+}
+.series-header p{
+    font-size:.85rem;color:var(--text-2);margin-top:2px;
+}
+
+/* ---------- three phase package card features ---------- */
+.pkg-features{
+    margin-top:8px;max-height:180px;overflow-y:auto;
+}
+.pkg-features ul{
+    list-style:none;padding:0;display:flex;flex-direction:column;gap:4px;
+}
+.pkg-features li{
+    font-size:.82rem;color:var(--text-1);display:flex;align-items:flex-start;gap:6px;
+}
+.pkg-features li i{color:var(--green);font-size:.7rem;margin-top:3px;flex-shrink:0}
+
+.pkg-card .card-body{gap:6px}
+.pkg-card .card-meta{font-size:.82rem}
+
+/* ---------- ATESS battery config header ---------- */
+.battery-config-header{
+    grid-column:1/-1;
+    padding:12px 0 8px;
+    text-align:center;
+}
+.battery-config-header p{
+    font-size:.95rem;color:var(--text-1);
+}
+
+/* ---------- badge variants ---------- */
+.card-badge.badge-rec{background:linear-gradient(135deg,var(--amber),hsl(28 90% 55%))}
+.card-badge.badge-premium{background:linear-gradient(135deg,hsl(270 60% 58%),hsl(260 50% 65%))}
+
+/* ---------- accessory specs link ---------- */
+.acc-specs-link{
+    font-size:.78rem;color:var(--accent);
+    text-decoration:none;display:inline-flex;align-items:center;gap:4px;
+    margin-top:4px;opacity:.8;transition:opacity .2s;
+}
+.acc-specs-link:hover{opacity:1;text-decoration:underline}
+
+/* ---------- running total in topbar ---------- */
+.topbar-running{
+    font-size:.82rem;font-weight:600;
+    color:var(--accent);
+    white-space:nowrap;
+    margin-left:8px;
+}
+@media (max-width:768px){
+    .topbar-running{display:none}
 }
