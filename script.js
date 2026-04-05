@@ -30,12 +30,12 @@ const APPLIANCES = [
     { id: 'blender', name: 'Blender',               watts: 400,  icon: 'fa-blender' }
 ];
 
-/* ---------- product data (prices = base * 1.25) ---------- */
+/* ---------- product data ---------- */
 const kstarInverters = [
     {
         kva: 3.6, voltage: 24, maxWatts: 3600,
         bestFor: 'Medium home (2\u20133 bedrooms)',
-        price: Math.round(48000 * 1.25), labour: 20000,
+        price: 55000, labour: 34800,
         img: 'images/kstarinverter.png',
         specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing',
         appliances: [
@@ -55,7 +55,7 @@ const kstarInverters = [
     {
         kva: 3.6, voltage: 48, maxWatts: 3600,
         bestFor: 'Medium-large home (3\u20134 bedrooms)',
-        price: Math.round(63000 * 1.25), labour: 20000,
+        price: 63000, labour: 34800,
         img: 'images/kstarinverter.png',
         specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing',
         appliances: [
@@ -75,7 +75,7 @@ const kstarInverters = [
     {
         kva: 6.0, voltage: 48, maxWatts: 6000,
         bestFor: 'Large home / Small office',
-        price: Math.round(80000 * 1.25), labour: 25000,
+        price: 75000, labour: 46400,
         img: 'images/kstarinverter.png',
         specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing',
         appliances: [
@@ -98,7 +98,7 @@ const fortunerInverters = [
     {
         kva: 0.7, watts: 450, voltage: 12, maxWatts: 450,
         bestFor: 'Small office / Security lighting',
-        price: Math.round(12500 * 1.25), labour: 15000,
+        price: 15625, labour: 15000,
         img: 'images/fortunerinverter.png',
         specsLink: 'https://drive.google.com/file/d/1CYns0tOUy0iRoS5m_WMMs_Ms2ti_-dIS/view?usp=sharing',
         appliances: [
@@ -114,7 +114,8 @@ const fortunerInverters = [
     {
         kva: 1.5, watts: 1200, voltage: 24, maxWatts: 1200,
         bestFor: '1\u20132 bedroom apartment',
-        price: Math.round(16000 * 1.25), labour: 15000,
+        price: 20000, labour: 15000,
+        outOfStock: true,
         img: 'images/fortunerinverter.png',
         specsLink: 'https://drive.google.com/file/d/1tADpzqTfynzL2vwvpaCsV0THI7UmEOuz/view?usp=sharing',
         appliances: [
@@ -131,7 +132,7 @@ const fortunerInverters = [
     {
         kva: 2.2, watts: 1400, voltage: 24, maxWatts: 1400,
         bestFor: '2\u20133 bedroom home',
-        price: Math.round(21000 * 1.25), labour: 18000,
+        price: 26250, labour: 18000,
         img: 'images/fortunerinverter.png',
         specsLink: 'https://drive.google.com/file/d/1tADpzqTfynzL2vwvpaCsV0THI7UmEOuz/view?usp=sharing',
         appliances: [
@@ -149,7 +150,8 @@ const fortunerInverters = [
     {
         kva: 10.0, voltage: 48, maxWatts: 10000,
         bestFor: 'Large home / Small business',
-        price: Math.round(105000 * 1.25), labour: 25000,
+        price: 131250, labour: 25000,
+        outOfStock: true,
         img: 'images/fortunerinverter.png',
         specsLink: 'https://drive.google.com/file/d/1iCFsxqr2xB7p50QH4s4en1VPrdQ_-nY0/view?usp=sharing',
         appliances: [
@@ -174,7 +176,7 @@ const batteries = [
         id: 'tubular',
         name: 'Tubular 200AH',
         shortDesc: 'Affordable & reliable. Needs topping up every 3\u20136 months.',
-        price: Math.round(23500 * 1.25),
+        price: 22500,
         img: 'images/battery-200ah-tubular.png',
         specsLink: 'https://drive.google.com/file/d/17stgG0eX-rTGS8QR9KdDVZ08OXjWJH47/view?usp=sharing',
         capacityWh: 2400, dod: 0.8, backupHours: 8.6, warranty: '1 year',
@@ -184,7 +186,7 @@ const batteries = [
         id: 'mf',
         name: 'Maintenance Free 200AH',
         shortDesc: 'Sealed & zero maintenance. Great for indoor installation.',
-        price: Math.round(35500 * 1.25),
+        price: 36500,
         img: 'images/battery-200ah-mf.png',
         specsLink: 'https://drive.google.com/file/d/1IiygyBHcx85JLY5W7wFI6gQBflkKHNh9/view?usp=sharing',
         capacityWh: 2400, dod: 0.8, backupHours: 8.6, warranty: '1 year',
@@ -194,7 +196,7 @@ const batteries = [
         id: 'lithium',
         name: 'Lithium LFP 51.2V 100Ah',
         shortDesc: 'Premium. 10-year warranty. 90% usable capacity.',
-        price: Math.round(125000 * 1.25),
+        price: 120000,
         img: 'images/battery-100ah-lithium.png',
         specsLink: 'https://drive.google.com/file/d/194rpm8gHCgehwTyFhx35o35G-JwXVgCS/view?usp=sharing',
         capacityWh: 5120, dod: 0.9, backupHours: 20.7, warranty: '10 years',
@@ -206,7 +208,7 @@ const batteries = [
 const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 const fmt = n => Number(n).toLocaleString();
-const PANEL_PRICE = Math.round(8300 * 1.25);
+const PANEL_PRICE = 11500;
 
 function getAccessoryCost() {
     const base = Math.round(4000 * 1.25) + Math.round(2500 * 1.25) + Math.round(4000 * 1.25);
@@ -373,7 +375,7 @@ function updateNeedsResult() {
     if (watts <= 450) {
         rec = 'A <strong>Fortuner 0.7kVA</strong> can handle this load. Budget-friendly choice.';
     } else if (watts <= 1200) {
-        rec = 'A <strong>Fortuner 1.5kVA</strong> or higher will cover your needs.';
+        rec = 'A <strong>Fortuner 0.7kVA</strong> can work, or go to <strong>Fortuner 2.2kVA</strong> for more headroom.';
     } else if (watts <= 1400) {
         rec = 'Consider a <strong>Fortuner 2.2kVA</strong> or <strong>Kstar 3.6kVA</strong> for headroom.';
     } else if (watts <= 3600) {
@@ -381,7 +383,7 @@ function updateNeedsResult() {
     } else if (watts <= 6000) {
         rec = 'You need at least a <strong>Kstar 6.0kVA</strong> for this kind of load.';
     } else {
-        rec = 'Heavy usage \u2014 the <strong>Fortuner 10kVA</strong> gives you maximum headroom.';
+        rec = 'Heavy usage \u2014 consider a <strong>Kstar 6.0kVA</strong> system for reliable high-load support.';
     }
     if (recEl) recEl.innerHTML = rec;
 }
@@ -436,13 +438,15 @@ function renderInverters() {
     inverters.forEach(function(inv, idx) {
         var sel = state.inverter && state.inverter.kva === inv.kva && state.inverter.voltage === inv.voltage;
         var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
+        var outOfStock = !!inv.outOfStock;
 
         var badge = '';
-        if (idx === recommendedIdx && userWatts > 0) {
+        if (idx === recommendedIdx && userWatts > 0 && !outOfStock) {
             badge = '<span class="card-badge badge-rec"><i class="fas fa-star"></i> Recommended</span>';
-        } else if (idx === bestValueIdx) {
+        } else if (idx === bestValueIdx && !outOfStock) {
             badge = '<span class="card-badge badge-value"><i class="fas fa-tags"></i> Best Value</span>';
         }
+        if (outOfStock) badge = '<span class="card-badge badge-out"><i class="fas fa-ban"></i> Out of Stock</span>';
 
         var matchBar = '';
         if (userWatts > 0) {
@@ -456,7 +460,7 @@ function renderInverters() {
         }
 
         var el = document.createElement('div');
-        el.className = 'product-card' + (sel ? ' selected' : '');
+        el.className = 'product-card' + (sel ? ' selected' : '') + (outOfStock ? ' out-of-stock' : '');
         el.innerHTML =
             badge +
             '<div class="card-check"><i class="fas fa-check"></i></div>' +
@@ -465,16 +469,17 @@ function renderInverters() {
                 '<span class="card-title">' + state.company + ' ' + inv.kva + 'kVA' + w + ' \u2013 ' + inv.voltage + 'V</span>' +
                 '<span class="card-subtitle">' + inv.bestFor + '</span>' +
                 '<span class="card-price">' + fmt(inv.price) + ' Ksh</span>' +
+                (outOfStock ? '<span class="card-meta stock-meta">Currently unavailable</span>' : '') +
                 '<span class="card-meta">Efficiency: ' + inv.details.efficiency + ' \u00b7 Max: ' + fmt(inv.maxWatts) + 'W</span>' +
                 matchBar +
                 '<div class="card-actions">' +
                     '<a href="' + inv.specsLink + '" target="_blank" rel="noopener" class="card-link"><i class="fas fa-external-link-alt"></i> Specs</a>' +
-                    '<button class="card-link compat-btn" data-idx="' + idx + '"><i class="fas fa-plug"></i> What it powers</button>' +
-                    '<label class="card-link compare-check"><input type="checkbox" data-compare="' + idx + '"> Compare</label>' +
+                    (outOfStock ? '<span class="card-link stock-meta"><i class="fas fa-lock"></i> Disabled</span>' : '<button class="card-link compat-btn" data-idx="' + idx + '"><i class="fas fa-plug"></i> What it powers</button><label class="card-link compare-check"><input type="checkbox" data-compare="' + idx + '"> Compare</label>') +
                 '</div>' +
             '</div>';
 
         el.addEventListener('click', function(e) {
+            if (outOfStock) return;
             if (!e.target.closest('a') && !e.target.closest('.compat-btn') && !e.target.closest('.compare-check')) {
                 selectInverter(inv);
             }
@@ -524,7 +529,7 @@ function showComparison() {
     var body = $('#compare-body');
     if (!body) return;
 
-    var specs = ['kVA Rating', 'Voltage', 'Max Output', 'Efficiency', 'Price', 'Installation', 'Best For'];
+    var specs = ['kVA Rating', 'Voltage', 'Max Output', 'Efficiency', 'Price', 'Installation (+VAT)', 'Best For'];
     var colCount = selected.length;
 
     var html = '<div class="compare-table" style="grid-template-columns:120px repeat(' + colCount + ',1fr)">';
@@ -690,6 +695,10 @@ function selectCompany(name) {
 }
 
 function selectInverter(inv) {
+    if (inv.outOfStock) {
+        toast(inv.kva + 'kVA is currently out of stock', 'warning');
+        return;
+    }
     state.inverter = inv;
     state.battery = null;
     state.compareList = [];
@@ -786,7 +795,7 @@ function renderPanelInfo() {
     var panelImages = $('#panel-images');
     if (state.panels > 0) {
         panelInfo.innerHTML =
-            '<p><strong>' + state.panels + '</strong> \u00d7 400W solar panels</p>' +
+            '<p><strong>' + state.panels + '</strong> \u00d7 600W solar panels</p>' +
             '<p class="price">' + fmt(PANEL_PRICE) + ' Ksh each \u00b7 Total: ' + fmt(state.panels * PANEL_PRICE) + ' Ksh</p>' +
             '<a href="https://drive.google.com/file/d/14w98znycd4Y4-quOsoSItp4ulKUkpoCv/view?usp=sharing" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Panel Specs</a>';
     } else {
@@ -820,7 +829,7 @@ function renderCostBreakdown() {
 
     $('#summary').innerHTML =
         '<div class="row"><span>Inverter: ' + state.company + ' ' + inv.kva + 'kVA' + w + ' \u2013 ' + inv.voltage + 'V</span><span class="row-val">' + fmt(invCost) + ' Ksh</span></div>' +
-        '<div class="row"><span>Installation & Labour</span><span class="row-val">' + fmt(labCost) + ' Ksh</span></div>' +
+        '<div class="row"><span>Installation & Labour (+VAT)</span><span class="row-val">' + fmt(labCost) + ' Ksh</span></div>' +
         '<div class="row"><span>Batteries: ' + bat.name + ' \u00d7 ' + bat.count + '</span><span class="row-val">' + fmt(batCost) + ' Ksh</span></div>' +
         '<div class="row"><span>Solar Panels: ' + state.panels + ' panels</span><span class="row-val">' + fmt(panCost) + ' Ksh</span></div>' +
         '<div class="row"><span>Accessories (included)</span><span class="row-val">' + fmt(accCost) + ' Ksh</span></div>';
@@ -883,7 +892,7 @@ function calculateSavings() {
 
 /* ---------- environmental impact ---------- */
 function calcImpact() {
-    var pw = 400, sunHrs = 4.1, eff = 0.9, co2Factor = 0.7, treeFactor = 22, householdCo2 = 5000;
+    var pw = 600, sunHrs = 4.1, eff = 0.9, co2Factor = 0.7, treeFactor = 22, householdCo2 = 5000;
     var kwh = state.panels * pw * sunHrs * 365 * eff / 1000;
     var co2 = kwh * co2Factor;
     var trees = co2 / treeFactor;
@@ -1010,7 +1019,7 @@ function shareSummary() {
         'INVERTER\n' +
         'Model: ' + d.invTxt + '\n' +
         'Price: ' + fmt(d.inv.price) + ' Ksh\n' +
-        'Installation: ' + fmt(d.inv.labour) + ' Ksh\n\n' +
+        'Installation (+VAT): ' + fmt(d.inv.labour) + ' Ksh\n\n' +
         'BATTERY\n' +
         'Type: ' + d.bat.name + ' \u00d7' + d.bat.count + '\n' +
         'Price: ' + fmt(d.bat.price * d.bat.count) + ' Ksh\n' +
@@ -1040,7 +1049,7 @@ function shareWhatsApp() {
         '*INVERTER*\n' +
         'Model: ' + d.invTxt + '\n' +
         'Price: ' + fmt(d.inv.price) + ' Ksh\n' +
-        'Installation: ' + fmt(d.inv.labour) + ' Ksh\n\n' +
+        'Installation (+VAT): ' + fmt(d.inv.labour) + ' Ksh\n\n' +
         '*BATTERY*\n' +
         'Type: ' + d.bat.name + ' \u00d7' + d.bat.count + '\n' +
         'Price: ' + fmt(d.bat.price * d.bat.count) + ' Ksh\n' +
@@ -1108,9 +1117,9 @@ function downloadPDF() {
 
     var pdfRows = [
         ['Inverter: ' + state.company + ' ' + inv.kva + 'kVA' + w + ' \u2013 ' + inv.voltage + 'V', fmt(inv.price)],
-        ['Installation & Labour', fmt(inv.labour)],
+        ['Installation & Labour (+VAT)', fmt(inv.labour)],
         ['Batteries: ' + bat.name + ' \u00d7 ' + bat.count, fmt(bat.price * bat.count)],
-        ['Solar Panels: ' + state.panels + ' \u00d7 400W', fmt(state.panels * PANEL_PRICE)],
+        ['Solar Panels: ' + state.panels + ' \u00d7 600W', fmt(state.panels * PANEL_PRICE)],
         ['Accessories (included)', fmt(getAccessoryCost())]
     ];
 

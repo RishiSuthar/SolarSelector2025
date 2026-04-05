@@ -374,6 +374,19 @@ a:hover{color:var(--accent)}
     transform:none;border-color:var(--glass-border);
     box-shadow:none;
 }
+.product-card.out-of-stock{
+    opacity:.72;
+    cursor:not-allowed;
+}
+.product-card.out-of-stock:hover{
+    transform:none;
+    border-color:var(--glass-border);
+    box-shadow:none;
+}
+.product-card.out-of-stock .card-link,
+.product-card.out-of-stock .compat-btn{
+    opacity:.8;
+}
 .product-card .card-thumb{
     height:140px;display:grid;place-items:center;
     background:var(--bg-2);padding:16px;
@@ -426,6 +439,8 @@ a:hover{color:var(--accent)}
 .badge-rec{background:var(--accent);color:#fff}
 .badge-value{background:var(--green);color:#fff}
 .badge-premium{background:linear-gradient(135deg,hsl(280 60% 55%),hsl(320 60% 55%));color:#fff}
+.badge-out{background:var(--red);color:#fff}
+.stock-meta{color:var(--red) !important;font-weight:600}
 
 /* capacity match bar */
 .capacity-match{margin-top:6px}
