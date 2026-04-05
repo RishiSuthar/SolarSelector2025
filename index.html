@@ -14,11 +14,11 @@
     <canvas id="ambient-canvas"></canvas>
     <div id="toast-container" class="toast-container"></div>
 
-    <nav class="topbar">
+    <nav class="topbar" id="main-topbar">
         <div class="topbar-inner">
+            <button class="topbar-home-btn" id="topbar-home" title="Back to Home"><i class="fas fa-house"></i> Home</button>
             <a href="#" class="topbar-brand" id="brand-home">
                 <img src="images/sangyuglogo.png" alt="Sangyug" class="topbar-logo">
-                <span class="topbar-title">Sangyug Solar</span>
             </a>
             <div class="topbar-steps" id="topbar-steps">
                 <!-- Pills rendered dynamically by JS -->
@@ -31,6 +31,106 @@
     </nav>
 
     <main class="app-main">
+
+        <!-- LANDING: Mode Selection -->
+        <section id="landing-section" class="panel visible" data-step="landing">
+            <div class="landing-hero">
+                <div class="landing-glow"></div>
+                <h1 class="landing-title">Build Your <span class="text-gradient">Solar System</span></h1>
+                <p class="landing-subtitle">Power your home or business with clean, affordable solar energy</p>
+            </div>
+            <div class="mode-grid">
+                <div class="mode-card" id="mode-guided">
+                    <div class="mode-icon-wrap mode-icon-guided">
+                        <i class="fas fa-hand-holding-heart"></i>
+                    </div>
+                    <h2 class="mode-title">Guide Me Through</h2>
+                    <p class="mode-desc">Tell us what appliances you have, and we'll find the perfect system for you.</p>
+                    <ul class="mode-features">
+                        <li><i class="fas fa-check"></i> Select your appliances & brands</li>
+                        <li><i class="fas fa-check"></i> Get smart recommendations</li>
+                        <li><i class="fas fa-check"></i> Compare options side by side</li>
+                        <li><i class="fas fa-check"></i> No technical knowledge needed</li>
+                    </ul>
+                    <span class="mode-tag"><i class="fas fa-star"></i> Recommended for first-timers</span>
+                </div>
+                <div class="mode-card" id="mode-custom">
+                    <div class="mode-icon-wrap mode-icon-custom">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <h2 class="mode-title">Full Custom Builder</h2>
+                    <p class="mode-desc">Already know what you need? Jump straight into selecting your components.</p>
+                    <ul class="mode-features">
+                        <li><i class="fas fa-check"></i> Pick phase, brand, inverter</li>
+                        <li><i class="fas fa-check"></i> Choose your own battery</li>
+                        <li><i class="fas fa-check"></i> Full control over every choice</li>
+                        <li><i class="fas fa-check"></i> For pros & experienced users</li>
+                    </ul>
+                    <span class="mode-tag"><i class="fas fa-bolt"></i> For those who know their gear</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- GUIDED: Appliance Builder -->
+        <section id="appliances-section" class="panel" data-step="appliances">
+
+            <!-- Dynamic wizard area rendered by JS -->
+            <div id="ab-wizard-header"></div>
+            <div id="ab-cat-progress"></div>
+            <div id="appliance-builder" class="appliance-builder"></div>
+            <div id="ab-wizard-nav"></div>
+
+            <div class="guided-load-summary" id="guided-load-summary">
+                <div class="load-summary-inner">
+                    <div class="load-stat">
+                        <span class="load-stat-label">Running Load</span>
+                        <span class="load-stat-val" id="running-watts">0W</span>
+                    </div>
+                    <div class="load-stat">
+                        <span class="load-stat-label">Peak / Starting</span>
+                        <span class="load-stat-val load-stat-peak" id="peak-watts">0W</span>
+                    </div>
+                    <div class="load-stat">
+                        <span class="load-stat-label">Appliances</span>
+                        <span class="load-stat-val" id="appliance-count">0</span>
+                    </div>
+                </div>
+                <button class="cta-btn guided-next-btn" id="guided-next-from-appliances" disabled>
+                    <span>See My Recommendations</span> <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+        </section>
+
+        <!-- GUIDED: Recommendations -->
+        <section id="recommend-section" class="panel" data-step="recommend">
+            <div class="panel-header">
+                <span class="panel-tag">Step 2 of 4</span>
+                <h1>Your Recommended Systems</h1>
+                <p>Based on your <strong id="rec-watts-display">0W</strong> load, here are the best options for you.</p>
+            </div>
+
+            <div class="rec-phase-info" id="rec-phase-info"></div>
+
+            <div id="rec-inverter-options" class="card-grid"></div>
+
+            <button class="back-btn" id="back-from-recommend"><i class="fas fa-arrow-left"></i> Back</button>
+        </section>
+
+        <!-- GUIDED: Battery Selection -->
+        <section id="guided-battery-section" class="panel" data-step="guided-battery">
+            <div class="panel-header">
+                <span class="panel-tag">Step 3 of 4</span>
+                <h1>Choose Your Battery</h1>
+                <p>Your inverter needs energy storage. Pick the battery that fits your needs and budget.</p>
+            </div>
+
+            <div class="guided-inverter-reminder" id="guided-inverter-reminder"></div>
+
+            <div id="guided-battery-options" class="card-grid"></div>
+
+            <button class="back-btn" id="back-from-guided-battery"><i class="fas fa-arrow-left"></i> Back</button>
+        </section>
 
         <!-- STEP: Phase Selection -->
         <section id="phase-section" class="panel visible" data-step="phase">

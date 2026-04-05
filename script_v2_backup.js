@@ -1,28 +1,20 @@
 /* ===================================================
-   SANGYUG SOLAR SELECTOR v4 — Guided + Custom Builder
+   SANGYUG SOLAR SELECTOR v3 — Single & Three Phase
    =================================================== */
 
 /* ---------- state ---------- */
 const state = {
-    mode: '',          // 'guided' or 'custom'
     phase: '',
     company: '',
     inverter: null,
     battery: null,
     panels: 0,
     panelType: null,
-    step: 'landing',
+    step: 'phase',
     needs: {},
     totalWatts: 0,
     compareList: [],
-    atessMasterCount: 3,
-    // guided mode state
-    guidedSpace: 'home',
-    guidedAppliances: {},    // { applianceId: [ { variantIdx: 0, qty: 1 }, ... ] }
-    guidedCustomDevices: [],  // [ { name, watts, qty } ]
-    guidedRunningWatts: 0,
-    guidedPeakWatts: 0,
-    guidedCatIdx: 0
+    atessMasterCount: 3
 };
 
 const pricingState = {
@@ -32,7 +24,7 @@ const pricingState = {
     lastUpdated: null
 };
 
-/* ---------- appliances (legacy — kept for custom mode needs assessment) ---------- */
+/* ---------- appliances ---------- */
 const APPLIANCES = [
     { id: 'bulbs', name: 'LED Lights (×10)', watts: 100, icon: 'fa-lightbulb' },
     { id: 'tv', name: 'Television', watts: 120, icon: 'fa-tv' },
@@ -46,392 +38,6 @@ const APPLIANCES = [
     { id: 'washer', name: 'Washing Machine', watts: 500, icon: 'fa-soap' },
     { id: 'pump', name: 'Water Pump', watts: 1000, icon: 'fa-faucet' },
     { id: 'blender', name: 'Blender', watts: 400, icon: 'fa-blender' }
-];
-
-/* ---------- rich appliance database (guided mode) ---------- */
-const APPLIANCE_CATEGORIES = [
-    { id: 'lighting', name: 'Lighting', icon: 'fa-lightbulb',
-      greeting: "Let's start with lighting!",
-      subtext: 'How many lights do you need to keep on?' },
-    { id: 'entertainment', name: 'Entertainment', icon: 'fa-tv',
-      greeting: 'Now for the fun stuff!',
-      subtext: 'TVs, sound systems, gaming — tell us what you enjoy.' },
-    { id: 'kitchen', name: 'Kitchen', icon: 'fa-utensils',
-      greeting: 'Time for the kitchen!',
-      subtext: 'Fridges, microwaves, kettles — the essentials.' },
-    { id: 'cooling', name: 'Cooling & Heating', icon: 'fa-fan',
-      greeting: 'Staying comfortable?',
-      subtext: 'Fans, ACs, or heaters you want running.' },
-    { id: 'laundry', name: 'Laundry', icon: 'fa-soap',
-      greeting: 'Laundry day!',
-      subtext: 'Washing machines and irons to keep powered.' },
-    { id: 'office', name: 'Office & Tech', icon: 'fa-laptop',
-      greeting: 'Work & tech setup!',
-      subtext: 'Laptops, desktops, printers, routers.' },
-    { id: 'water', name: 'Water & Pumps', icon: 'fa-faucet',
-      greeting: 'Water systems!',
-      subtext: 'Pumps and water heaters — these draw serious power.' },
-    { id: 'security', name: 'Security', icon: 'fa-shield-halved',
-      greeting: 'Keeping things safe!',
-      subtext: 'CCTV, alarms, and electric fencing.' },
-    { id: 'other', name: 'Other', icon: 'fa-plug',
-      greeting: 'Anything else?',
-      subtext: 'Any other appliances we might have missed.' }
-];
-
-const RICH_APPLIANCES = [
-    // LIGHTING
-    {
-        id: 'led-bulb', name: 'LED Bulb', category: 'lighting', icon: 'fa-lightbulb',
-        desc: 'Energy-efficient LED light',
-        variants: [
-            { label: '7W LED', watts: 7, startMultiplier: 1 },
-            { label: '10W LED', watts: 10, startMultiplier: 1 },
-            { label: '15W LED', watts: 15, startMultiplier: 1 },
-            { label: '20W LED', watts: 20, startMultiplier: 1 }
-        ],
-        maxQty: 50, defaultQty: 5, spaces: ['home', 'office', 'commercial']
-    },
-    {
-        id: 'fluorescent', name: 'Fluorescent Tube', category: 'lighting', icon: 'fa-lightbulb',
-        desc: 'Standard fluorescent tube light',
-        variants: [
-            { label: '18W (2ft)', watts: 18, startMultiplier: 1.5 },
-            { label: '36W (4ft)', watts: 36, startMultiplier: 1.5 },
-            { label: '58W (5ft)', watts: 58, startMultiplier: 1.5 }
-        ],
-        maxQty: 30, defaultQty: 2, spaces: ['office', 'commercial']
-    },
-    {
-        id: 'spotlight', name: 'Spotlight / Downlight', category: 'lighting', icon: 'fa-sun',
-        desc: 'Recessed or surface-mount spotlight',
-        variants: [
-            { label: '5W LED Spot', watts: 5, startMultiplier: 1 },
-            { label: '10W LED Spot', watts: 10, startMultiplier: 1 },
-            { label: '20W LED Flood', watts: 20, startMultiplier: 1 }
-        ],
-        maxQty: 20, defaultQty: 4, spaces: ['home', 'office', 'commercial']
-    },
-    // ENTERTAINMENT
-    {
-        id: 'tv', name: 'Television', category: 'entertainment', icon: 'fa-tv',
-        desc: 'Flat screen TV — power depends on size',
-        variants: [
-            { label: '24" – 32" (Small)', watts: 40, startMultiplier: 1 },
-            { label: '40" – 43" (Medium)', watts: 70, startMultiplier: 1 },
-            { label: '50" – 55" (Large)', watts: 110, startMultiplier: 1 },
-            { label: '65" (Extra Large)', watts: 150, startMultiplier: 1 },
-            { label: '75" – 85" (Premium)', watts: 200, startMultiplier: 1 },
-            { label: '85"+ (Massive)', watts: 280, startMultiplier: 1 }
-        ],
-        maxQty: 5, defaultQty: 1, spaces: ['home', 'office', 'commercial']
-    },
-    {
-        id: 'decoder', name: 'Decoder / Set-Top Box', category: 'entertainment', icon: 'fa-satellite-dish',
-        desc: 'DStv, StarTimes, Zuku etc.',
-        variants: [
-            { label: 'Standard Decoder', watts: 25, startMultiplier: 1 },
-            { label: 'HD / PVR Decoder', watts: 40, startMultiplier: 1 }
-        ],
-        maxQty: 3, defaultQty: 1, spaces: ['home']
-    },
-    {
-        id: 'sound-system', name: 'Sound System', category: 'entertainment', icon: 'fa-volume-high',
-        desc: 'Speakers, soundbar, or home theatre',
-        variants: [
-            { label: 'Soundbar', watts: 50, startMultiplier: 1 },
-            { label: 'Bookshelf Speakers', watts: 80, startMultiplier: 1 },
-            { label: 'Home Theatre System', watts: 200, startMultiplier: 1 },
-            { label: 'PA / DJ System', watts: 500, startMultiplier: 1 }
-        ],
-        maxQty: 3, defaultQty: 1, spaces: ['home', 'commercial']
-    },
-    {
-        id: 'gaming', name: 'Gaming Console', category: 'entertainment', icon: 'fa-gamepad',
-        desc: 'PlayStation, Xbox, Nintendo',
-        variants: [
-            { label: 'Nintendo Switch', watts: 40, startMultiplier: 1 },
-            { label: 'PlayStation / Xbox', watts: 200, startMultiplier: 1 }
-        ],
-        maxQty: 2, defaultQty: 1, spaces: ['home']
-    },
-    // KITCHEN
-    {
-        id: 'fridge', name: 'Refrigerator', category: 'kitchen', icon: 'fa-temperature-low',
-        desc: 'Running watts + high starting surge',
-        variants: [
-            { label: 'Bar Fridge (90L)', watts: 80, startMultiplier: 3 },
-            { label: 'Single Door (180–250L)', watts: 150, startMultiplier: 3 },
-            { label: 'Double Door (300–450L)', watts: 200, startMultiplier: 3 },
-            { label: 'Side-by-Side (500L+)', watts: 300, startMultiplier: 3.5 },
-            { label: 'Chest Freezer', watts: 200, startMultiplier: 3.5 }
-        ],
-        maxQty: 3, defaultQty: 1, spaces: ['home', 'office', 'commercial'],
-        note: 'Fridges draw 3–4× watts on startup'
-    },
-    {
-        id: 'microwave', name: 'Microwave', category: 'kitchen', icon: 'fa-fire',
-        desc: 'Countertop microwave oven',
-        variants: [
-            { label: 'Small (700W)', watts: 700, startMultiplier: 1 },
-            { label: 'Medium (900W)', watts: 900, startMultiplier: 1 },
-            { label: 'Large (1200W)', watts: 1200, startMultiplier: 1 }
-        ],
-        maxQty: 2, defaultQty: 1, spaces: ['home', 'office', 'commercial'],
-        note: 'Heavy draw — best used in short bursts'
-    },
-    {
-        id: 'kettle', name: 'Electric Kettle', category: 'kitchen', icon: 'fa-mug-hot',
-        desc: 'Boils water quickly — very high wattage',
-        variants: [
-            { label: 'Small (1500W)', watts: 1500, startMultiplier: 1 },
-            { label: 'Standard (2000W)', watts: 2000, startMultiplier: 1 },
-            { label: 'Large (3000W)', watts: 3000, startMultiplier: 1 }
-        ],
-        maxQty: 2, defaultQty: 1, spaces: ['home', 'office', 'commercial'],
-        note: 'Very heavy draw — use briefly'
-    },
-    {
-        id: 'blender', name: 'Blender / Mixer', category: 'kitchen', icon: 'fa-blender',
-        desc: 'Blender, food processor, or mixer',
-        variants: [
-            { label: 'Small Blender (300W)', watts: 300, startMultiplier: 2 },
-            { label: 'Standard Blender (500W)', watts: 500, startMultiplier: 2 },
-            { label: 'Heavy-Duty / Nutribullet (900W)', watts: 900, startMultiplier: 2 },
-            { label: 'Food Processor (600W)', watts: 600, startMultiplier: 2 }
-        ],
-        maxQty: 2, defaultQty: 1, spaces: ['home', 'commercial']
-    },
-    {
-        id: 'toaster', name: 'Toaster / Sandwich Maker', category: 'kitchen', icon: 'fa-bread-slice',
-        desc: 'Bread toaster or sandwich press',
-        variants: [
-            { label: '2-Slice Toaster (800W)', watts: 800, startMultiplier: 1 },
-            { label: '4-Slice Toaster (1400W)', watts: 1400, startMultiplier: 1 },
-            { label: 'Sandwich Maker (700W)', watts: 700, startMultiplier: 1 }
-        ],
-        maxQty: 2, defaultQty: 1, spaces: ['home', 'office']
-    },
-    {
-        id: 'cooker', name: 'Electric Cooker / Hotplate', category: 'kitchen', icon: 'fa-fire-burner',
-        desc: 'Single or double hotplate',
-        variants: [
-            { label: 'Single Hotplate (1000W)', watts: 1000, startMultiplier: 1 },
-            { label: 'Double Hotplate (2000W)', watts: 2000, startMultiplier: 1 },
-            { label: 'Induction Cooker (1800W)', watts: 1800, startMultiplier: 1 }
-        ],
-        maxQty: 2, defaultQty: 1, spaces: ['home', 'commercial'],
-        note: 'Very heavy draw'
-    },
-    // COOLING & HEATING
-    {
-        id: 'fan', name: 'Fan', category: 'cooling', icon: 'fa-fan',
-        desc: 'Standing, ceiling, or desk fan',
-        variants: [
-            { label: 'Desk Fan (35W)', watts: 35, startMultiplier: 1.5 },
-            { label: 'Standing Fan (55W)', watts: 55, startMultiplier: 1.5 },
-            { label: 'Ceiling Fan (75W)', watts: 75, startMultiplier: 2 },
-            { label: 'Industrial Fan (150W)', watts: 150, startMultiplier: 2 }
-        ],
-        maxQty: 10, defaultQty: 2, spaces: ['home', 'office', 'commercial']
-    },
-    {
-        id: 'ac', name: 'Air Conditioner', category: 'cooling', icon: 'fa-snowflake',
-        desc: 'Split-unit AC — heavy starting surge',
-        variants: [
-            { label: '9000 BTU / 1HP (900W)', watts: 900, startMultiplier: 3.5 },
-            { label: '12000 BTU / 1.5HP (1200W)', watts: 1200, startMultiplier: 3.5 },
-            { label: '18000 BTU / 2HP (1800W)', watts: 1800, startMultiplier: 3.5 },
-            { label: '24000 BTU / 3HP (2500W)', watts: 2500, startMultiplier: 3.5 }
-        ],
-        maxQty: 5, defaultQty: 1, spaces: ['home', 'office', 'commercial'],
-        note: 'ACs require 3–4× wattage to start. Needs a powerful inverter.'
-    },
-    {
-        id: 'heater', name: 'Space Heater', category: 'cooling', icon: 'fa-temperature-arrow-up',
-        desc: 'Electric room heater',
-        variants: [
-            { label: 'Small (800W)', watts: 800, startMultiplier: 1 },
-            { label: 'Medium (1500W)', watts: 1500, startMultiplier: 1 },
-            { label: 'Large (2000W)', watts: 2000, startMultiplier: 1 }
-        ],
-        maxQty: 3, defaultQty: 1, spaces: ['home', 'office']
-    },
-    // LAUNDRY
-    {
-        id: 'washer', name: 'Washing Machine', category: 'laundry', icon: 'fa-soap',
-        desc: 'Top-load or front-load washer',
-        variants: [
-            { label: 'Top Load (400W)', watts: 400, startMultiplier: 2.5 },
-            { label: 'Front Load (500W)', watts: 500, startMultiplier: 2.5 },
-            { label: 'Twin Tub (350W)', watts: 350, startMultiplier: 2 }
-        ],
-        maxQty: 2, defaultQty: 1, spaces: ['home', 'commercial'],
-        note: 'Motor draw is higher on startup'
-    },
-    {
-        id: 'iron', name: 'Iron', category: 'laundry', icon: 'fa-shirt',
-        desc: 'Clothes iron — dry or steam',
-        variants: [
-            { label: 'Dry Iron (1000W)', watts: 1000, startMultiplier: 1 },
-            { label: 'Steam Iron (1400W)', watts: 1400, startMultiplier: 1 },
-            { label: 'Heavy Steam Iron (2000W)', watts: 2000, startMultiplier: 1 }
-        ],
-        maxQty: 2, defaultQty: 1, spaces: ['home', 'commercial']
-    },
-    {
-        id: 'dryer', name: 'Hair Dryer', category: 'laundry', icon: 'fa-wind',
-        desc: 'Hair dryer / blow dryer',
-        variants: [
-            { label: 'Travel (800W)', watts: 800, startMultiplier: 1 },
-            { label: 'Standard (1500W)', watts: 1500, startMultiplier: 1 },
-            { label: 'Professional (2200W)', watts: 2200, startMultiplier: 1 }
-        ],
-        maxQty: 2, defaultQty: 1, spaces: ['home', 'commercial']
-    },
-    // OFFICE & TECH
-    {
-        id: 'laptop', name: 'Laptop', category: 'office', icon: 'fa-laptop',
-        desc: 'Laptop computer with charger',
-        variants: [
-            { label: 'Ultrabook / Light (45W)', watts: 45, startMultiplier: 1 },
-            { label: 'Standard Laptop (65W)', watts: 65, startMultiplier: 1 },
-            { label: 'Gaming / Workstation (120W)', watts: 120, startMultiplier: 1 },
-            { label: 'Heavy Gaming (200W)', watts: 200, startMultiplier: 1 }
-        ],
-        maxQty: 10, defaultQty: 1, spaces: ['home', 'office', 'commercial']
-    },
-    {
-        id: 'desktop', name: 'Desktop Computer', category: 'office', icon: 'fa-desktop',
-        desc: 'Desktop PC + monitor',
-        variants: [
-            { label: 'Basic PC + Monitor (200W)', watts: 200, startMultiplier: 1 },
-            { label: 'Office PC + Monitor (300W)', watts: 300, startMultiplier: 1 },
-            { label: 'Gaming PC + Monitor (500W)', watts: 500, startMultiplier: 1 }
-        ],
-        maxQty: 10, defaultQty: 1, spaces: ['home', 'office', 'commercial']
-    },
-    {
-        id: 'printer', name: 'Printer', category: 'office', icon: 'fa-print',
-        desc: 'Inkjet or laser printer',
-        variants: [
-            { label: 'Inkjet (30W)', watts: 30, startMultiplier: 1 },
-            { label: 'Laser Printer (500W)', watts: 500, startMultiplier: 2 },
-            { label: 'Large Format / Copier (1200W)', watts: 1200, startMultiplier: 2 }
-        ],
-        maxQty: 5, defaultQty: 1, spaces: ['office', 'commercial']
-    },
-    {
-        id: 'router', name: 'WiFi Router / Switch', category: 'office', icon: 'fa-wifi',
-        desc: 'Internet router or network switch',
-        variants: [
-            { label: 'Home Router (12W)', watts: 12, startMultiplier: 1 },
-            { label: 'Dual-Band Router (18W)', watts: 18, startMultiplier: 1 },
-            { label: 'Enterprise Router / Switch (30W)', watts: 30, startMultiplier: 1 }
-        ],
-        maxQty: 5, defaultQty: 1, spaces: ['home', 'office', 'commercial']
-    },
-    {
-        id: 'phone-charge', name: 'Phone Charger', category: 'office', icon: 'fa-mobile-screen',
-        desc: 'Smartphone charging',
-        variants: [
-            { label: 'Standard (10W)', watts: 10, startMultiplier: 1 },
-            { label: 'Fast Charger (25W)', watts: 25, startMultiplier: 1 },
-            { label: 'Super Fast (45W)', watts: 45, startMultiplier: 1 }
-        ],
-        maxQty: 20, defaultQty: 3, spaces: ['home', 'office', 'commercial']
-    },
-    {
-        id: 'projector', name: 'Projector', category: 'office', icon: 'fa-chalkboard',
-        desc: 'Presentation or home theatre projector',
-        variants: [
-            { label: 'Mini / Portable (50W)', watts: 50, startMultiplier: 1 },
-            { label: 'Standard (200W)', watts: 200, startMultiplier: 1 },
-            { label: 'Professional (350W)', watts: 350, startMultiplier: 1 }
-        ],
-        maxQty: 3, defaultQty: 1, spaces: ['home', 'office', 'commercial']
-    },
-    // WATER & PUMPS
-    {
-        id: 'pump', name: 'Water Pump', category: 'water', icon: 'fa-faucet',
-        desc: 'Booster or borehole pump',
-        variants: [
-            { label: '0.5 HP (370W)', watts: 370, startMultiplier: 3 },
-            { label: '1 HP (750W)', watts: 750, startMultiplier: 3 },
-            { label: '1.5 HP (1100W)', watts: 1100, startMultiplier: 3 },
-            { label: '2 HP (1500W)', watts: 1500, startMultiplier: 3 }
-        ],
-        maxQty: 3, defaultQty: 1, spaces: ['home', 'commercial'],
-        note: 'Pumps require 3× wattage to start'
-    },
-    {
-        id: 'water-heater', name: 'Water Heater (Instant)', category: 'water', icon: 'fa-hot-tub-person',
-        desc: 'Instant / tankless water heater',
-        variants: [
-            { label: 'Small (3000W)', watts: 3000, startMultiplier: 1 },
-            { label: 'Large (4500W)', watts: 4500, startMultiplier: 1 }
-        ],
-        maxQty: 2, defaultQty: 1, spaces: ['home', 'commercial'],
-        note: 'Extremely heavy draw — often impractical with inverter'
-    },
-    // SECURITY
-    {
-        id: 'cctv', name: 'CCTV System', category: 'security', icon: 'fa-video',
-        desc: 'Cameras + DVR/NVR',
-        variants: [
-            { label: '4-Camera + DVR (60W)', watts: 60, startMultiplier: 1 },
-            { label: '8-Camera + NVR (100W)', watts: 100, startMultiplier: 1 },
-            { label: '16-Camera + NVR (180W)', watts: 180, startMultiplier: 1 }
-        ],
-        maxQty: 3, defaultQty: 1, spaces: ['home', 'office', 'commercial']
-    },
-    {
-        id: 'alarm', name: 'Alarm System', category: 'security', icon: 'fa-bell',
-        desc: 'Security alarm panel + sensors',
-        variants: [
-            { label: 'Basic Panel (15W)', watts: 15, startMultiplier: 1 },
-            { label: 'Full System (30W)', watts: 30, startMultiplier: 1 }
-        ],
-        maxQty: 2, defaultQty: 1, spaces: ['home', 'office', 'commercial']
-    },
-    {
-        id: 'electric-fence', name: 'Electric Fence', category: 'security', icon: 'fa-shield-halved',
-        desc: 'Perimeter electric fence energizer',
-        variants: [
-            { label: 'Small Property (20W)', watts: 20, startMultiplier: 1 },
-            { label: 'Large Property (50W)', watts: 50, startMultiplier: 1 }
-        ],
-        maxQty: 2, defaultQty: 1, spaces: ['home', 'commercial']
-    },
-    // OTHER
-    {
-        id: 'pos', name: 'POS / Cash Register', category: 'other', icon: 'fa-cash-register',
-        desc: 'Point-of-sale terminal',
-        variants: [
-            { label: 'Tablet POS (30W)', watts: 30, startMultiplier: 1 },
-            { label: 'Full POS System (100W)', watts: 100, startMultiplier: 1 }
-        ],
-        maxQty: 5, defaultQty: 1, spaces: ['commercial']
-    },
-    {
-        id: 'sewing', name: 'Sewing Machine', category: 'other', icon: 'fa-gears',
-        desc: 'Electric sewing machine',
-        variants: [
-            { label: 'Home (100W)', watts: 100, startMultiplier: 2 },
-            { label: 'Industrial (400W)', watts: 400, startMultiplier: 2.5 }
-        ],
-        maxQty: 5, defaultQty: 1, spaces: ['home', 'commercial']
-    },
-    {
-        id: 'vacuum', name: 'Vacuum Cleaner', category: 'other', icon: 'fa-broom',
-        desc: 'Upright or handheld vacuum',
-        variants: [
-            { label: 'Handheld / Stick (200W)', watts: 200, startMultiplier: 1.5 },
-            { label: 'Standard Upright (800W)', watts: 800, startMultiplier: 2 },
-            { label: 'Heavy-Duty (1400W)', watts: 1400, startMultiplier: 2 }
-        ],
-        maxQty: 2, defaultQty: 1, spaces: ['home', 'office', 'commercial']
-    }
 ];
 
 /* ---------- panel types ---------- */
@@ -535,7 +141,7 @@ const kstarSingleInverters = [
         bestFor: 'Small home / Basic lighting',
         usdPrice: 138, usdLabour: 360,
         price: 0, labour: 0,
-        img: 'images/kstarskyseries.png',
+        img: 'images/kstarinverter.png',
         specsLink: 'https://drive.google.com/file/d/1pajnFqcUG5AezxWMGE1Ic4lyKYe4NKyK/view?usp=sharing',
         appliances: [
             { name: 'LED Bulbs (10W)', count: 5 }, { name: 'Phone Charging', count: 3 },
@@ -553,7 +159,7 @@ const kstarSingleInverters = [
         bestFor: '1–2 bedroom apartment',
         usdPrice: 158, usdLabour: 360,
         price: 0, labour: 0,
-        img: 'images/kstarskyseries.png',
+        img: 'images/kstarinverter.png',
         specsLink: 'https://drive.google.com/file/d/1pajnFqcUG5AezxWMGE1Ic4lyKYe4NKyK/view?usp=sharing',
         appliances: [
             { name: 'LED Bulbs (10W)', count: 8 }, { name: 'Fan', count: 1 },
@@ -573,7 +179,7 @@ const kstarSingleInverters = [
         bestFor: 'Large home / Premium energy storage',
         usdPrice: 884, usdLabour: 400,
         price: 0, labour: 0,
-        img: 'images/kstarresidential.png',
+        img: 'images/kstarinverter.png',
         specsLink: 'https://drive.google.com/file/d/1dBxgMwq7zowUCbcrv9SonuRn3xfDZL6a/view?usp=sharing',
         essBattery: {
             name: 'H-PACK-5.1A',
@@ -694,7 +300,7 @@ const kstarThreePhasePackages = [
         packagePrice: 0,
         usdLabour: 700,
         labour: 0,
-        img: 'images/kstar12kwoutdoor.png',
+        img: 'images/kstarinverter.png',
         specsLink: 'https://drive.google.com/file/d/1p6HgHgYygmONaS1qNxSOMYtnST8WAqgU/view?usp=sharing',
         panelCount: 25,
         panelUsd: 88.461538,
@@ -727,7 +333,7 @@ const kstarThreePhasePackages = [
         packagePrice: 0,
         usdLabour: 2000,
         labour: 0,
-        img: 'images/kstar50kwoutdoor.png',
+        img: 'images/kstarinverter.png',
         specsLink: 'https://drive.google.com/file/d/1BL0VGGz-oEFnJTpK7EMf_yfYzfCYdymt/view?usp=sharing',
         panelCount: 60,
         panelUsd: 88.461538,
@@ -762,7 +368,7 @@ const atessThreePhasePackages = [
         usdLabour: 2000,
         labour: 0,
         inverterWarranty: '10 years',
-        img: 'images/atess30kw.png',
+        img: 'images/kstarinverter.png',
         specsLink: 'https://drive.google.com/file/d/1NscCT6E6tA1oUVTwkFvkLYvVxUsSPhS3/view?usp=sharing',
         panelCount: 60,
         panelUsd: 89,
@@ -798,7 +404,7 @@ const atessThreePhasePackages = [
         usdLabour: 2000,
         labour: 0,
         inverterWarranty: '10 years',
-        img: 'images/atess20kw.png',
+        img: 'images/kstarinverter.png',
         specsLink: 'https://drive.google.com/file/d/1BWgGx_P3Y6cWLG1lJi1CjXVev8UCAkuA/view?usp=sharing',
         panelCount: 34,
         panelUsd: 89,
@@ -834,7 +440,7 @@ const atessThreePhasePackages = [
         usdLabour: 2000,
         labour: 0,
         inverterWarranty: '10 years',
-        img: 'images/atess15kw.png',
+        img: 'images/kstarinverter.png',
         specsLink: 'https://drive.google.com/file/d/1BWgGx_P3Y6cWLG1lJi1CjXVev8UCAkuA/view?usp=sharing',
         panelCount: 26,
         panelUsd: 89,
@@ -1094,12 +700,7 @@ async function refreshExchangeRateAndPricing() {
 
 /* ---------- state persistence ---------- */
 function saveState() {
-    try {
-        var s = Object.assign({}, state);
-        delete s.guidedAppliances; // too complex for localStorage, rebuild on load
-        delete s.guidedCustomDevices;
-        localStorage.setItem('solarState', JSON.stringify(s));
-    } catch (e) {}
+    try { localStorage.setItem('solarState', JSON.stringify(state)); } catch (e) {}
 }
 function clearState() {
     try { localStorage.removeItem('solarState'); } catch (e) {}
@@ -1121,24 +722,6 @@ function toast(message, type, duration) {
 
 /* ---------- navigation ---------- */
 function getStepConfig() {
-    if (state.mode === 'guided') {
-        var gSteps = [
-            { id: 'appliances', label: 'Appliances' },
-            { id: 'recommend', label: 'System' }
-        ];
-        // If selected inverter is single-phase non-ESS non-3phase Kstar, show battery
-        if (state.inverter) {
-            var needsBattery = !(state.phase === 'three') &&
-                !(state.inverter.series === 'Residential ESS') &&
-                !(state.phase === 'three' && state.company === 'Kstar');
-            if (state.phase === 'three' && state.company === 'ATESS') needsBattery = true;
-            if (needsBattery) gSteps.push({ id: 'guided-battery', label: 'Battery' });
-        }
-        gSteps.push({ id: 'summary', label: 'Quote' });
-        return gSteps;
-    }
-
-    // Custom mode (original)
     if (!state.phase) {
         return [
             { id: 'phase', label: 'Phase' }, { id: 'company', label: 'Brand' },
@@ -1171,22 +754,8 @@ function getCurrentSteps() {
 }
 
 function resolveAccessibleStep(step) {
-    if (step === 'landing') return 'landing';
     var steps = getCurrentSteps();
-    if (steps.indexOf(step) === -1) step = steps[0];
-
-    if (state.mode === 'guided') {
-        if (step === 'summary') {
-            if (!state.inverter) return 'recommend';
-            if (steps.indexOf('guided-battery') !== -1 && !state.battery) return 'guided-battery';
-            return 'summary';
-        }
-        if (step === 'guided-battery') return state.inverter ? 'guided-battery' : 'recommend';
-        if (step === 'recommend') return state.guidedRunningWatts > 0 ? 'recommend' : 'appliances';
-        return step;
-    }
-
-    // Custom mode (original)
+    if (steps.indexOf(step) === -1) step = 'phase';
     if (step === 'summary') {
         if (state.phase === 'three' && state.company === 'Kstar') return state.inverter ? 'summary' : 'inverter';
         if (state.phase === 'single' && state.inverter && state.inverter.series === 'Residential ESS') return state.inverter ? 'summary' : 'inverter';
@@ -1203,11 +772,7 @@ function resolveAccessibleStep(step) {
 }
 
 function renderStep(step) {
-    if (step === 'landing') return; // static HTML
-    if (step === 'appliances') renderApplianceBuilder();
-    else if (step === 'recommend') renderRecommendations();
-    else if (step === 'guided-battery') renderGuidedBatteries();
-    else if (step === 'phase') renderPhaseSelection();
+    if (step === 'phase') renderPhaseSelection();
     else if (step === 'company') renderCompanies();
     else if (step === 'inverter') renderInverters();
     else if (step === 'battery') renderBatteries();
@@ -1220,24 +785,11 @@ function goTo(step) {
     $$('.panel').forEach(function(p) {
         p.classList.remove('visible', 'enter-right', 'enter-left', 'exit-left', 'exit-right');
     });
-    // Map step to section id
-    var sectionId = step + '-section';
-    if (step === 'guided-battery') sectionId = 'guided-battery-section';
-    var target = $('#' + sectionId);
+    var target = $('#' + step + '-section');
     if (target) target.classList.add('visible');
     state.step = step;
-    // Show/hide topbar based on mode
-    var topbar = $('#main-topbar');
-    if (topbar) {
-        topbar.style.display = step === 'landing' ? 'none' : '';
-    }
-    // Show/hide guided load summary (fixed bar) only on appliances step
-    var loadBar = $('#guided-load-summary');
-    if (loadBar) loadBar.style.display = step === 'appliances' ? '' : 'none';
-    if (step !== 'landing') {
-        updatePills();
-        updateRunningTotal();
-    }
+    updatePills();
+    updateRunningTotal();
     window.scrollTo({ top: 0, behavior: 'smooth' });
     history.replaceState(null, '', '#' + step);
 }
@@ -1602,7 +1154,7 @@ function renderAtessBatteryConfig() {
         el.innerHTML =
             (cfg.masters === 3 ? '<span class="card-badge badge-rec"><i class="fas fa-star"></i> Maximum</span>' : '') +
             '<div class="card-check"><i class="fas fa-check"></i></div>' +
-            '<div class="card-thumb"><img src="images/atessbatteries.png" alt="Battery" loading="lazy"></div>' +
+            '<div class="card-thumb"><img src="images/battery-100ah-lithium.png" alt="Battery" loading="lazy"></div>' +
             '<div class="card-body">' +
                 '<span class="card-title">' + cfg.masters + ' Master + ' + cfg.masters + ' Slave</span>' +
                 '<span class="card-subtitle">' + cfg.totalUnits + ' batteries total · ' + cfg.capacity + '</span>' +
@@ -1814,747 +1366,6 @@ function showComparison() {
     html += '</div>';
     body.innerHTML = html;
     $('#compare-modal').classList.remove('hidden');
-}
-
-/* ---------- guided mode: appliance builder ---------- */
-function getFilteredAppliances() {
-    return RICH_APPLIANCES.filter(function(a) {
-        return a.spaces.indexOf(state.guidedSpace) !== -1;
-    });
-}
-
-function getVisibleCategories() {
-    var appliances = getFilteredAppliances();
-    var used = [];
-    appliances.forEach(function(a) {
-        if (used.indexOf(a.category) === -1) used.push(a.category);
-    });
-    return APPLIANCE_CATEGORIES.filter(function(cat) {
-        return used.indexOf(cat.id) !== -1;
-    });
-}
-
-function renderApplianceBuilder() {
-    var cats = getVisibleCategories();
-    if (state.guidedCatIdx >= cats.length) state.guidedCatIdx = cats.length - 1;
-    if (state.guidedCatIdx < 0) state.guidedCatIdx = 0;
-    var cat = cats[state.guidedCatIdx];
-    var appliances = getFilteredAppliances().filter(function(a) { return a.category === cat.id; });
-    var isFirst = state.guidedCatIdx === 0;
-    var isLast = state.guidedCatIdx === cats.length - 1;
-
-    // ── Header ──
-    var headerEl = $('#ab-wizard-header');
-    if (headerEl) {
-        var spaceButtons =
-            '<div class="guided-space-toggle">' +
-                '<button class="space-btn' + (state.guidedSpace === 'home' ? ' active' : '') + '" data-space="home"><i class="fas fa-house"></i> Home</button>' +
-                '<button class="space-btn' + (state.guidedSpace === 'office' ? ' active' : '') + '" data-space="office"><i class="fas fa-briefcase"></i> Office</button>' +
-                '<button class="space-btn' + (state.guidedSpace === 'commercial' ? ' active' : '') + '" data-space="commercial"><i class="fas fa-building"></i> Commercial</button>' +
-            '</div>';
-        headerEl.innerHTML =
-            '<div class="ab-wiz-head">' +
-                (isFirst ? spaceButtons : '') +
-                '<div class="ab-wiz-greeting">' +
-                    '<div class="ab-wiz-icon"><i class="fas ' + cat.icon + '"></i></div>' +
-                    '<h2>' + cat.greeting + '</h2>' +
-                    '<p>' + cat.subtext + '</p>' +
-                '</div>' +
-            '</div>';
-        // Re-attach space button listeners
-        headerEl.querySelectorAll('.space-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                state.guidedSpace = btn.dataset.space;
-                state.guidedCatIdx = 0;
-                renderApplianceBuilder();
-            });
-        });
-    }
-
-    // ── Category progress dots ──
-    var progEl = $('#ab-cat-progress');
-    if (progEl) {
-        var dots = cats.map(function(c, i) {
-            var hasItems = false;
-            getFilteredAppliances().filter(function(a) { return a.category === c.id; }).forEach(function(a) {
-                if (state.guidedAppliances[a.id] && state.guidedAppliances[a.id].length > 0) hasItems = true;
-            });
-            if (c.id === 'other' && state.guidedCustomDevices.length > 0) hasItems = true;
-            var cls = 'ab-dot';
-            if (i === state.guidedCatIdx) cls += ' current';
-            else if (hasItems) cls += ' has-items';
-            return '<button class="' + cls + '" data-idx="' + i + '" title="' + c.name + '"><i class="fas ' + c.icon + '"></i></button>';
-        }).join('');
-        progEl.innerHTML = '<div class="ab-progress-bar">' + dots + '</div>';
-        progEl.querySelectorAll('.ab-dot').forEach(function(dot) {
-            dot.addEventListener('click', function() {
-                state.guidedCatIdx = parseInt(dot.dataset.idx);
-                renderApplianceBuilder();
-            });
-        });
-    }
-
-    // ── Appliance cards (one category) ──
-    var container = $('#appliance-builder');
-    if (!container) return;
-    container.innerHTML = '';
-
-    var grid = document.createElement('div');
-    grid.className = 'ab-grid';
-
-    appliances.forEach(function(app) {
-        var instances = state.guidedAppliances[app.id] || [];
-        var isActive = instances.length > 0;
-
-        var card = document.createElement('div');
-        card.className = 'ab-card' + (isActive ? ' active' : '');
-        card.dataset.appId = app.id;
-
-        // Build instances HTML
-        var instancesHtml = '';
-        instances.forEach(function(inst, idx) {
-            var v = app.variants[inst.variantIdx];
-            var total = v.watts * inst.qty;
-            var startW = Math.round(v.watts * v.startMultiplier);
-            var variantOptions = app.variants.map(function(vv, vi) {
-                return '<option value="' + vi + '"' + (vi === inst.variantIdx ? ' selected' : '') + '>' + vv.label + ' — ' + vv.watts + 'W</option>';
-            }).join('');
-
-            instancesHtml +=
-                '<div class="ab-instance" data-idx="' + idx + '">' +
-                    (instances.length > 1 ? '<div class="ab-instance-label"><span>#' + (idx + 1) + '</span><button class="ab-instance-remove" data-idx="' + idx + '" type="button"><i class="fas fa-times"></i></button></div>' : '') +
-                    '<div class="ab-select-row">' +
-                        '<label>Type / Size</label>' +
-                        '<select class="ab-variant-select" data-idx="' + idx + '">' + variantOptions + '</select>' +
-                    '</div>' +
-                    '<div class="ab-qty-row">' +
-                        '<label>Quantity</label>' +
-                        '<div class="ab-qty-ctrl">' +
-                            '<button class="ab-qty-btn ab-qty-minus" data-idx="' + idx + '" type="button"><i class="fas fa-minus"></i></button>' +
-                            '<span class="ab-qty-val" data-idx="' + idx + '">' + inst.qty + '</span>' +
-                            '<button class="ab-qty-btn ab-qty-plus" data-idx="' + idx + '" type="button"><i class="fas fa-plus"></i></button>' +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="ab-watts-row">' +
-                        '<span class="ab-watts-label">Running: <strong>' + v.watts + 'W</strong> × ' + inst.qty + ' = <strong>' + total + 'W</strong></span>' +
-                        (v.startMultiplier > 1 ? '<span class="ab-watts-peak">Starting surge: <strong>' + startW + 'W</strong> each</span>' : '') +
-                    '</div>' +
-                '</div>';
-        });
-
-        card.innerHTML =
-            '<div class="ab-card-top">' +
-                '<div class="ab-card-icon"><i class="fas ' + app.icon + '"></i></div>' +
-                '<div class="ab-card-info">' +
-                    '<span class="ab-card-name">' + app.name + '</span>' +
-                    '<span class="ab-card-desc">' + app.desc + '</span>' +
-                '</div>' +
-                '<label class="ab-toggle"><input type="checkbox" ' + (isActive ? 'checked' : '') + '><span class="ab-toggle-slider"></span></label>' +
-            '</div>' +
-            '<div class="ab-card-config' + (isActive ? ' open' : '') + '">' +
-                (app.note ? '<div class="ab-note"><i class="fas fa-info-circle"></i> ' + app.note + '</div>' : '') +
-                '<div class="ab-instances-wrap">' + instancesHtml + '</div>' +
-                (isActive ? '<button class="ab-add-another" type="button"><i class="fas fa-plus"></i> Add another ' + app.name + '</button>' : '') +
-            '</div>';
-
-        // Toggle handler
-        var toggle = card.querySelector('.ab-toggle input');
-        toggle.addEventListener('change', function() {
-            if (toggle.checked) {
-                state.guidedAppliances[app.id] = [{ variantIdx: 0, qty: app.defaultQty }];
-            } else {
-                delete state.guidedAppliances[app.id];
-            }
-            renderApplianceBuilder();
-        });
-
-        // Instance event handlers
-        if (isActive) {
-            // Variant selects
-            card.querySelectorAll('.ab-variant-select').forEach(function(sel) {
-                sel.addEventListener('change', function() {
-                    var idx = parseInt(sel.dataset.idx);
-                    state.guidedAppliances[app.id][idx].variantIdx = parseInt(sel.value);
-                    renderApplianceBuilder();
-                });
-            });
-            // Qty minus
-            card.querySelectorAll('.ab-qty-minus').forEach(function(btn) {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    var idx = parseInt(btn.dataset.idx);
-                    var inst = state.guidedAppliances[app.id][idx];
-                    inst.qty = Math.max(1, inst.qty - 1);
-                    renderApplianceBuilder();
-                });
-            });
-            // Qty plus
-            card.querySelectorAll('.ab-qty-plus').forEach(function(btn) {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    var idx = parseInt(btn.dataset.idx);
-                    var inst = state.guidedAppliances[app.id][idx];
-                    inst.qty = Math.min(app.maxQty, inst.qty + 1);
-                    renderApplianceBuilder();
-                });
-            });
-            // Remove instance
-            card.querySelectorAll('.ab-instance-remove').forEach(function(btn) {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    var idx = parseInt(btn.dataset.idx);
-                    state.guidedAppliances[app.id].splice(idx, 1);
-                    if (state.guidedAppliances[app.id].length === 0) delete state.guidedAppliances[app.id];
-                    renderApplianceBuilder();
-                });
-            });
-            // Add another
-            var addBtn = card.querySelector('.ab-add-another');
-            if (addBtn) addBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                state.guidedAppliances[app.id].push({ variantIdx: 0, qty: 1 });
-                renderApplianceBuilder();
-            });
-        }
-
-        grid.appendChild(card);
-    });
-
-    container.appendChild(grid);
-
-    // ── Custom device entry (only on "Other" category) ──
-    if (cat.id === 'other') {
-        renderCustomDeviceSection(container);
-    }
-
-    // ── Navigation buttons ──
-    var navEl = $('#ab-wizard-nav');
-    if (navEl) {
-        var leftBtn = '';
-        if (isFirst) {
-            leftBtn = '<button class="ab-nav-btn ab-nav-back" id="ab-nav-back-landing"><i class="fas fa-arrow-left"></i> Back to Start</button>';
-        } else {
-            leftBtn = '<button class="ab-nav-btn ab-nav-back" id="ab-nav-prev"><i class="fas fa-arrow-left"></i> ' + cats[state.guidedCatIdx - 1].name + '</button>';
-        }
-        var rightBtn = '';
-        if (isLast) {
-            rightBtn = '<button class="ab-nav-btn ab-nav-skip" id="ab-nav-finish">Review All <i class="fas fa-list-check"></i></button>';
-        } else {
-            rightBtn =
-                '<button class="ab-nav-btn ab-nav-skip" id="ab-nav-skip">Skip <i class="fas fa-forward"></i></button>' +
-                '<button class="ab-nav-btn ab-nav-next" id="ab-nav-next">' + cats[state.guidedCatIdx + 1].name + ' <i class="fas fa-arrow-right"></i></button>';
-        }
-        navEl.innerHTML = '<div class="ab-nav-row">' + leftBtn + '<div class="ab-nav-right">' + rightBtn + '</div></div>';
-
-        var prevBtn = navEl.querySelector('#ab-nav-prev');
-        if (prevBtn) prevBtn.addEventListener('click', function() {
-            state.guidedCatIdx--;
-            renderApplianceBuilder();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-        var nextBtn = navEl.querySelector('#ab-nav-next');
-        if (nextBtn) nextBtn.addEventListener('click', function() {
-            state.guidedCatIdx++;
-            renderApplianceBuilder();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-        var skipBtn = navEl.querySelector('#ab-nav-skip');
-        if (skipBtn) skipBtn.addEventListener('click', function() {
-            state.guidedCatIdx++;
-            renderApplianceBuilder();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-        var backLanding = navEl.querySelector('#ab-nav-back-landing');
-        if (backLanding) backLanding.addEventListener('click', function() { goTo('landing'); });
-        var finishBtn = navEl.querySelector('#ab-nav-finish');
-        if (finishBtn) finishBtn.addEventListener('click', function() { showApplianceReview(); });
-    }
-
-    recalcGuidedLoad();
-}
-
-function showApplianceReview() {
-    var container = $('#appliance-builder');
-    var headerEl = $('#ab-wizard-header');
-    var progEl = $('#ab-cat-progress');
-    var navEl = $('#ab-wizard-nav');
-    if (!container) return;
-
-    var selectedIds = Object.keys(state.guidedAppliances);
-    var hasCustom = state.guidedCustomDevices.length > 0;
-    var hasAnything = selectedIds.length > 0 || hasCustom;
-
-    if (headerEl) {
-        headerEl.innerHTML =
-            '<div class="ab-wiz-head">' +
-                '<div class="ab-wiz-icon review"><i class="fas fa-clipboard-check"></i></div>' +
-                '<h2>Here\'s your full list!</h2>' +
-                '<p>' + (!hasAnything ? 'You haven\'t selected any appliances yet. Go back and pick some!' : 'Review everything you\'ve selected. Toggle items off if you change your mind.') + '</p>' +
-            '</div>';
-    }
-    if (progEl) progEl.innerHTML = '';
-
-    container.innerHTML = '';
-    if (!hasAnything) {
-        container.innerHTML = '<div class="ab-empty"><i class="fas fa-box-open"></i><p>No appliances selected yet</p><button class="ab-nav-btn ab-nav-next" id="ab-go-back-first">Start Selecting <i class="fas fa-arrow-right"></i></button></div>';
-        var goBackBtn = container.querySelector('#ab-go-back-first');
-        if (goBackBtn) goBackBtn.addEventListener('click', function() {
-            state.guidedCatIdx = 0;
-            renderApplianceBuilder();
-        });
-        if (navEl) navEl.innerHTML = '';
-        return;
-    }
-
-    // Group selected by category
-    var grouped = {};
-    selectedIds.forEach(function(id) {
-        var app = RICH_APPLIANCES.find(function(a) { return a.id === id; });
-        if (!app) return;
-        if (!grouped[app.category]) grouped[app.category] = [];
-        var instances = state.guidedAppliances[id];
-        instances.forEach(function(inst, idx) {
-            grouped[app.category].push({ app: app, inst: inst, instIdx: idx });
-        });
-    });
-
-    APPLIANCE_CATEGORIES.forEach(function(cat) {
-        if (!grouped[cat.id] && !(cat.id === 'other' && hasCustom)) return;
-        var section = document.createElement('div');
-        section.className = 'ab-review-cat';
-        section.innerHTML = '<div class="ab-category-header"><i class="fas ' + cat.icon + '"></i><h3>' + cat.name + '</h3></div>';
-
-        if (grouped[cat.id]) {
-            grouped[cat.id].forEach(function(item) {
-                var v = item.app.variants[item.inst.variantIdx];
-                var total = v.watts * item.inst.qty;
-                var row = document.createElement('div');
-                row.className = 'ab-review-row';
-                row.innerHTML =
-                    '<div class="ab-review-info">' +
-                        '<i class="fas ' + item.app.icon + '"></i>' +
-                        '<div><strong>' + item.app.name + '</strong><span>' + v.label + ' × ' + item.inst.qty + '</span></div>' +
-                    '</div>' +
-                    '<div class="ab-review-watts">' + fmt(total) + 'W</div>' +
-                    '<button class="ab-review-remove" data-app-id="' + item.app.id + '" data-inst-idx="' + item.instIdx + '" title="Remove"><i class="fas fa-times"></i></button>';
-                row.querySelector('.ab-review-remove').addEventListener('click', function() {
-                    state.guidedAppliances[item.app.id].splice(item.instIdx, 1);
-                    if (state.guidedAppliances[item.app.id].length === 0) delete state.guidedAppliances[item.app.id];
-                    showApplianceReview();
-                    recalcGuidedLoad();
-                });
-                section.appendChild(row);
-            });
-        }
-
-        // Custom devices in the "other" section
-        if (cat.id === 'other') {
-            state.guidedCustomDevices.forEach(function(dev, di) {
-                var total = dev.watts * dev.qty;
-                var row = document.createElement('div');
-                row.className = 'ab-review-row';
-                row.innerHTML =
-                    '<div class="ab-review-info">' +
-                        '<i class="fas fa-plug"></i>' +
-                        '<div><strong>' + dev.name + '</strong><span>' + dev.watts + 'W × ' + dev.qty + '</span></div>' +
-                    '</div>' +
-                    '<div class="ab-review-watts">' + fmt(total) + 'W</div>' +
-                    '<button class="ab-review-remove" data-custom-idx="' + di + '" title="Remove"><i class="fas fa-times"></i></button>';
-                row.querySelector('.ab-review-remove').addEventListener('click', function() {
-                    state.guidedCustomDevices.splice(di, 1);
-                    showApplianceReview();
-                    recalcGuidedLoad();
-                });
-                section.appendChild(row);
-            });
-        }
-
-        container.appendChild(section);
-    });
-
-    if (navEl) {
-        navEl.innerHTML =
-            '<div class="ab-nav-row">' +
-                '<button class="ab-nav-btn ab-nav-back" id="ab-review-back"><i class="fas fa-arrow-left"></i> Add More</button>' +
-                '<div class="ab-nav-right"></div>' +
-            '</div>';
-        navEl.querySelector('#ab-review-back').addEventListener('click', function() {
-            state.guidedCatIdx = 0;
-            renderApplianceBuilder();
-        });
-    }
-}
-
-function renderCustomDeviceSection(container) {
-    var wrap = document.createElement('div');
-    wrap.className = 'ab-custom-section';
-    wrap.innerHTML =
-        '<div class="ab-custom-header"><i class="fas fa-plus-circle"></i><h3>Add a Custom Device</h3></div>' +
-        '<p class="ab-custom-desc">Have something we didn\'t list? Enter it here.</p>' +
-        '<div class="ab-custom-form">' +
-            '<input type="text" class="ab-custom-input" id="custom-dev-name" placeholder="Device name (e.g. Fish Pond Pump)" maxlength="60">' +
-            '<input type="number" class="ab-custom-input ab-custom-watts" id="custom-dev-watts" placeholder="Watts" min="1" max="50000">' +
-            '<div class="ab-qty-ctrl">' +
-                '<button class="ab-qty-btn" id="custom-dev-qty-minus" type="button"><i class="fas fa-minus"></i></button>' +
-                '<span class="ab-qty-val" id="custom-dev-qty">1</span>' +
-                '<button class="ab-qty-btn" id="custom-dev-qty-plus" type="button"><i class="fas fa-plus"></i></button>' +
-            '</div>' +
-            '<button class="ab-nav-btn ab-nav-next ab-custom-add-btn" id="custom-dev-add" type="button"><i class="fas fa-plus"></i> Add</button>' +
-        '</div>';
-
-    // Existing custom devices list
-    if (state.guidedCustomDevices.length > 0) {
-        var listHtml = '<div class="ab-custom-list">';
-        state.guidedCustomDevices.forEach(function(dev, di) {
-            var total = dev.watts * dev.qty;
-            listHtml +=
-                '<div class="ab-review-row">' +
-                    '<div class="ab-review-info"><i class="fas fa-plug"></i>' +
-                        '<div><strong>' + dev.name + '</strong><span>' + dev.watts + 'W × ' + dev.qty + '</span></div>' +
-                    '</div>' +
-                    '<div class="ab-review-watts">' + fmt(total) + 'W</div>' +
-                    '<button class="ab-custom-remove ab-review-remove" data-idx="' + di + '" title="Remove"><i class="fas fa-times"></i></button>' +
-                '</div>';
-        });
-        listHtml += '</div>';
-        wrap.innerHTML += listHtml;
-    }
-
-    container.appendChild(wrap);
-
-    // Event listeners
-    var qtyVal = wrap.querySelector('#custom-dev-qty');
-    wrap.querySelector('#custom-dev-qty-minus').addEventListener('click', function() {
-        var q = Math.max(1, parseInt(qtyVal.textContent) - 1);
-        qtyVal.textContent = q;
-    });
-    wrap.querySelector('#custom-dev-qty-plus').addEventListener('click', function() {
-        var q = Math.min(50, parseInt(qtyVal.textContent) + 1);
-        qtyVal.textContent = q;
-    });
-    wrap.querySelector('#custom-dev-add').addEventListener('click', function() {
-        var nameEl = wrap.querySelector('#custom-dev-name');
-        var wattsEl = wrap.querySelector('#custom-dev-watts');
-        var name = nameEl.value.trim();
-        var watts = parseInt(wattsEl.value);
-        var qty = parseInt(qtyVal.textContent);
-        if (!name) { nameEl.focus(); toast('Enter a device name', 'warning'); return; }
-        if (!watts || watts < 1) { wattsEl.focus(); toast('Enter the wattage', 'warning'); return; }
-        state.guidedCustomDevices.push({ name: name, watts: watts, qty: qty });
-        recalcGuidedLoad();
-        renderApplianceBuilder();
-    });
-    wrap.querySelectorAll('.ab-custom-remove').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            state.guidedCustomDevices.splice(parseInt(btn.dataset.idx), 1);
-            recalcGuidedLoad();
-            renderApplianceBuilder();
-        });
-    });
-}
-
-function recalcGuidedLoad() {
-    var running = 0;
-    var peak = 0;
-    var count = 0;
-    Object.keys(state.guidedAppliances).forEach(function(id) {
-        var instances = state.guidedAppliances[id];
-        var app = RICH_APPLIANCES.find(function(a) { return a.id === id; });
-        if (!app) return;
-        instances.forEach(function(inst) {
-            var v = app.variants[inst.variantIdx];
-            running += v.watts * inst.qty;
-            peak += Math.round(v.watts * v.startMultiplier) * inst.qty;
-            count += inst.qty;
-        });
-    });
-    // Custom devices
-    state.guidedCustomDevices.forEach(function(dev) {
-        running += dev.watts * dev.qty;
-        peak += dev.watts * dev.qty;  // no start multiplier for custom
-        count += dev.qty;
-    });
-    state.guidedRunningWatts = running;
-    state.guidedPeakWatts = peak;
-
-    var rEl = $('#running-watts');
-    var pEl = $('#peak-watts');
-    var cEl = $('#appliance-count');
-    var nextBtn = $('#guided-next-from-appliances');
-    if (rEl) rEl.textContent = fmt(running) + 'W';
-    if (pEl) pEl.textContent = fmt(peak) + 'W';
-    if (cEl) cEl.textContent = count;
-    if (nextBtn) nextBtn.disabled = running === 0;
-}
-
-/* ---------- guided mode: recommendations ---------- */
-function renderRecommendations() {
-    var watts = state.guidedRunningWatts;
-    var peakWatts = state.guidedPeakWatts;
-    var recWattsEl = $('#rec-watts-display');
-    if (recWattsEl) recWattsEl.textContent = fmt(watts) + 'W';
-
-    var phaseInfo = $('#rec-phase-info');
-    var wrap = $('#rec-inverter-options');
-    if (!wrap) return;
-    wrap.innerHTML = '';
-
-    // Determine recommended phase
-    var recommendThreePhase = watts > 10000 || peakWatts > 15000;
-
-    if (recommendThreePhase) {
-        state.phase = 'three';
-        if (phaseInfo) phaseInfo.innerHTML =
-            '<div class="rec-phase-badge three">' +
-                '<i class="fas fa-building"></i>' +
-                '<div><strong>Three Phase Recommended</strong><p>Your ' + fmt(watts) + 'W load needs a commercial-grade 3-phase system.</p></div>' +
-            '</div>';
-
-        // Show Kstar 3-phase packages first, then ATESS
-        var allPackages = [];
-        kstarThreePhasePackages.forEach(function(pkg) {
-            if (pkg.watts >= watts * 0.8) allPackages.push({ pkg: pkg, brand: 'Kstar' });
-        });
-        atessThreePhasePackages.forEach(function(pkg) {
-            if (pkg.watts >= watts * 0.6) allPackages.push({ pkg: pkg, brand: 'ATESS' });
-        });
-
-        if (allPackages.length === 0) {
-            // Show all anyway
-            kstarThreePhasePackages.forEach(function(pkg) { allPackages.push({ pkg: pkg, brand: 'Kstar' }); });
-            atessThreePhasePackages.forEach(function(pkg) { allPackages.push({ pkg: pkg, brand: 'ATESS' }); });
-        }
-
-        allPackages.forEach(function(item) {
-            var pkg = item.pkg;
-            var brand = item.brand;
-            var sel = state.inverter && state.inverter.id === pkg.id;
-            var enough = pkg.watts >= watts;
-            var pct = Math.min(Math.round((pkg.watts / watts) * 100), 200);
-            var pkgPrice = brand === 'Kstar' ? pkg.packagePrice : pkg.inverterPrice;
-            var priceLabel = brand === 'Kstar' ? 'Package (Inverter + Battery)' : 'Inverter only';
-
-            var batInfo = '';
-            if (brand === 'Kstar' && pkg.batteries) {
-                batInfo = '<span class="card-meta"><i class="fas fa-car-battery"></i> Includes ' + pkg.batteries.count + '× ' + pkg.batteries.name + ' (' + pkg.batteries.totalCapacity + ')</span>';
-            }
-            if (brand === 'ATESS' && pkg.battery) {
-                batInfo = '<span class="card-meta"><i class="fas fa-car-battery"></i> ' + pkg.battery.name + ' — configurable 1–3 master pairs</span>';
-            }
-
-            var matchBar =
-                '<div class="capacity-match"><div class="match-bar"><div class="match-fill ' + (enough ? 'enough' : 'short') + '" style="width:' + Math.min(pct, 100) + '%"></div></div>' +
-                '<span class="match-text ' + (enough ? 'enough' : 'short') + '">' + (enough ? '✓ Covers your ' + fmt(watts) + 'W' : '⚠ Under your ' + fmt(watts) + 'W needs') + '</span></div>';
-
-            var el = document.createElement('div');
-            el.className = 'product-card pkg-card' + (sel ? ' selected' : '');
-            el.innerHTML =
-                '<span class="card-badge badge-premium"><i class="fas fa-bolt"></i> ' + brand + ' 3-Phase</span>' +
-                '<div class="card-check"><i class="fas fa-check"></i></div>' +
-                '<div class="card-thumb"><img src="' + pkg.img + '" alt="Package" loading="lazy"></div>' +
-                '<div class="card-body">' +
-                    '<span class="card-title">' + brand + ' ' + pkg.name + '</span>' +
-                    '<span class="card-subtitle">' + pkg.bestFor + '</span>' +
-                    '<span class="card-price">' + fmt(pkgPrice) + ' Ksh <small>(' + priceLabel + ')</small></span>' +
-                    '<span class="card-meta"><i class="fas fa-solar-panel"></i> ' + pkg.panelCount + '× 600W Solar Panels</span>' +
-                    batInfo +
-                    matchBar +
-                '</div>';
-            el.addEventListener('click', function() { guidedSelectPackage(pkg, brand); });
-            wrap.appendChild(el);
-        });
-    } else {
-        state.phase = 'single';
-        if (phaseInfo) phaseInfo.innerHTML =
-            '<div class="rec-phase-badge single">' +
-                '<i class="fas fa-house"></i>' +
-                '<div><strong>Single Phase — Perfect for Your Home</strong><p>Your ' + fmt(watts) + 'W load is well-suited for a single-phase inverter system.</p></div>' +
-            '</div>';
-
-        // Combine Kstar + Fortuner, sorted by capacity fit
-        var allInverters = [];
-        kstarSingleInverters.forEach(function(inv) {
-            if (!inv.outOfStock) allInverters.push({ inv: inv, brand: 'Kstar' });
-        });
-        fortunerInverters.forEach(function(inv) {
-            if (!inv.outOfStock) allInverters.push({ inv: inv, brand: 'Fortuner' });
-        });
-
-        // Sort: best fit first (smallest that covers the load)
-        allInverters.sort(function(a, b) {
-            var aFit = a.inv.maxWatts >= watts ? 0 : 1;
-            var bFit = b.inv.maxWatts >= watts ? 0 : 1;
-            if (aFit !== bFit) return aFit - bFit;
-            return a.inv.maxWatts - b.inv.maxWatts;
-        });
-
-        // Add recommended badge to the best fit
-        var bestIdx = -1;
-        allInverters.forEach(function(item, i) {
-            if (bestIdx === -1 && item.inv.maxWatts >= watts) bestIdx = i;
-        });
-
-        allInverters.forEach(function(item, idx) {
-            var inv = item.inv;
-            var brand = item.brand;
-            var sel = state.inverter && state.inverter.kva === inv.kva && state.inverter.voltage === inv.voltage && (inv.series ? inv.series === state.inverter.series : true);
-            var enough = inv.maxWatts >= watts;
-            var pct = Math.min(Math.round((inv.maxWatts / watts) * 100), 200);
-
-            var matchBar = '';
-            if (watts > 0) {
-                matchBar =
-                    '<div class="capacity-match"><div class="match-bar"><div class="match-fill ' + (enough ? 'enough' : 'short') + '" style="width:' + Math.min(pct, 100) + '%"></div></div>' +
-                    '<span class="match-text ' + (enough ? 'enough' : 'short') + '">' + (enough ? '✓ Covers your ' + fmt(watts) + 'W' : '⚠ Under your ' + fmt(watts) + 'W needs') + '</span></div>';
-            }
-
-            var badge = '';
-            if (idx === bestIdx) badge = '<span class="card-badge badge-rec"><i class="fas fa-thumbs-up"></i> Best Match</span>';
-            else if (inv.series === 'Residential ESS') badge = '<span class="card-badge badge-premium"><i class="fas fa-gem"></i> Premium ESS</span>';
-
-            var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
-            var title = brand + ' ' + (inv.series ? inv.series + ' ' : '') + inv.kva + 'kVA' + w + ' – ' + inv.voltage + 'V';
-            if (inv.model) title = brand + ' ' + inv.series + ' ' + inv.model + ' ' + (inv.watts / 1000) + 'KW';
-
-            var el = document.createElement('div');
-            el.className = 'product-card' + (sel ? ' selected' : '');
-            el.innerHTML =
-                badge +
-                '<div class="card-check"><i class="fas fa-check"></i></div>' +
-                '<div class="card-thumb"><img src="' + inv.img + '" alt="Inverter" loading="lazy"></div>' +
-                '<div class="card-body">' +
-                    '<span class="card-title">' + title + '</span>' +
-                    '<span class="card-subtitle">' + inv.bestFor + '</span>' +
-                    '<span class="card-price">' + fmt(inv.price) + ' Ksh</span>' +
-                    '<span class="card-meta">Efficiency: ' + inv.details.efficiency + ' · Max: ' + fmt(inv.maxWatts) + 'W</span>' +
-                    (inv.essBattery ? '<div class="ess-battery-banner"><i class="fas fa-car-battery"></i> Includes ' + inv.essBattery.count + '× ' + inv.essBattery.name + ' (' + inv.essBattery.totalCapacity + ') — no battery selection needed</div>' : '') +
-                    matchBar +
-                '</div>';
-            el.addEventListener('click', function() { guidedSelectInverter(inv, brand); });
-            wrap.appendChild(el);
-        });
-    }
-}
-
-function guidedSelectInverter(inv, brand) {
-    state.company = brand;
-    state.inverter = inv;
-    state.battery = null;
-    state.compareList = [];
-    calcPanels();
-
-    if (inv.series === 'Residential ESS') {
-        toast('ESS ' + inv.model + ' selected with included batteries', 'success');
-        setTimeout(function() { goTo('summary'); }, 250);
-    } else {
-        var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
-        toast(inv.kva + 'kVA' + w + ' selected — now pick your battery', 'success');
-        setTimeout(function() { goTo('guided-battery'); }, 250);
-    }
-    saveState();
-}
-
-function guidedSelectPackage(pkg, brand) {
-    state.company = brand;
-    state.inverter = pkg;
-    state.battery = null;
-    state.compareList = [];
-    calcPanels();
-
-    if (brand === 'Kstar') {
-        toast(pkg.name + ' package selected', 'success');
-        setTimeout(function() { goTo('summary'); }, 250);
-    } else {
-        state.atessMasterCount = 3;
-        toast(pkg.name + ' selected — configure your battery', 'success');
-        setTimeout(function() { goTo('guided-battery'); }, 250);
-    }
-    saveState();
-}
-
-/* ---------- guided mode: battery selection ---------- */
-function renderGuidedBatteries() {
-    var wrap = $('#guided-battery-options');
-    var reminderEl = $('#guided-inverter-reminder');
-    if (!wrap) return;
-    wrap.innerHTML = '';
-
-    var inv = state.inverter;
-    if (!inv) return;
-
-    // Show what they picked
-    if (reminderEl) {
-        var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
-        var invLabel = state.company + ' ' + (inv.series ? inv.series + ' ' : '') + inv.kva + 'kVA' + w;
-        if (inv.model) invLabel = state.company + ' ' + (inv.series ? inv.series + ' ' : '') + inv.model;
-        reminderEl.innerHTML =
-            '<div class="guided-reminder-card"><i class="fas fa-bolt"></i>' +
-            '<div><strong>Your Inverter:</strong> ' + invLabel + '</div></div>';
-    }
-
-    if (state.phase === 'three' && state.company === 'ATESS') {
-        renderAtessBatteryConfig();
-        // Move ATESS battery config HTML into guided wrap
-        var atessWrap = $('#battery-options');
-        if (atessWrap && atessWrap.innerHTML) {
-            wrap.innerHTML = atessWrap.innerHTML;
-            // Re-attach click listeners
-            wrap.querySelectorAll('.product-card').forEach(function(card) {
-                var masters = parseInt(card.dataset.masters);
-                if (!isNaN(masters)) {
-                    card.addEventListener('click', function(e) {
-                        if (!e.target.closest('a')) selectAtessBatteryConfig(masters);
-                    });
-                }
-            });
-        }
-        return;
-    }
-
-    // Single-phase batteries
-    batteries.forEach(function(bat) {
-        var info = getBatteryCompat(bat);
-        if (!info) return;
-        var count = info.count;
-        var compatible = info.compatible;
-        var reason = info.reason;
-        var sel = state.battery && state.battery.id === bat.id && state.battery.count === count;
-
-        var el = document.createElement('div');
-        if (!compatible) {
-            el.className = 'product-card incompatible';
-            el.innerHTML =
-                '<div class="card-thumb"><img src="' + bat.img + '" alt="Battery" loading="lazy"></div>' +
-                '<div class="card-body">' +
-                    '<span class="card-title">' + bat.name + '</span>' +
-                    '<span class="card-price">' + fmt(bat.price) + ' Ksh/unit</span>' +
-                    '<div class="incompat-reason"><i class="fas fa-ban"></i><span>' + reason + '</span></div>' +
-                '</div>';
-        } else {
-            var totalCost = bat.price * count;
-            var badge = '';
-            if (bat.type === 'lithium') badge = '<span class="card-badge badge-premium"><i class="fas fa-gem"></i> Premium</span>';
-            el.className = 'product-card' + (sel ? ' selected' : '');
-            el.innerHTML =
-                badge +
-                '<div class="card-check"><i class="fas fa-check"></i></div>' +
-                '<div class="card-thumb"><img src="' + bat.img + '" alt="Battery" loading="lazy"></div>' +
-                '<div class="card-body">' +
-                    '<span class="card-title">' + bat.name + '</span>' +
-                    '<span class="card-subtitle">' + bat.shortDesc + '</span>' +
-                    '<span class="card-price">' + fmt(bat.price) + ' Ksh/unit</span>' +
-                    '<span class="card-meta">' + count + ' units needed · Total: ' + fmt(totalCost) + ' Ksh</span>' +
-                    '<span class="card-meta"><i class="fas fa-clock"></i> Backup: ~' + bat.backupHours + ' hrs · ' + bat.warranty + ' warranty</span>' +
-                    '<div class="card-actions">' +
-                        '<a href="' + bat.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i class="fas fa-external-link-alt"></i> Specs</a>' +
-                    '</div>' +
-                '</div>';
-            el.addEventListener('click', function(e) {
-                if (!e.target.closest('a')) selectBattery(bat, count);
-            });
-        }
-        wrap.appendChild(el);
-    });
 }
 
 /* ---------- summary ---------- */
@@ -3227,15 +2038,10 @@ function downloadPDF() {
 
 /* ---------- reset ---------- */
 function resetAll() {
-    state.mode = '';
     state.phase = ''; state.company = ''; state.inverter = null;
     state.battery = null; state.panels = 0; state.panelType = null;
     state.compareList = []; state.atessMasterCount = 3;
     state.needs = {}; state.totalWatts = 0;
-    state.guidedSpace = 'home'; state.guidedAppliances = {};
-    state.guidedCustomDevices = [];
-    state.guidedRunningWatts = 0; state.guidedPeakWatts = 0;
-    state.guidedCatIdx = 0;
     clearState();
     ['user-name', 'user-email', 'user-phone'].forEach(function(id) { var el = $('#' + id); if (el) el.value = ''; });
     ['name-error', 'email-error', 'phone-error'].forEach(function(id) { var el = $('#' + id); if (el) el.textContent = ''; });
@@ -3243,7 +2049,7 @@ function resetAll() {
     if (billInput) billInput.value = '';
     var savingsResults = $('#savings-results');
     if (savingsResults) savingsResults.classList.add('hidden');
-    goTo('landing');
+    goTo('phase');
     toast('Starting fresh', 'info');
 }
 
@@ -3295,44 +2101,11 @@ document.addEventListener('DOMContentLoaded', function() {
     } catch (e) {}
 
     var hash = location.hash.slice(1);
-    var validLanding = ['landing', 'phase', 'company', 'inverter', 'battery', 'summary', 'appliances', 'recommend', 'guided-battery'];
-    var requestedStep;
-    if (hash && validLanding.indexOf(hash) !== -1) {
-        requestedStep = hash;
-    } else if (state.mode) {
-        requestedStep = state.step || (state.mode === 'guided' ? 'appliances' : 'phase');
-    } else {
-        requestedStep = 'landing';
-    }
+    var steps = getCurrentSteps();
+    var requestedStep = (hash && steps.indexOf(hash) !== -1) ? hash : (state.step || 'phase');
     goTo(requestedStep);
 
     refreshExchangeRateAndPricing();
-
-    // ── Mode selection (landing page) ──
-    var modeGuided = $('#mode-guided');
-    if (modeGuided) modeGuided.addEventListener('click', function() {
-        state.mode = 'guided';
-        state.guidedSpace = 'home';
-        state.guidedAppliances = {};
-        saveState();
-        goTo('appliances');
-    });
-    var modeCustom = $('#mode-custom');
-    if (modeCustom) modeCustom.addEventListener('click', function() {
-        state.mode = 'custom';
-        saveState();
-        goTo('phase');
-    });
-
-    // ── Guided nav buttons ──
-    var guidedNext = $('#guided-next-from-appliances');
-    if (guidedNext) guidedNext.addEventListener('click', function() {
-        if (state.guidedRunningWatts > 0) goTo('recommend');
-    });
-    var backRec = $('#back-from-recommend');
-    if (backRec) backRec.addEventListener('click', function() { goTo('appliances'); });
-    var backGBat = $('#back-from-guided-battery');
-    if (backGBat) backGBat.addEventListener('click', function() { goTo('recommend'); });
 
     // Back buttons
     var backInv = $('#back-from-inverter');
@@ -3397,8 +2170,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Brand home reset
     var brandHome = $('#brand-home');
     if (brandHome) brandHome.addEventListener('click', function(e) { e.preventDefault(); resetAll(); });
-    var topbarHome = $('#topbar-home');
-    if (topbarHome) topbarHome.addEventListener('click', function() { goTo('landing'); });
 
     // Live form validation
     var nameInput = $('#user-name');
