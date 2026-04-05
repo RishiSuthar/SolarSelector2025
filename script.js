@@ -209,6 +209,8 @@ const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 const fmt = n => Number(n).toLocaleString();
 const PANEL_PRICE = 11500;
+const CHANGE_OVER_SWITCH_PRICE = 5000;
+const AC_CABLE_PRICE = 3125;
 
 function getAccessoryCost() {
     const base = Math.round(4000 * 1.25) + Math.round(2500 * 1.25) + Math.round(4000 * 1.25);
@@ -232,6 +234,22 @@ function getTotal() {
            (state.battery.price * state.battery.count) +
            (state.panels * PANEL_PRICE) +
            getAccessoryCost();
+}
+
+function getNoSolarBreakdown() {
+    if (!state.inverter || !state.battery) return null;
+    var invCost = state.inverter.price;
+    var batCost = state.battery.price * state.battery.count;
+    var labourCost = Math.round(state.inverter.labour * 0.6);
+    var total = invCost + batCost + CHANGE_OVER_SWITCH_PRICE + AC_CABLE_PRICE + labourCost;
+    return {
+        inverter: invCost,
+        battery: batCost,
+        changeOver: CHANGE_OVER_SWITCH_PRICE,
+        acCable: AC_CABLE_PRICE,
+        labour: labourCost,
+        total: total
+    };
 }
 
 function saveState() {
@@ -262,32 +280,35 @@ function toast(message, type, duration) {
 /* ---------- navigation ---------- */
 var STEPS = ['company', 'inverter', 'battery', 'summary'];
 
-function goTo(step) {
-    var prev = STEPS.indexOf(state.step);
-    var next = STEPS.indexOf(step);
-    var dir = next >= prev ? 1 : -1;
+function resolveAccessibleStep(step) {
+    if (step === 'summary' && state.battery) return 'summary';
+    if (step === 'battery' && state.inverter) return 'battery';
+    if (step === 'inverter' && state.company) return 'inverter';
+    return 'company';
+}
 
-    var current = $('#' + state.step + '-section');
+function renderStep(step) {
+    if (step === 'company') renderCompanies();
+    else if (step === 'inverter' && state.company) renderInverters();
+    else if (step === 'battery' && state.inverter) renderBatteries();
+    else if (step === 'summary' && state.battery) renderSummary();
+}
+
+function goTo(step) {
+    step = resolveAccessibleStep(step);
+
+    renderStep(step);
+
     var target = $('#' + step + '-section');
 
-    if (current && current !== target) {
-        current.style.position = 'absolute';
-        current.style.width = '100%';
-        current.classList.add(dir > 0 ? 'exit-left' : 'exit-right');
-        current.addEventListener('animationend', function handler() {
-            current.classList.remove('visible', 'exit-left', 'exit-right');
-            current.style.position = '';
-            current.style.width = '';
-            current.removeEventListener('animationend', handler);
-        }, { once: true });
-    }
+    $$('.panel').forEach(function(panel) {
+        panel.classList.remove('visible', 'enter-right', 'enter-left', 'exit-left', 'exit-right');
+        panel.style.position = '';
+        panel.style.width = '';
+    });
 
-    target.classList.remove('exit-left', 'exit-right', 'enter-right', 'enter-left');
-    target.classList.add('visible', dir > 0 ? 'enter-right' : 'enter-left');
-    target.addEventListener('animationend', function handler() {
-        target.classList.remove('enter-right', 'enter-left');
-        target.removeEventListener('animationend', handler);
-    }, { once: true });
+    if (!target) return;
+    target.classList.add('visible');
 
     state.step = step;
     updatePills();
@@ -689,7 +710,6 @@ function selectCompany(name) {
     toast(name + ' selected', 'success');
     setTimeout(function() {
         goTo('inverter');
-        renderInverters();
     }, 250);
     saveState();
 }
@@ -707,7 +727,6 @@ function selectInverter(inv) {
     toast(inv.kva + 'kVA' + w + ' inverter selected', 'success');
     setTimeout(function() {
         goTo('battery');
-        renderBatteries();
     }, 250);
     saveState();
 }
@@ -719,7 +738,6 @@ function selectBattery(bat, count) {
     toast(bat.name + ' \u00d7 ' + count + ' selected', 'success');
     setTimeout(function() {
         goTo('summary');
-        renderSummary();
     }, 250);
     saveState();
 }
@@ -783,9 +801,6 @@ function renderSelectionOverview() {
         btn.addEventListener('click', function() {
             var step = btn.dataset.goto;
             goTo(step);
-            if (step === 'company') renderCompanies();
-            else if (step === 'inverter') renderInverters();
-            else if (step === 'battery') renderBatteries();
         });
     });
 }
@@ -835,6 +850,19 @@ function renderCostBreakdown() {
         '<div class="row"><span>Accessories (included)</span><span class="row-val">' + fmt(accCost) + ' Ksh</span></div>';
 
     $('#total-cost').textContent = fmt(total) + ' KSH';
+
+    var noSolar = getNoSolarBreakdown();
+    var noSolarEl = $('#no-solar-summary');
+    if (noSolarEl && noSolar) {
+        noSolarEl.innerHTML =
+            '<h3>Without Solar Panels Option</h3>' +
+            '<div class="row"><span>Inverter</span><span class="row-val">' + fmt(noSolar.inverter) + ' Ksh</span></div>' +
+            '<div class="row"><span>Batteries</span><span class="row-val">' + fmt(noSolar.battery) + ' Ksh</span></div>' +
+            '<div class="row"><span>Change Over Switch</span><span class="row-val">' + fmt(noSolar.changeOver) + ' Ksh</span></div>' +
+            '<div class="row"><span>AC Cable</span><span class="row-val">' + fmt(noSolar.acCable) + ' Ksh</span></div>' +
+            '<div class="row"><span>Installation & Labour</span><span class="row-val">' + fmt(noSolar.labour) + ' Ksh</span></div>' +
+            '<div class="no-solar-total"><span>Total Without Solar Panels</span><span>' + fmt(noSolar.total) + ' KSH</span></div>';
+    }
 }
 
 function renderFinancing() {
@@ -1005,7 +1033,8 @@ function buildText() {
     var w     = inv.watts ? ' (' + inv.watts + 'W)' : '';
     var invTxt = state.company + ' ' + inv.kva + 'kVA' + w + ' \u2013 ' + inv.voltage + 'V';
     var total  = $('#total-cost').textContent;
-    return { name: name, email: email, phone: phone, invTxt: invTxt, total: total, bat: bat, inv: inv };
+    var noSolar = getNoSolarBreakdown();
+    return { name: name, email: email, phone: phone, invTxt: invTxt, total: total, bat: bat, inv: inv, noSolar: noSolar };
 }
 
 function shareSummary() {
@@ -1030,6 +1059,13 @@ function shareSummary() {
         'ACCESSORIES\n' +
         'Included: ' + fmt(getAccessoryCost()) + ' Ksh\n\n' +
         'TOTAL: ' + d.total + '\n\n' +
+        'WITHOUT SOLAR PANELS OPTION\n' +
+        'Inverter: ' + fmt(d.noSolar.inverter) + ' Ksh\n' +
+        'Batteries: ' + fmt(d.noSolar.battery) + ' Ksh\n' +
+        'Change Over Switch: ' + fmt(d.noSolar.changeOver) + ' Ksh\n' +
+        'AC Cable: ' + fmt(d.noSolar.acCable) + ' Ksh\n' +
+        'Installation & Labour: ' + fmt(d.noSolar.labour) + ' Ksh\n' +
+        'Total Without Solar Panels: ' + fmt(d.noSolar.total) + ' KSH\n\n' +
         'Quote includes solar mounting/structure.\n' +
         'Final pricing confirmed after site survey.\n\n' +
         'Contact: +254723984559 | info@sangyug.com\n' +
@@ -1137,6 +1173,33 @@ function downloadPDF() {
     doc.text('TOTAL ESTIMATED COST', 22, y + 2);
     doc.text(d.total, 168, y + 2, { align: 'right' }); y += 20;
 
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+    doc.setTextColor(blue[0], blue[1], blue[2]);
+    doc.text('WITHOUT SOLAR PANELS OPTION', 20, y); y += 8;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+    doc.setTextColor(dark[0], dark[1], dark[2]);
+    var noSolar = d.noSolar;
+    var noSolarRows = [
+        ['Inverter', fmt(noSolar.inverter)],
+        ['Batteries', fmt(noSolar.battery)],
+        ['Change Over Switch', fmt(noSolar.changeOver)],
+        ['AC Cable', fmt(noSolar.acCable)],
+        ['Installation & Labour', fmt(noSolar.labour)]
+    ];
+    noSolarRows.forEach(function(r, i) {
+        if (i % 2 === 1) { doc.setFillColor(248, 248, 252); doc.rect(20, y - 4, 170, 8, 'F'); }
+        doc.text(r[0], 22, y);
+        doc.text(r[1], 168, y, { align: 'right' }); y += 8;
+    });
+
+    doc.setFillColor(220, 235, 255);
+    doc.rect(20, y - 4, 170, 9, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+    doc.setTextColor(blue[0], blue[1], blue[2]);
+    doc.text('Total Without Solar Panels', 22, y + 2);
+    doc.text(fmt(noSolar.total) + ' KSH', 168, y + 2, { align: 'right' });
+    y += 14;
+
     if (state.panels > 0) {
         doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
         doc.setTextColor(blue[0], blue[1], blue[2]);
@@ -1240,22 +1303,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (saved) {
             var s = JSON.parse(saved);
             Object.assign(state, s);
-            renderCompanies();
-            if (state.company) renderInverters();
-            if (state.inverter) renderBatteries();
-            if (state.battery) { calcPanels(); renderSummary(); }
-            goTo(state.step);
+            if (state.battery) calcPanels();
         }
     } catch (e) { /* ignore corrupt state */ }
 
-    // Hash navigation on load
+    // Startup navigation: hash takes priority, then saved step; both are access-checked
     var hash = location.hash.slice(1);
-    if (hash && STEPS.indexOf(hash) !== -1 && hash !== state.step) {
-        if (hash === 'company') goTo('company');
-        else if (hash === 'inverter' && state.company) { renderInverters(); goTo('inverter'); }
-        else if (hash === 'battery' && state.inverter) { renderBatteries(); goTo('battery'); }
-        else if (hash === 'summary' && state.battery) { renderSummary(); goTo('summary'); }
-    }
+    var requestedStep = (hash && STEPS.indexOf(hash) !== -1) ? hash : (state.step || 'company');
+    goTo(requestedStep);
 
     // Back buttons
     $('#back-from-inverter').addEventListener('click', goBack);
@@ -1265,11 +1320,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Step pills
     $$('.step-pill').forEach(function(p) {
         p.addEventListener('click', function() {
-            var s = p.dataset.step;
-            if (s === 'company') goTo('company');
-            else if (s === 'inverter' && state.company) { renderInverters(); goTo('inverter'); }
-            else if (s === 'battery' && state.inverter) { renderBatteries(); goTo('battery'); }
-            else if (s === 'summary' && state.battery) { goTo('summary'); renderSummary(); }
+            goTo(p.dataset.step);
         });
     });
 

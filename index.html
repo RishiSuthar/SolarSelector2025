@@ -174,10 +174,10 @@
                 </div>
                 <div class="savings-calculator">
                     <div class="savings-input-row">
-                        <label for="monthly-bill">What's your monthly KPLC electricity bill?</label>
+                        <label for="monthly-bill">What's your average monthly KPLC bill for the last 6 months?</label>
                         <div class="savings-input-wrap">
                             <span class="savings-prefix">KSH</span>
-                            <input type="number" id="monthly-bill" placeholder="e.g. 5000" min="0" step="500">
+                            <input type="number" id="monthly-bill" placeholder="e.g. 5000 average/month" min="0" step="500">
                         </div>
                     </div>
                     <div id="savings-results" class="savings-results hidden">
@@ -278,6 +278,8 @@
                     <span class="total-label">Total Estimated Cost</span>
                     <span id="total-cost" class="total-amount">0 KSH</span>
                 </div>
+
+                <div id="no-solar-summary" class="no-solar-summary"></div>
 
                 <div class="financing-row" id="financing-row">
                     <span class="financing-label">Or pay from</span>
