@@ -51,32 +51,32 @@ const APPLIANCES = [
 /* ---------- rich appliance database (guided mode) ---------- */
 const APPLIANCE_CATEGORIES = [
     { id: 'lighting', name: 'Lighting', icon: 'fa-lightbulb',
-      greeting: "Let's start with lighting!",
-      subtext: 'How many lights do you need to keep on?' },
+      greeting: 'Lighting',
+      subtext: 'Most homes have 5–15 bulbs. LEDs are the cheapest to run — don\'t forget outdoor lights.' },
     { id: 'entertainment', name: 'Entertainment', icon: 'fa-tv',
-      greeting: 'Now for the fun stuff!',
-      subtext: 'TVs, sound systems, gaming — tell us what you enjoy.' },
+      greeting: 'Entertainment',
+      subtext: 'TVs are relatively light on power. A 43" TV uses less than a single light bulb used to.' },
     { id: 'kitchen', name: 'Kitchen', icon: 'fa-utensils',
-      greeting: 'Time for the kitchen!',
-      subtext: 'Fridges, microwaves, kettles — the essentials.' },
+      greeting: 'Kitchen',
+      subtext: 'Your fridge runs 24/7 — it\'s usually your biggest kitchen draw. Kettles and cookers are power-hungry but used briefly.' },
     { id: 'cooling', name: 'Cooling & Heating', icon: 'fa-fan',
-      greeting: 'Staying comfortable?',
-      subtext: 'Fans, ACs, or heaters you want running.' },
+      greeting: 'Cooling & Heating',
+      subtext: 'ACs need 3-4x their rated watts to start up. This heavily affects which inverter you need.' },
     { id: 'laundry', name: 'Laundry', icon: 'fa-soap',
-      greeting: 'Laundry day!',
-      subtext: 'Washing machines and irons to keep powered.' },
+      greeting: 'Laundry',
+      subtext: 'Washing machines have a motor surge on startup. Irons are heavy but used in short sessions.' },
     { id: 'office', name: 'Office & Tech', icon: 'fa-laptop',
-      greeting: 'Work & tech setup!',
-      subtext: 'Laptops, desktops, printers, routers.' },
+      greeting: 'Office & Tech',
+      subtext: 'Laptops are very efficient. Desktops draw more. Don\'t forget your router — it runs all day.' },
     { id: 'water', name: 'Water & Pumps', icon: 'fa-faucet',
-      greeting: 'Water systems!',
-      subtext: 'Pumps and water heaters — these draw serious power.' },
+      greeting: 'Water & Pumps',
+      subtext: 'Pumps need 3x power to start and can push you into a bigger inverter. Instant water heaters are rarely practical on solar.' },
     { id: 'security', name: 'Security', icon: 'fa-shield-halved',
-      greeting: 'Keeping things safe!',
-      subtext: 'CCTV, alarms, and electric fencing.' },
+      greeting: 'Security',
+      subtext: 'CCTV and alarms are low-power but run 24/7. Good candidates for solar backup.' },
     { id: 'other', name: 'Other', icon: 'fa-plug',
-      greeting: 'Anything else?',
-      subtext: 'Any other appliances we might have missed.' }
+      greeting: 'Other Devices',
+      subtext: 'Anything we missed? You can add custom devices with their wattage below.' }
 ];
 
 const RICH_APPLIANCES = [
@@ -90,7 +90,8 @@ const RICH_APPLIANCES = [
             { label: '15W LED', watts: 15, startMultiplier: 1 },
             { label: '20W LED', watts: 20, startMultiplier: 1 }
         ],
-        maxQty: 50, defaultQty: 5, spaces: ['home', 'office', 'commercial']
+        maxQty: 50, defaultQty: 5, spaces: ['home', 'office', 'commercial'],
+        popular: true
     },
     {
         id: 'fluorescent', name: 'Fluorescent Tube', category: 'lighting', icon: 'fa-lightbulb',
@@ -124,7 +125,8 @@ const RICH_APPLIANCES = [
             { label: '75" – 85" (Premium)', watts: 200, startMultiplier: 1 },
             { label: '85"+ (Massive)', watts: 280, startMultiplier: 1 }
         ],
-        maxQty: 5, defaultQty: 1, spaces: ['home', 'office', 'commercial']
+        maxQty: 5, defaultQty: 1, spaces: ['home', 'office', 'commercial'],
+        popular: true
     },
     {
         id: 'decoder', name: 'Decoder / Set-Top Box', category: 'entertainment', icon: 'fa-satellite-dish',
@@ -167,7 +169,8 @@ const RICH_APPLIANCES = [
             { label: 'Chest Freezer', watts: 200, startMultiplier: 3.5 }
         ],
         maxQty: 3, defaultQty: 1, spaces: ['home', 'office', 'commercial'],
-        note: 'Fridges draw 3–4× watts on startup'
+        note: 'Fridges draw 3–4× watts on startup',
+        popular: true
     },
     {
         id: 'microwave', name: 'Microwave', category: 'kitchen', icon: 'fa-fire',
@@ -233,7 +236,8 @@ const RICH_APPLIANCES = [
             { label: 'Ceiling Fan (75W)', watts: 75, startMultiplier: 2 },
             { label: 'Industrial Fan (150W)', watts: 150, startMultiplier: 2 }
         ],
-        maxQty: 10, defaultQty: 2, spaces: ['home', 'office', 'commercial']
+        maxQty: 10, defaultQty: 2, spaces: ['home', 'office', 'commercial'],
+        popular: true
     },
     {
         id: 'ac', name: 'Air Conditioner', category: 'cooling', icon: 'fa-snowflake',
@@ -299,7 +303,8 @@ const RICH_APPLIANCES = [
             { label: 'Gaming / Workstation (120W)', watts: 120, startMultiplier: 1 },
             { label: 'Heavy Gaming (200W)', watts: 200, startMultiplier: 1 }
         ],
-        maxQty: 10, defaultQty: 1, spaces: ['home', 'office', 'commercial']
+        maxQty: 10, defaultQty: 1, spaces: ['home', 'office', 'commercial'],
+        popular: true
     },
     {
         id: 'desktop', name: 'Desktop Computer', category: 'office', icon: 'fa-desktop',
@@ -329,7 +334,8 @@ const RICH_APPLIANCES = [
             { label: 'Dual-Band Router (18W)', watts: 18, startMultiplier: 1 },
             { label: 'Enterprise Router / Switch (30W)', watts: 30, startMultiplier: 1 }
         ],
-        maxQty: 5, defaultQty: 1, spaces: ['home', 'office', 'commercial']
+        maxQty: 5, defaultQty: 1, spaces: ['home', 'office', 'commercial'],
+        popular: true
     },
     {
         id: 'phone-charge', name: 'Phone Charger', category: 'office', icon: 'fa-mobile-screen',
@@ -339,7 +345,8 @@ const RICH_APPLIANCES = [
             { label: 'Fast Charger (25W)', watts: 25, startMultiplier: 1 },
             { label: 'Super Fast (45W)', watts: 45, startMultiplier: 1 }
         ],
-        maxQty: 20, defaultQty: 3, spaces: ['home', 'office', 'commercial']
+        maxQty: 20, defaultQty: 3, spaces: ['home', 'office', 'commercial'],
+        popular: true
     },
     {
         id: 'projector', name: 'Projector', category: 'office', icon: 'fa-chalkboard',
@@ -383,7 +390,8 @@ const RICH_APPLIANCES = [
             { label: '8-Camera + NVR (100W)', watts: 100, startMultiplier: 1 },
             { label: '16-Camera + NVR (180W)', watts: 180, startMultiplier: 1 }
         ],
-        maxQty: 3, defaultQty: 1, spaces: ['home', 'office', 'commercial']
+        maxQty: 3, defaultQty: 1, spaces: ['home', 'office', 'commercial'],
+        popular: true
     },
     {
         id: 'alarm', name: 'Alarm System', category: 'security', icon: 'fa-bell',
@@ -1946,7 +1954,7 @@ function renderApplianceBuilder() {
             '<div class="ab-card-top">' +
                 '<div class="ab-card-icon"><i class="fas ' + app.icon + '"></i></div>' +
                 '<div class="ab-card-info">' +
-                    '<span class="ab-card-name">' + app.name + '</span>' +
+                    '<span class="ab-card-name">' + app.name + (app.popular ? '<span class="ab-popular-tag">Common</span>' : '') + '</span>' +
                     '<span class="ab-card-desc">' + app.desc + '</span>' +
                 '</div>' +
                 '<label class="ab-toggle"><input type="checkbox" ' + (isActive ? 'checked' : '') + '><span class="ab-toggle-slider"></span></label>' +
@@ -2285,6 +2293,23 @@ function recalcGuidedLoad() {
     if (pEl) pEl.textContent = fmt(peak) + 'W';
     if (cEl) cEl.textContent = count;
     if (nextBtn) nextBtn.disabled = running === 0;
+
+    // Human-readable system size indicator
+    var badgeEl = $('#load-size-badge');
+    var textEl = $('#load-size-text');
+    if (badgeEl && textEl) {
+        var tier;
+        if (running === 0)       tier = { label: 'Add appliances to begin', cls: 'empty', icon: 'fa-bolt' };
+        else if (running <= 800) tier = { label: 'Light use — a small inverter will do', cls: 'tiny', icon: 'fa-seedling' };
+        else if (running <= 1500) tier = { label: 'Small system — basic home backup', cls: 'small', icon: 'fa-house' };
+        else if (running <= 3500) tier = { label: 'Medium system — covers most homes', cls: 'medium', icon: 'fa-house-chimney' };
+        else if (running <= 6000) tier = { label: 'Large system — full home or small office', cls: 'large', icon: 'fa-building' };
+        else if (running <= 10000) tier = { label: 'Heavy system — large property or business', cls: 'heavy', icon: 'fa-industry' };
+        else                       tier = { label: 'Commercial grade — three-phase territory', cls: 'commercial', icon: 'fa-warehouse' };
+        textEl.textContent = tier.label;
+        badgeEl.className = 'load-size-badge ' + tier.cls;
+        badgeEl.querySelector('i').className = 'fas ' + tier.icon;
+    }
 }
 
 /* ---------- guided mode: recommendations ---------- */
