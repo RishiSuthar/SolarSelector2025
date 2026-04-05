@@ -204,38 +204,49 @@
         <!-- STEP: Summary / Quote -->
         <section id="summary-section" class="panel" data-step="summary">
 
+            <!-- Page header -->
+            <div class="quote-page-header">
+                <div class="quote-page-icon"><i class="fas fa-file-invoice"></i></div>
+                <h1>Your Solar Quote</h1>
+                <p class="quote-page-sub">Review your selections, see the full cost breakdown, and share or download your quote.</p>
+            </div>
+
+            <!-- 1. System overview -->
             <div class="quote-block" id="selection-overview">
                 <div class="quote-block-header">
-                    <i class="fas fa-clipboard-check"></i>
-                    <h2>Your System</h2>
+                    <span class="qb-num">1</span>
+                    <div><h2>System Overview</h2><p class="qb-hint">What you've selected</p></div>
                 </div>
                 <div id="selection-cards" class="selection-cards"></div>
             </div>
 
+            <!-- 2. Solar panels -->
             <div class="quote-block" id="panel-block">
                 <div class="quote-block-header">
-                    <i class="fas fa-solar-panel"></i>
-                    <h2>Solar Panels</h2>
+                    <span class="qb-num">2</span>
+                    <div><h2>Solar Panels</h2><p class="qb-hint">Modules included in your system</p></div>
                 </div>
                 <div id="panel-info" class="panel-info-content"></div>
                 <div id="panel-images" class="panel-visual"></div>
             </div>
 
+            <!-- 3. Accessories -->
             <div class="quote-block" id="accessory-block">
                 <!-- Rendered dynamically by JS -->
             </div>
 
+            <!-- 4. Savings calculator -->
             <div class="quote-block" id="savings-block">
                 <div class="quote-block-header">
-                    <i class="fas fa-piggy-bank"></i>
-                    <h2>Your Savings</h2>
+                    <span class="qb-num">4</span>
+                    <div><h2>Savings Estimate</h2><p class="qb-hint">See how quickly your system pays for itself</p></div>
                 </div>
                 <div class="savings-calculator">
                     <div class="savings-input-row">
-                        <label for="monthly-bill">What's your average monthly KPLC bill for the last 6 months?</label>
+                        <label for="monthly-bill">Average monthly KPLC bill (last 6 months)</label>
                         <div class="savings-input-wrap">
                             <span class="savings-prefix">KSH</span>
-                            <input type="number" id="monthly-bill" placeholder="e.g. 5000 average/month" min="0" step="500">
+                            <input type="number" id="monthly-bill" placeholder="e.g. 5000" min="0" step="500">
                         </div>
                     </div>
                     <div id="savings-results" class="savings-results hidden">
@@ -259,10 +270,11 @@
                 </div>
             </div>
 
+            <!-- 5. Environmental impact -->
             <div class="quote-block" id="env-block">
                 <div class="quote-block-header">
-                    <i class="fas fa-leaf"></i>
-                    <h2>Environmental Impact</h2>
+                    <span class="qb-num green">5</span>
+                    <div><h2>Environmental Impact</h2><p class="qb-hint">Your contribution to a cleaner planet</p></div>
                 </div>
                 <div class="env-grid" id="env-grid">
                     <div class="env-card" data-impact="energy">
@@ -294,20 +306,68 @@
                 </div>
             </div>
 
-            <div class="quote-block" id="cost-block">
+            <!-- 6. Cost breakdown -->
+            <div class="quote-block quote-block-highlight" id="cost-block">
                 <div class="quote-block-header">
-                    <i class="fas fa-receipt"></i>
-                    <h2>Your Quote</h2>
+                    <span class="qb-num accent">6</span>
+                    <div><h2>Cost Breakdown</h2><p class="qb-hint">Full pricing for your system</p></div>
+                </div>
+
+                <div id="summary" class="breakdown"></div>
+
+                <div class="total-bar">
+                    <div class="total-bar-left">
+                        <span class="total-label">Total Estimated Cost</span>
+                        <span class="total-sub">Includes equipment, mounting &amp; installation</span>
+                    </div>
+                    <span id="total-cost" class="total-amount">0 KSH</span>
+                </div>
+
+                <div id="no-solar-summary" class="no-solar-summary"></div>
+
+                <div class="financing-row" id="financing-row">
+                    <div class="financing-head">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span class="financing-label">Payment Plans</span>
+                    </div>
+                    <div class="financing-options">
+                        <button class="fin-opt" data-months="6">
+                            <span class="fin-amount" id="fin-6">&mdash;</span>
+                            <span class="fin-period">per month &times; 6</span>
+                        </button>
+                        <button class="fin-opt" data-months="12">
+                            <span class="fin-amount" id="fin-12">&mdash;</span>
+                            <span class="fin-period">per month &times; 12</span>
+                        </button>
+                        <button class="fin-opt" data-months="24">
+                            <span class="fin-amount" id="fin-24">&mdash;</span>
+                            <span class="fin-period">per month &times; 24</span>
+                        </button>
+                    </div>
+                    <p class="financing-note">Contact us to discuss flexible payment options</p>
+                </div>
+
+                <div class="disclaimer">
+                    <i class="fas fa-info-circle"></i>
+                    <p>Quote includes solar mounting/structure. Final pricing confirmed after site survey.</p>
+                </div>
+            </div>
+
+            <!-- 7. Contact & share -->
+            <div class="quote-block quote-block-action" id="share-block">
+                <div class="quote-block-header">
+                    <span class="qb-num">7</span>
+                    <div><h2>Get Your Quote</h2><p class="qb-hint">Fill in your details to email, WhatsApp, or download this quote</p></div>
                 </div>
                 <div class="user-form">
                     <div class="form-row">
                         <div class="field">
-                            <label for="user-name">Full Name</label>
+                            <label for="user-name">Full Name <span class="req">*</span></label>
                             <input type="text" id="user-name" placeholder="Jane Doe" autocomplete="name">
                             <span class="field-error" id="name-error"></span>
                         </div>
                         <div class="field">
-                            <label for="user-email">Email</label>
+                            <label for="user-email">Email <span class="req">*</span></label>
                             <input type="email" id="user-email" placeholder="jane@example.com" autocomplete="email">
                             <span class="field-error" id="email-error"></span>
                         </div>
@@ -330,48 +390,17 @@
                     </div>
                 </div>
 
-                <div id="summary" class="breakdown"></div>
-
-                <div class="total-bar">
-                    <span class="total-label">Total Estimated Cost</span>
-                    <span id="total-cost" class="total-amount">0 KSH</span>
-                </div>
-
-                <div id="no-solar-summary" class="no-solar-summary"></div>
-
-                <div class="financing-row" id="financing-row">
-                    <span class="financing-label">Or pay from</span>
-                    <div class="financing-options">
-                        <button class="fin-opt" data-months="6">
-                            <span class="fin-amount" id="fin-6">&mdash;</span>
-                            <span class="fin-period">/ mo &times; 6</span>
-                        </button>
-                        <button class="fin-opt" data-months="12">
-                            <span class="fin-amount" id="fin-12">&mdash;</span>
-                            <span class="fin-period">/ mo &times; 12</span>
-                        </button>
-                        <button class="fin-opt" data-months="24">
-                            <span class="fin-amount" id="fin-24">&mdash;</span>
-                            <span class="fin-period">/ mo &times; 24</span>
-                        </button>
-                    </div>
-                    <p class="financing-note">Contact us to discuss flexible payment plans</p>
-                </div>
-
-                <div class="disclaimer">
-                    <i class="fas fa-info-circle"></i>
-                    <p>Quote includes solar mounting/structure. Final pricing confirmed after site survey.</p>
-                </div>
-
                 <div class="cta-row">
                     <button id="share-summary" class="cta-btn"><i class="fas fa-envelope"></i> Email Quote</button>
                     <button id="share-whatsapp" class="cta-btn cta-green"><i class="fab fa-whatsapp"></i> WhatsApp</button>
                     <button id="download-pdf" class="cta-btn cta-red"><i class="fas fa-file-pdf"></i> Download PDF</button>
-                    <button id="reset-selection" class="cta-btn cta-ghost"><i class="fas fa-rotate-right"></i> Start Over</button>
                 </div>
             </div>
 
-            <button class="back-btn" id="back-from-summary"><i class="fas fa-arrow-left"></i> Back</button>
+            <div class="quote-footer-actions">
+                <button class="back-btn" id="back-from-summary"><i class="fas fa-arrow-left"></i> Back</button>
+                <button id="reset-selection" class="cta-btn cta-ghost"><i class="fas fa-rotate-right"></i> Start Over</button>
+            </div>
         </section>
 
     </main>

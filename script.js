@@ -2694,7 +2694,7 @@ function renderAccessoriesBlock() {
 
     if (state.phase === 'three') {
         if (state.company === 'ATESS') {
-            var accHtml = '<div class="quote-block-header"><i class="fas fa-toolbox"></i><h2>Package Accessories</h2></div><div class="acc-grid">';
+            var accHtml = '<div class="quote-block-header"><span class="qb-num">3</span><div><h2>Package Accessories</h2><p class="qb-hint">Equipment included with your system</p></div></div><div class="acc-grid">';
             state.inverter.accessories.forEach(function(acc) {
                 accHtml += '<div class="acc-card">' +
                     '<i class="fas fa-microchip"></i>' +
@@ -2709,14 +2709,14 @@ function renderAccessoriesBlock() {
             block.innerHTML = accHtml;
         } else {
             block.innerHTML =
-                '<div class="quote-block-header"><i class="fas fa-toolbox"></i><h2>Included Items</h2></div>' +
+                '<div class="quote-block-header"><span class="qb-num">3</span><div><h2>Included Items</h2><p class="qb-hint">Equipment included with your system</p></div></div>' +
                 '<div class="acc-grid">' +
                     '<div class="acc-card"><i class="fas fa-solar-panel"></i><span class="acc-name">Mounting & Cables</span><span class="acc-price">' + fmt(getMountingCost()) + ' Ksh</span><span class="acc-warranty">' + state.panels + ' panels × ' + fmt(usdToKes(USD_PRICES.mountingPerPanel)) + ' Ksh</span></div>' +
                 '</div>';
         }
     } else {
         block.innerHTML =
-            '<div class="quote-block-header"><i class="fas fa-toolbox"></i><h2>Included Accessories</h2></div>' +
+            '<div class="quote-block-header"><span class="qb-num">3</span><div><h2>Included Accessories</h2><p class="qb-hint">Standard items bundled with your inverter</p></div></div>' +
             '<div class="acc-grid">' +
                 '<div class="acc-card"><i class="fas fa-toggle-on"></i><span class="acc-name">Change Over Switch</span><span class="acc-price" id="acc-changeover-price">' + fmt(usdToKes(USD_PRICES.changeOverSwitch)) + ' Ksh</span></div>' +
                 '<div class="acc-card"><i class="fas fa-plug"></i><span class="acc-name">DC MCCB</span><span class="acc-price" id="acc-dc-mccb-price">' + fmt(usdToKes(USD_PRICES.accessories.dcMccb)) + ' Ksh</span></div>' +
@@ -2893,6 +2893,9 @@ function countUp(id, end, suffix, dur) {
 function initSavingsCalc() {
     var input = $('#monthly-bill');
     if (!input) return;
+    input.value = '';
+    var results = $('#savings-results');
+    if (results) results.classList.add('hidden');
     var debounce;
     input.removeEventListener('input', input._savingsHandler);
     input._savingsHandler = function() { clearTimeout(debounce); debounce = setTimeout(calculateSavings, 300); };
