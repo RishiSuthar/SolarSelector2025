@@ -135,20 +135,21 @@ a:hover{color:var(--accent)}
 
 /* running total */
 .topbar-total{
-    display:flex;align-items:center;gap:6px;
+    display:flex;align-items:center;justify-content:center;
     padding:6px 14px;border-radius:999px;
     background:var(--bg-2);border:1px solid var(--glass-border);
-    font-size:.82rem;color:var(--text-2);
+    font-size:.82rem;color:var(--text-1);
     transition:all .3s var(--ease-out);
     white-space:nowrap;
 }
-.topbar-total.has-value{
-    border-color:var(--accent);
-    color:var(--accent-soft);
-    background:hsla(210 100% 56% / .08);
+.topbar-rate{
+    font-size:.8rem;
+    color:var(--text-1);
+    letter-spacing:.01em;
 }
-.topbar-total-label{font-weight:500}
-.topbar-total-val{font-weight:700}
+.topbar-rate.live{
+    color:var(--green);
+}
 
 /* ---------- main ---------- */
 .app-main{

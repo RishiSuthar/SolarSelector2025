@@ -14,6 +14,13 @@ const state = {
     compareList: []
 };
 
+const pricingState = {
+    usdToKesRaw: 130,
+    usdToKesAdjusted: 132,
+    source: 'fallback',
+    lastUpdated: null
+};
+
 /* ---------- needs assessment appliances ---------- */
 const APPLIANCES = [
     { id: 'bulbs',   name: 'LED Lights (\u00d710)', watts: 100,  icon: 'fa-lightbulb' },
@@ -35,7 +42,8 @@ const kstarInverters = [
     {
         kva: 3.6, voltage: 24, maxWatts: 3600,
         bestFor: 'Medium home (2\u20133 bedrooms)',
-        price: 55000, labour: 34800,
+        usdPrice: 423.076923, usdLabour: 267.692308,
+        price: 0, labour: 0,
         img: 'images/kstarinverter.png',
         specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing',
         appliances: [
@@ -55,7 +63,8 @@ const kstarInverters = [
     {
         kva: 3.6, voltage: 48, maxWatts: 3600,
         bestFor: 'Medium-large home (3\u20134 bedrooms)',
-        price: 63000, labour: 34800,
+        usdPrice: 484.615385, usdLabour: 267.692308,
+        price: 0, labour: 0,
         img: 'images/kstarinverter.png',
         specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing',
         appliances: [
@@ -75,7 +84,8 @@ const kstarInverters = [
     {
         kva: 6.0, voltage: 48, maxWatts: 6000,
         bestFor: 'Large home / Small office',
-        price: 75000, labour: 46400,
+        usdPrice: 576.923077, usdLabour: 356.923077,
+        price: 0, labour: 0,
         img: 'images/kstarinverter.png',
         specsLink: 'https://drive.google.com/file/d/1VVXGcq5FHHTslH-GWH8VSz9-jWaDOZWg/view?usp=sharing',
         appliances: [
@@ -98,7 +108,8 @@ const fortunerInverters = [
     {
         kva: 0.7, watts: 450, voltage: 12, maxWatts: 450,
         bestFor: 'Small office / Security lighting',
-        price: 15625, labour: 15000,
+        usdPrice: 120.192308, usdLabour: 115.384615,
+        price: 0, labour: 0,
         img: 'images/fortunerinverter.png',
         specsLink: 'https://drive.google.com/file/d/1CYns0tOUy0iRoS5m_WMMs_Ms2ti_-dIS/view?usp=sharing',
         appliances: [
@@ -114,7 +125,8 @@ const fortunerInverters = [
     {
         kva: 1.5, watts: 1200, voltage: 24, maxWatts: 1200,
         bestFor: '1\u20132 bedroom apartment',
-        price: 20000, labour: 15000,
+        usdPrice: 153.846154, usdLabour: 115.384615,
+        price: 0, labour: 0,
         outOfStock: true,
         img: 'images/fortunerinverter.png',
         specsLink: 'https://drive.google.com/file/d/1tADpzqTfynzL2vwvpaCsV0THI7UmEOuz/view?usp=sharing',
@@ -132,7 +144,8 @@ const fortunerInverters = [
     {
         kva: 2.2, watts: 1400, voltage: 24, maxWatts: 1400,
         bestFor: '2\u20133 bedroom home',
-        price: 26250, labour: 18000,
+        usdPrice: 201.923077, usdLabour: 138.461538,
+        price: 0, labour: 0,
         img: 'images/fortunerinverter.png',
         specsLink: 'https://drive.google.com/file/d/1tADpzqTfynzL2vwvpaCsV0THI7UmEOuz/view?usp=sharing',
         appliances: [
@@ -150,7 +163,8 @@ const fortunerInverters = [
     {
         kva: 10.0, voltage: 48, maxWatts: 10000,
         bestFor: 'Large home / Small business',
-        price: 131250, labour: 25000,
+        usdPrice: 1009.615385, usdLabour: 192.307692,
+        price: 0, labour: 0,
         outOfStock: true,
         img: 'images/fortunerinverter.png',
         specsLink: 'https://drive.google.com/file/d/1iCFsxqr2xB7p50QH4s4en1VPrdQ_-nY0/view?usp=sharing',
@@ -176,7 +190,8 @@ const batteries = [
         id: 'tubular',
         name: 'Tubular 200AH',
         shortDesc: 'Affordable & reliable. Needs topping up every 3\u20136 months.',
-        price: 22500,
+        usdPrice: 173.076923,
+        price: 0,
         img: 'images/battery-200ah-tubular.png',
         specsLink: 'https://drive.google.com/file/d/17stgG0eX-rTGS8QR9KdDVZ08OXjWJH47/view?usp=sharing',
         capacityWh: 2400, dod: 0.8, backupHours: 8.6, warranty: '1 year',
@@ -186,7 +201,8 @@ const batteries = [
         id: 'mf',
         name: 'Maintenance Free 200AH',
         shortDesc: 'Sealed & zero maintenance. Great for indoor installation.',
-        price: 36500,
+        usdPrice: 280.769231,
+        price: 0,
         img: 'images/battery-200ah-mf.png',
         specsLink: 'https://drive.google.com/file/d/1IiygyBHcx85JLY5W7wFI6gQBflkKHNh9/view?usp=sharing',
         capacityWh: 2400, dod: 0.8, backupHours: 8.6, warranty: '1 year',
@@ -196,7 +212,8 @@ const batteries = [
         id: 'lithium',
         name: 'Lithium LFP 51.2V 100Ah',
         shortDesc: 'Premium. 10-year warranty. 90% usable capacity.',
-        price: 120000,
+        usdPrice: 923.076923,
+        price: 0,
         img: 'images/battery-100ah-lithium.png',
         specsLink: 'https://drive.google.com/file/d/194rpm8gHCgehwTyFhx35o35G-JwXVgCS/view?usp=sharing',
         capacityWh: 5120, dod: 0.9, backupHours: 20.7, warranty: '10 years',
@@ -208,24 +225,160 @@ const batteries = [
 const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 const fmt = n => Number(n).toLocaleString();
-const PANEL_PRICE = 11500;
-const CHANGE_OVER_SWITCH_PRICE = 5000;
-const AC_CABLE_PRICE = 3125;
+const EXCHANGE_RATE_API_KEY = '13f783aa03f37bceb9f21476';
+const USD_PRICES = {
+    panel: 88.461538,
+    changeOverSwitch: 38.461538,
+    acCable: 24.038462,
+    accessories: {
+        dcMccb: 38.461538,
+        avs30Amps: 38.461538
+    },
+    mounting: {
+        default: 211.538462,
+        kstar6kva48v: 384.615385,
+        fortuner1_5or2_2: 43.269231,
+        fortuner10kva: 524.038462
+    }
+};
+
+let PANEL_PRICE = 0;
+let CHANGE_OVER_SWITCH_PRICE = 0;
+let AC_CABLE_PRICE = 0;
+
+function getAdjustedUsdToKes(rawRate) {
+    return Math.round(rawRate) + 2;
+}
+
+function usdToKes(usdAmount) {
+    return Math.round(usdAmount * pricingState.usdToKesAdjusted);
+}
+
+function applyExchangeRatePricing() {
+    kstarInverters.forEach(function(inv) {
+        inv.price = usdToKes(inv.usdPrice);
+        inv.labour = usdToKes(inv.usdLabour);
+    });
+
+    fortunerInverters.forEach(function(inv) {
+        inv.price = usdToKes(inv.usdPrice);
+        inv.labour = usdToKes(inv.usdLabour);
+    });
+
+    batteries.forEach(function(bat) {
+        bat.price = usdToKes(bat.usdPrice);
+    });
+
+    PANEL_PRICE = usdToKes(USD_PRICES.panel);
+    CHANGE_OVER_SWITCH_PRICE = usdToKes(USD_PRICES.changeOverSwitch);
+    AC_CABLE_PRICE = usdToKes(USD_PRICES.acCable);
+}
+
+function syncSelectedItemsWithLatestPricing() {
+    if (state.company && state.inverter) {
+        var invCatalog = state.company === 'Kstar' ? kstarInverters : fortunerInverters;
+        var refreshedInv = invCatalog.find(function(inv) {
+            return inv.kva === state.inverter.kva && inv.voltage === state.inverter.voltage;
+        });
+        if (refreshedInv) state.inverter = refreshedInv;
+    }
+
+    if (state.battery) {
+        var refreshedBat = batteries.find(function(bat) { return bat.id === state.battery.id; });
+        if (refreshedBat) {
+            state.battery = {
+                name: refreshedBat.name,
+                id: refreshedBat.id,
+                shortDesc: refreshedBat.shortDesc,
+                price: refreshedBat.price,
+                img: refreshedBat.img,
+                specsLink: refreshedBat.specsLink,
+                capacityWh: refreshedBat.capacityWh,
+                dod: refreshedBat.dod,
+                backupHours: refreshedBat.backupHours,
+                warranty: refreshedBat.warranty,
+                voltagePerUnit: refreshedBat.voltagePerUnit,
+                type: refreshedBat.type,
+                count: state.battery.count
+            };
+        }
+    }
+}
+
+function renderAccessoryStaticPrices() {
+    var changeOverEl = $('#acc-changeover-price');
+    if (changeOverEl) changeOverEl.textContent = fmt(CHANGE_OVER_SWITCH_PRICE) + ' Ksh';
+
+    var dcMccbEl = $('#acc-dc-mccb-price');
+    if (dcMccbEl) dcMccbEl.textContent = fmt(usdToKes(USD_PRICES.accessories.dcMccb)) + ' Ksh';
+
+    var avsEl = $('#acc-avs-price');
+    if (avsEl) avsEl.textContent = fmt(usdToKes(USD_PRICES.accessories.avs30Amps)) + ' Ksh';
+}
+
+function getBrandInverterRange(companyName) {
+    var data = companyName === 'Kstar' ? kstarInverters : fortunerInverters;
+    var values = data.map(function(inv) { return inv.price; });
+    var min = Math.min.apply(null, values);
+    var max = Math.max.apply(null, values);
+    return 'Systems from KSH ' + fmt(min) + ' - ' + fmt(max);
+}
+
+function refreshUiForLatestPricing() {
+    syncSelectedItemsWithLatestPricing();
+    renderAccessoryStaticPrices();
+    renderFxRatePill();
+    renderStep(state.step);
+    updateRunningTotal();
+}
+
+function renderFxRatePill() {
+    var fxEl = $('#fx-rate-pill');
+    if (!fxEl) return;
+    fxEl.textContent = 'USD/KSH Exchange Rate: ' + pricingState.usdToKesRaw.toFixed(2);
+    fxEl.classList.toggle('live', pricingState.source !== 'fallback');
+}
+
+async function fetchUsdToKesRate() {
+    var endpoint = 'https://v6.exchangerate-api.com/v6/' + EXCHANGE_RATE_API_KEY + '/latest/USD';
+    var response = await fetch(endpoint, { cache: 'no-store' });
+    if (!response.ok) throw new Error('FX request failed: ' + response.status);
+    var data = await response.json();
+    var rate = data && data.conversion_rates ? Number(data.conversion_rates.KES) : NaN;
+    if (!Number.isFinite(rate) || rate <= 0) throw new Error('Invalid FX rate from ExchangeRate-API');
+
+    pricingState.usdToKesRaw = rate;
+    pricingState.usdToKesAdjusted = getAdjustedUsdToKes(rate);
+    pricingState.source = 'exchangerate-api';
+    pricingState.lastUpdated = new Date().toISOString();
+}
+
+async function refreshExchangeRateAndPricing() {
+    try {
+        await fetchUsdToKesRate();
+    } catch (e) {
+        pricingState.source = 'fallback';
+    }
+
+    applyExchangeRatePricing();
+    refreshUiForLatestPricing();
+    saveState();
+}
 
 function getAccessoryCost() {
-    const base = Math.round(4000 * 1.25) + Math.round(2500 * 1.25) + Math.round(4000 * 1.25);
+    const base = usdToKes(USD_PRICES.changeOverSwitch) + usdToKes(USD_PRICES.accessories.dcMccb) + usdToKes(USD_PRICES.accessories.avs30Amps);
     return base + getMountingCost();
 }
 
 function getMountingCost() {
     if (!state.inverter) return 0;
     if (state.company === 'Fortuner') {
-        if (state.inverter.kva === 1.5 || state.inverter.kva === 2.2) return Math.round(4500 * 1.25);
-        if (state.inverter.kva === 10.0) return Math.round(54500 * 1.25);
-        return Math.round(22000 * 1.25);
+        if (state.inverter.kva === 1.5 || state.inverter.kva === 2.2) return usdToKes(USD_PRICES.mounting.fortuner1_5or2_2);
+        if (state.inverter.kva === 10.0) return usdToKes(USD_PRICES.mounting.fortuner10kva);
+        return usdToKes(USD_PRICES.mounting.default);
     }
-    if (state.inverter.kva === 6.0 && state.inverter.voltage === 48) return Math.round(40000 * 1.25);
-    return Math.round(22000 * 1.25);
+    if (state.inverter.kva === 6.0 && state.inverter.voltage === 48) return usdToKes(USD_PRICES.mounting.kstar6kva48v);
+    return usdToKes(USD_PRICES.mounting.default);
 }
 
 function getTotal() {
@@ -414,8 +567,8 @@ function renderCompanies() {
     var wrap = $('#company-options');
     wrap.innerHTML = '';
     var brands = [
-        { name: 'Kstar', img: 'images/kstar-logo.png', tagline: 'Premium efficiency, proven reliability', range: 'Systems from KSH 60K \u2013 125K' },
-        { name: 'Fortuner', img: 'images/fortuner-logo.png', tagline: 'Great value across all budgets', range: 'Systems from KSH 16K \u2013 131K' }
+        { name: 'Kstar', img: 'images/kstar-logo.png', tagline: 'Premium efficiency, proven reliability', range: getBrandInverterRange('Kstar') },
+        { name: 'Fortuner', img: 'images/fortuner-logo.png', tagline: 'Great value across all budgets', range: getBrandInverterRange('Fortuner') }
     ];
     brands.forEach(function(c) {
         var el = document.createElement('div');
@@ -1292,7 +1445,12 @@ function initCanvas() {
 
 /* ---------- boot ---------- */
 document.addEventListener('DOMContentLoaded', function() {
+    pricingState.usdToKesAdjusted = getAdjustedUsdToKes(pricingState.usdToKesRaw);
+    applyExchangeRatePricing();
+
     initCanvas();
+    renderFxRatePill();
+    renderAccessoryStaticPrices();
     renderCompanies();
     renderNeeds();
     initSavingsCalc();
@@ -1311,6 +1469,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var hash = location.hash.slice(1);
     var requestedStep = (hash && STEPS.indexOf(hash) !== -1) ? hash : (state.step || 'company');
     goTo(requestedStep);
+
+    refreshExchangeRateAndPricing();
 
     // Back buttons
     $('#back-from-inverter').addEventListener('click', goBack);
