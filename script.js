@@ -2988,6 +2988,52 @@ function buildText() {
     return { name: name, email: email, phone: phone, total: total, salesRep: salesRep };
 }
 
+function buildApplianceLines() {
+    if (state.mode !== 'guided') return [];
+    var lines = [];
+    Object.keys(state.guidedAppliances).forEach(function(id) {
+        var app = RICH_APPLIANCES.find(function(a) { return a.id === id; });
+        if (!app) return;
+        state.guidedAppliances[id].forEach(function(inst) {
+            var variant = app.variants[inst.variantIdx];
+            if (!variant) return;
+            var totalW = variant.watts * inst.qty;
+            lines.push(inst.qty + '\u00d7 ' + app.name + ' (' + variant.label + ') \u2014 ' + totalW + 'W');
+        });
+    });
+    state.guidedCustomDevices.forEach(function(dev) {
+        lines.push(dev.qty + '\u00d7 ' + dev.name + ' (custom) \u2014 ' + (dev.watts * dev.qty) + 'W');
+    });
+    return lines;
+}
+
+function getSavingsData() {
+    var billEl = $('#monthly-bill');
+    var bill = billEl ? parseFloat(billEl.value) : 0;
+    if (!bill || bill <= 0) return null;
+    var resultsEl = $('#savings-results');
+    if (!resultsEl || resultsEl.classList.contains('hidden')) return null;
+    return {
+        bill: fmt(bill),
+        monthly: $('#monthly-savings') ? $('#monthly-savings').textContent : '',
+        yearly:  $('#yearly-savings')  ? $('#yearly-savings').textContent  : '',
+        payback: $('#payback-period')  ? $('#payback-period').textContent  : '',
+        tenYear: $('#ten-year-savings')? $('#ten-year-savings').textContent : ''
+    };
+}
+
+function getPaymentPlans() {
+    var fin6El = $('#fin-6');
+    if (!fin6El) return null;
+    var six = fin6El.textContent.trim();
+    if (!six || six === '\u2014' || six === '-') return null;
+    return {
+        six:        six,
+        twelve:     ($('#fin-12') ? $('#fin-12').textContent.trim() : ''),
+        twentyFour: ($('#fin-24') ? $('#fin-24').textContent.trim() : '')
+    };
+}
+
 function buildQuoteLines() {
     var lines = [];
     var pw = state.panelType ? state.panelType.watts : 600;
@@ -3034,23 +3080,115 @@ function shareSummary() {
     if (!validateForm()) return;
     var d = buildText();
     var lines = buildQuoteLines();
-    var body = 'Solar System Quote for ' + d.name + '\n\nEmail: ' + d.email + '\nPhone: ' + d.phone + (d.salesRep ? '\nSales Rep: ' + d.salesRep : '') + '\n\nSYSTEM BREAKDOWN\n';
+    var appLines = buildApplianceLines();
+    var savings = getSavingsData();
+    var plans = getPaymentPlans();
+    var noSolar = getNoSolarBreakdown();
+    var date = new Date().toLocaleDateString('en-GB');
+
+    var body = 'Sangyug Solar \u2014 System Quote\n';
+    body += 'Date: ' + date + '\n\n';
+
+    body += 'CUSTOMER DETAILS\n';
+    body += 'Name: ' + d.name + '\n';
+    body += 'Email: ' + d.email + '\n';
+    body += 'Phone: ' + d.phone + '\n';
+    if (d.salesRep) body += 'Sales Rep: ' + d.salesRep + '\n';
+    body += 'System Type: ' + (state.phase === 'single' ? 'Single Phase' : 'Three Phase') + ' \u2014 ' + state.company + '\n';
+    if (state.mode === 'guided') body += 'Space: ' + state.guidedSpace.charAt(0).toUpperCase() + state.guidedSpace.slice(1) + '\n';
+
+    if (appLines.length > 0) {
+        body += '\nAPPLIANCE LIST\n';
+        appLines.forEach(function(l) { body += '  ' + l + '\n'; });
+        if (state.guidedRunningWatts > 0) {
+            body += '  Running Load: ' + state.guidedRunningWatts + 'W  |  Peak Load: ' + state.guidedPeakWatts + 'W\n';
+        }
+    }
+
+    body += '\nSYSTEM BREAKDOWN\n';
     lines.forEach(function(l) { body += l.label + (l.value ? ': ' + l.value : '') + '\n'; });
-    body += '\nTOTAL: ' + d.total + '\n\nFinal pricing confirmed after site survey.\nContact: +254723984559 | info@sangyug.com\nThank you for choosing Sangyug Solar!';
+    body += '\nTOTAL: ' + d.total + '\n';
+
+    if (savings) {
+        body += '\nSAVINGS ESTIMATE\n';
+        body += '  Monthly Bill: KSH ' + savings.bill + '\n';
+        body += '  Monthly Savings: ' + savings.monthly + '\n';
+        body += '  Yearly Savings: ' + savings.yearly + '\n';
+        body += '  Payback Period: ' + savings.payback + '\n';
+        body += '  10-Year Net Savings: ' + savings.tenYear + '\n';
+    }
+
+    if (noSolar) {
+        body += '\nWITHOUT SOLAR PANELS OPTION\n';
+        body += '  Inverter: ' + fmt(noSolar.inverter) + ' Ksh\n';
+        body += '  Batteries: ' + fmt(noSolar.battery) + ' Ksh\n';
+        body += '  Change Over Switch: ' + fmt(noSolar.changeOver) + ' Ksh\n';
+        body += '  AC Cable: ' + fmt(noSolar.acCable) + ' Ksh\n';
+        body += '  Installation & Labour: ' + fmt(noSolar.labour) + ' Ksh\n';
+        body += '  Total Without Solar: ' + fmt(noSolar.total) + ' Ksh\n';
+    }
+
+    body += '\nFinal pricing confirmed after site survey.\nContact: +254723984559 | info@sangyug.com\nThank you for choosing Sangyug Solar!';
     var subj = encodeURIComponent('Sangyug Solar Quote for ' + d.name);
     window.open('mailto:?subject=' + subj + '&body=' + encodeURIComponent(body), '_blank');
-    toast('Opening email client…', 'info');
+    toast('Opening email client\u2026', 'info');
 }
 
 function shareWhatsApp() {
     if (!validateForm()) return;
     var d = buildText();
     var lines = buildQuoteLines();
-    var txt = '*Solar System Quote for ' + d.name + '*\n\nEmail: ' + d.email + '\nPhone: ' + d.phone + (d.salesRep ? '\nSales Rep: ' + d.salesRep : '') + '\n\n*SYSTEM BREAKDOWN*\n';
+    var appLines = buildApplianceLines();
+    var savings = getSavingsData();
+    var plans = getPaymentPlans();
+    var noSolar = getNoSolarBreakdown();
+    var date = new Date().toLocaleDateString('en-GB');
+
+    var txt = '*Sangyug Solar \u2014 System Quote*\n';
+    txt += 'Date: ' + date + '\n\n';
+
+    txt += '*CUSTOMER DETAILS*\n';
+    txt += 'Name: ' + d.name + '\n';
+    txt += 'Email: ' + d.email + '\n';
+    txt += 'Phone: ' + d.phone + '\n';
+    if (d.salesRep) txt += 'Sales Rep: ' + d.salesRep + '\n';
+    txt += 'System Type: ' + (state.phase === 'single' ? 'Single Phase' : 'Three Phase') + ' \u2014 ' + state.company + '\n';
+    if (state.mode === 'guided') txt += 'Space: ' + state.guidedSpace.charAt(0).toUpperCase() + state.guidedSpace.slice(1) + '\n';
+
+    if (appLines.length > 0) {
+        txt += '\n*APPLIANCE LIST*\n';
+        appLines.forEach(function(l) { txt += '  ' + l + '\n'; });
+        if (state.guidedRunningWatts > 0) {
+            txt += '  Running Load: ' + state.guidedRunningWatts + 'W  |  Peak Load: ' + state.guidedPeakWatts + 'W\n';
+        }
+    }
+
+    txt += '\n*SYSTEM BREAKDOWN*\n';
     lines.forEach(function(l) { txt += l.label + (l.value ? ': ' + l.value : '') + '\n'; });
-    txt += '\n*TOTAL: ' + d.total + '*\n\nFinal pricing confirmed after site survey.\nContact: +254723984559 | info@sangyug.com\nThank you for choosing Sangyug Solar!';
+    txt += '\n*TOTAL: ' + d.total + '*\n';
+
+    if (savings) {
+        txt += '\n*SAVINGS ESTIMATE*\n';
+        txt += '  Monthly Bill: KSH ' + savings.bill + '\n';
+        txt += '  Monthly Savings: ' + savings.monthly + '\n';
+        txt += '  Yearly Savings: ' + savings.yearly + '\n';
+        txt += '  Payback Period: ' + savings.payback + '\n';
+        txt += '  10-Year Net Savings: ' + savings.tenYear + '\n';
+    }
+
+    if (noSolar) {
+        txt += '\n*WITHOUT SOLAR PANELS OPTION*\n';
+        txt += '  Inverter: ' + fmt(noSolar.inverter) + ' Ksh\n';
+        txt += '  Batteries: ' + fmt(noSolar.battery) + ' Ksh\n';
+        txt += '  Change Over Switch: ' + fmt(noSolar.changeOver) + ' Ksh\n';
+        txt += '  AC Cable: ' + fmt(noSolar.acCable) + ' Ksh\n';
+        txt += '  Installation & Labour: ' + fmt(noSolar.labour) + ' Ksh\n';
+        txt += '  Total Without Solar: ' + fmt(noSolar.total) + ' Ksh\n';
+    }
+
+    txt += '\nFinal pricing confirmed after site survey.\nContact: +254723984559 | info@sangyug.com\nThank you for choosing Sangyug Solar!';
     window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank');
-    toast('Opening WhatsApp…', 'success');
+    toast('Opening WhatsApp\u2026', 'success');
 }
 
 /* ---------- PDF generation ---------- */
@@ -3122,6 +3260,29 @@ function downloadPDF() {
     doc.setTextColor(255, 255, 255);
     doc.text('TOTAL ESTIMATED COST', 22, y + 2);
     doc.text(d.total, 168, y + 2, { align: 'right' }); y += 20;
+
+    // Appliance list (guided mode)
+    var pdfAppLines = buildApplianceLines();
+    if (pdfAppLines.length > 0) {
+        checkPage(30);
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+        doc.setTextColor(blue[0], blue[1], blue[2]);
+        doc.text('APPLIANCE LIST', 20, y); y += 8;
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+        doc.setTextColor(dark[0], dark[1], dark[2]);
+        pdfAppLines.forEach(function(l, i) {
+            checkPage(8);
+            if (i % 2 === 1) { doc.setFillColor(248, 248, 252); doc.rect(20, y - 4, 170, 8, 'F'); }
+            doc.text('\u2022 ' + l, 22, y); y += 6;
+        });
+        if (state.guidedRunningWatts > 0) {
+            checkPage(10);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Running Load: ' + state.guidedRunningWatts + 'W     Peak Load: ' + state.guidedPeakWatts + 'W', 22, y); y += 6;
+            doc.setFont('helvetica', 'normal');
+        }
+        y += 6;
+    }
 
     // No Solar option (single phase only)
     var noSolar = getNoSolarBreakdown();
@@ -3227,20 +3388,6 @@ function downloadPDF() {
             doc.text('• ' + n, 26, y); y += 5;
         });
         y += 8;
-    }
-
-    // Environmental Impact
-    if (state.panels > 0) {
-        checkPage(40);
-        doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
-        doc.setTextColor(blue[0], blue[1], blue[2]);
-        doc.text('ENVIRONMENTAL IMPACT', 20, y); y += 8;
-        doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
-        doc.setTextColor(dark[0], dark[1], dark[2]);
-        var impact = calcImpact();
-        doc.text('Energy Production: ' + fmt(impact.kwh) + ' kWh/year', 22, y); y += 6;
-        doc.text('CO2 Reduction: ' + fmt(impact.co2) + ' kg/year', 22, y); y += 6;
-        doc.text('Equivalent to planting ' + fmt(impact.trees) + ' trees per year', 22, y); y += 14;
     }
 
     // Notes
