@@ -3093,7 +3093,7 @@ function renderFinancing() {
 /* ---------- environmental impact ---------- */
 function calcImpact() {
     var pw = state.panelType ? state.panelType.watts : 600;
-    var sunHrs = 4.1, eff = 0.9, co2Factor = 0.7, treeFactor = 22, householdCo2 = 5000;
+    var sunHrs = 4.1, eff = 0.82, co2Factor = 0.4, treeFactor = 22, householdCo2 = 5000;
     var kwh = state.panels * pw * sunHrs * 365 * eff / 1000;
     var co2 = kwh * co2Factor;
     var trees = co2 / treeFactor;
