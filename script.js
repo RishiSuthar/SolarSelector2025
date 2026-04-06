@@ -2984,7 +2984,8 @@ function buildText() {
     var email = $('#user-email').value || '';
     var phone = $('#user-phone').value ? $('#country-code').value + $('#user-phone').value : 'Not provided';
     var total = $('#total-cost').textContent;
-    return { name: name, email: email, phone: phone, total: total };
+    var salesRep = ($('#sales-rep') && $('#sales-rep').value.trim()) ? $('#sales-rep').value.trim() : '';
+    return { name: name, email: email, phone: phone, total: total, salesRep: salesRep };
 }
 
 function buildQuoteLines() {
@@ -3033,7 +3034,7 @@ function shareSummary() {
     if (!validateForm()) return;
     var d = buildText();
     var lines = buildQuoteLines();
-    var body = 'Solar System Quote for ' + d.name + '\n\nEmail: ' + d.email + '\nPhone: ' + d.phone + '\n\nSYSTEM BREAKDOWN\n';
+    var body = 'Solar System Quote for ' + d.name + '\n\nEmail: ' + d.email + '\nPhone: ' + d.phone + (d.salesRep ? '\nSales Rep: ' + d.salesRep : '') + '\n\nSYSTEM BREAKDOWN\n';
     lines.forEach(function(l) { body += l.label + (l.value ? ': ' + l.value : '') + '\n'; });
     body += '\nTOTAL: ' + d.total + '\n\nFinal pricing confirmed after site survey.\nContact: +254723984559 | info@sangyug.com\nThank you for choosing Sangyug Solar!';
     var subj = encodeURIComponent('Sangyug Solar Quote for ' + d.name);
@@ -3045,7 +3046,7 @@ function shareWhatsApp() {
     if (!validateForm()) return;
     var d = buildText();
     var lines = buildQuoteLines();
-    var txt = '*Solar System Quote for ' + d.name + '*\n\nEmail: ' + d.email + '\nPhone: ' + d.phone + '\n\n*SYSTEM BREAKDOWN*\n';
+    var txt = '*Solar System Quote for ' + d.name + '*\n\nEmail: ' + d.email + '\nPhone: ' + d.phone + (d.salesRep ? '\nSales Rep: ' + d.salesRep : '') + '\n\n*SYSTEM BREAKDOWN*\n';
     lines.forEach(function(l) { txt += l.label + (l.value ? ': ' + l.value : '') + '\n'; });
     txt += '\n*TOTAL: ' + d.total + '*\n\nFinal pricing confirmed after site survey.\nContact: +254723984559 | info@sangyug.com\nThank you for choosing Sangyug Solar!';
     window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank');
@@ -3084,7 +3085,9 @@ function downloadPDF() {
     doc.text('Email: ' + d.email, 20, y); y += 5;
     doc.text('Phone: ' + d.phone, 20, y);
     doc.text('Date: ' + new Date().toLocaleDateString('en-GB'), 150, y - 10); y += 5;
-    doc.text('System: ' + (state.phase === 'single' ? 'Single Phase' : 'Three Phase') + ' — ' + state.company, 20, y); y += 12;
+    doc.text('System: ' + (state.phase === 'single' ? 'Single Phase' : 'Three Phase') + ' — ' + state.company, 20, y); y += 5;
+    if (d.salesRep) { doc.text('Sales Rep: ' + d.salesRep, 20, y); y += 5; }
+    y += 7;
 
     // Divider
     doc.setDrawColor(230, 230, 230); doc.setLineWidth(0.3); doc.line(20, y, 190, y); y += 8;
@@ -3281,7 +3284,7 @@ function resetAll() {
     state.guidedRunningWatts = 0; state.guidedPeakWatts = 0;
     state.guidedCatIdx = 0;
     clearState();
-    ['user-name', 'user-email', 'user-phone'].forEach(function(id) { var el = $('#' + id); if (el) el.value = ''; });
+    ['user-name', 'user-email', 'user-phone', 'sales-rep'].forEach(function(id) { var el = $('#' + id); if (el) el.value = ''; });
     ['name-error', 'email-error', 'phone-error'].forEach(function(id) { var el = $('#' + id); if (el) el.textContent = ''; });
     var billInput = $('#monthly-bill');
     if (billInput) billInput.value = '';
