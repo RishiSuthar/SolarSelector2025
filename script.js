@@ -2862,25 +2862,21 @@ function renderSelectionOverview() {
 
     html += '<div class="sel-card">' +
         '<div class="sel-card-icon"><i data-lucide="activity"></i></div>' +
-        '<div class="sel-card-info"><span class="sel-card-label">Phase</span><span class="sel-card-val">' + (state.phase === 'single' ? 'Single Phase' : 'Three Phase') + '</span></div>' +
-        '<button class="sel-card-edit" data-goto="phase"><i data-lucide="pencil"></i></button></div>';
+        '<div class="sel-card-info"><span class="sel-card-label">Phase</span><span class="sel-card-val">' + (state.phase === 'single' ? 'Single Phase' : 'Three Phase') + '</span></div></div>';
 
     html += '<div class="sel-card">' +
         '<div class="sel-card-icon"><i data-lucide="building-2"></i></div>' +
-        '<div class="sel-card-info"><span class="sel-card-label">Brand</span><span class="sel-card-val">' + state.company + '</span></div>' +
-        '<button class="sel-card-edit" data-goto="company"><i data-lucide="pencil"></i></button></div>';
+        '<div class="sel-card-info"><span class="sel-card-label">Brand</span><span class="sel-card-val">' + state.company + '</span></div></div>';
 
     if (state.phase === 'three') {
         html += '<div class="sel-card">' +
             '<div class="sel-card-icon"><i data-lucide="zap"></i></div>' +
-            '<div class="sel-card-info"><span class="sel-card-label">Package</span><span class="sel-card-val">' + state.company + ' ' + state.inverter.name + '</span></div>' +
-            '<button class="sel-card-edit" data-goto="inverter"><i data-lucide="pencil"></i></button></div>';
+            '<div class="sel-card-info"><span class="sel-card-label">Package</span><span class="sel-card-val">' + state.company + ' ' + state.inverter.name + '</span></div></div>';
         if (state.company === 'ATESS') {
             var cfg = state.inverter.battery.configs[state.atessMasterCount - 1];
             html += '<div class="sel-card">' +
                 '<div class="sel-card-icon"><i data-lucide="battery-charging"></i></div>' +
-                '<div class="sel-card-info"><span class="sel-card-label">Battery Config</span><span class="sel-card-val">' + cfg.totalUnits + '× ' + state.inverter.battery.name + ' (' + cfg.capacity + ')</span></div>' +
-                '<button class="sel-card-edit" data-goto="battery"><i data-lucide="pencil"></i></button></div>';
+                '<div class="sel-card-info"><span class="sel-card-label">Battery Config</span><span class="sel-card-val">' + cfg.totalUnits + '× ' + state.inverter.battery.name + ' (' + cfg.capacity + ')</span></div></div>';
         } else {
             var bat = state.inverter.batteries;
             html += '<div class="sel-card">' +
@@ -2894,8 +2890,7 @@ function renderSelectionOverview() {
         var invLabel = parallelPrefix + (inv.series ? inv.series + ' ' + inv.kva + 'kVA' + w : inv.kva + 'kVA' + w);
         html += '<div class="sel-card">' +
             '<div class="sel-card-icon"><i data-lucide="zap"></i></div>' +
-            '<div class="sel-card-info"><span class="sel-card-label">Inverter</span><span class="sel-card-val">' + invLabel + ' – ' + inv.voltage + 'V</span></div>' +
-            '<button class="sel-card-edit" data-goto="inverter"><i data-lucide="pencil"></i></button></div>';
+            '<div class="sel-card-info"><span class="sel-card-label">Inverter</span><span class="sel-card-val">' + invLabel + ' – ' + inv.voltage + 'V</span></div></div>';
 
         if (inv.series === 'Residential ESS') {
             html += '<div class="sel-card">' +
@@ -2904,15 +2899,11 @@ function renderSelectionOverview() {
         } else if (state.battery) {
             html += '<div class="sel-card">' +
                 '<div class="sel-card-icon"><i data-lucide="battery-charging"></i></div>' +
-                '<div class="sel-card-info"><span class="sel-card-label">Battery</span><span class="sel-card-val">' + state.battery.name + ' × ' + state.battery.count + '</span></div>' +
-                '<button class="sel-card-edit" data-goto="battery"><i data-lucide="pencil"></i></button></div>';
+                '<div class="sel-card-info"><span class="sel-card-label">Battery</span><span class="sel-card-val">' + state.battery.name + ' × ' + state.battery.count + '</span></div></div>';
         }
     }
 
     cards.innerHTML = html;
-    cards.querySelectorAll('.sel-card-edit').forEach(function(btn) {
-        btn.addEventListener('click', function() { goTo(btn.dataset.goto); });
-    });
 }
 
 function renderPanelInfo() {
