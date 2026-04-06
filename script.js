@@ -25,7 +25,8 @@ const state = {
     guidedCustomDevices: [],  // [ { name, watts, qty } ]
     guidedRunningWatts: 0,
     guidedPeakWatts: 0,
-    guidedCatIdx: 0
+    guidedCatIdx: 0,
+    savedQuotes: []     // snapshots for comparison
 };
 
 const pricingState = {
@@ -2853,6 +2854,7 @@ function renderSummary() {
     renderEnvironmentalImpact();
     initSavingsCalc();
     updateRunningTotal();
+    updateCompareBtn();
 }
 
 function renderSelectionOverview() {
@@ -3683,6 +3685,210 @@ function downloadPDF() {
     toast('PDF downloaded', 'success');
 }
 
+/* ---------- quote comparison ---------- */
+function persistSavedQuotes() {
+    try { localStorage.setItem('solarSavedQuotes', JSON.stringify(state.savedQuotes)); } catch (e) {}
+}
+function loadSavedQuotes() {
+    try {
+        var raw = localStorage.getItem('solarSavedQuotes');
+        if (raw) { state.savedQuotes = JSON.parse(raw); return state.savedQuotes.slice(); }
+    } catch (e) {}
+    return state.savedQuotes.slice();
+}
+
+function snapshotQuote() {
+    var inv = state.inverter;
+    if (!inv) return null;
+    var snap = {
+        id: Date.now(),
+        phase: state.phase,
+        company: state.company,
+        knightUnits: state.knightUnits || 1,
+        panels: state.panels,
+        panelWatts: state.panelType ? state.panelType.watts : 600,
+        total: getTotal()
+    };
+    if (state.phase === 'three') {
+        snap.packageName = inv.name || (inv.model || '');
+        if (state.company === 'ATESS') {
+            var cfg = inv.battery.configs[state.atessMasterCount - 1];
+            snap.battery = cfg.totalUnits + '× ' + inv.battery.name + ' (' + cfg.capacity + ')';
+            snap.inverterLabel = 'ATESS ' + inv.model;
+        } else {
+            snap.battery = inv.batteries.count + '× ' + inv.batteries.name + ' (' + inv.batteries.totalCapacity + ')';
+            snap.inverterLabel = 'Kstar ' + inv.name;
+        }
+    } else {
+        var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
+        var pu = snap.knightUnits > 1 ? snap.knightUnits + '× ' : '';
+        snap.inverterLabel = state.company + ' ' + pu + (inv.series ? inv.series + ' ' : '') + inv.kva + 'kVA' + w;
+        if (inv.series === 'Residential ESS') {
+            snap.battery = inv.essBattery.count + '× ' + inv.essBattery.name + ' (' + inv.essBattery.totalCapacity + ')';
+        } else if (state.battery) {
+            snap.battery = state.battery.count + '× ' + state.battery.name;
+        } else {
+            snap.battery = '—';
+        }
+    }
+    snap.totalKw = (snap.panels * snap.panelWatts / 1000).toFixed(1) + ' kW';
+    snap.dailyGen = (snap.panels * snap.panelWatts * 5 * 0.80 / 1000).toFixed(0) + ' kWh/day';
+    return snap;
+}
+
+function saveQuoteAndStartNew() {
+    var snap = snapshotQuote();
+    if (!snap) { toast('Complete a quote first', 'warn'); return; }
+    loadSavedQuotes(); // sync from localStorage
+    if (state.savedQuotes.length >= 3) { toast('Max 3 quotes saved — remove one first', 'warn'); return; }
+    state.savedQuotes.push(snap);
+    persistSavedQuotes();
+    toast('Quote saved! Build your next one.', 'success');
+    // Reset selections but keep savedQuotes
+    var saved = state.savedQuotes;
+    state.mode = '';
+    state.phase = ''; state.company = ''; state.inverter = null;
+    state.battery = null; state.panels = 0; state.panelType = null;
+    state.compareList = []; state.atessMasterCount = 3;
+    state.needs = {}; state.totalWatts = 0;
+    state.guidedSpace = 'home'; state.guidedPhase = ''; state.guidedIntroShown = false; state.knightUnits = 1;
+    state.guidedAppliances = {};
+    state.guidedCustomDevices = [];
+    state.guidedRunningWatts = 0; state.guidedPeakWatts = 0;
+    state.guidedCatIdx = 0;
+    state.savedQuotes = saved;
+    goTo('landing');
+}
+
+function showCompareOverlay() {
+    // snapshot current quote too if any
+    var quotes = loadSavedQuotes();
+    var current = snapshotQuote();
+    var currentIdx = -1;
+    if (current) { currentIdx = quotes.length; quotes.push(current); }
+    if (quotes.length < 2) { toast('Need at least 2 quotes to compare', 'warn'); return; }
+
+    var existing = document.querySelector('.cmp-overlay');
+    if (existing) existing.remove();
+
+    var rows = [
+        { label: 'Phase', key: 'phase', fn: function(q) { return q.phase === 'single' ? 'Single Phase' : 'Three Phase'; }},
+        { label: 'Brand', key: 'company' },
+        { label: 'Inverter', key: 'inverterLabel' },
+        { label: 'Battery', key: 'battery' },
+        { label: 'Solar Panels', key: 'panels', fn: function(q) { return q.panels + ' × ' + q.panelWatts + 'W'; }},
+        { label: 'Total Solar', key: 'totalKw' },
+        { label: 'Daily Generation', key: 'dailyGen' },
+        { label: 'Total Cost', key: 'total', fn: function(q) { return 'KSH ' + fmt(q.total); }, highlight: true }
+    ];
+
+    var tableHtml = '<table class="cmp-table"><thead><tr><th></th>';
+    quotes.forEach(function(q, i) {
+        var tag = (i === currentIdx) ? 'Current' : 'Quote ' + (i + 1);
+        tableHtml += '<th>' + tag + '</th>';
+    });
+    tableHtml += '</tr></thead><tbody>';
+
+    rows.forEach(function(r) {
+        tableHtml += '<tr' + (r.highlight ? ' class="cmp-highlight"' : '') + '><td class="cmp-label">' + r.label + '</td>';
+        quotes.forEach(function(q) {
+            var val = r.fn ? r.fn(q) : (q[r.key] || '—');
+            tableHtml += '<td>' + val + '</td>';
+        });
+        tableHtml += '</tr>';
+    });
+
+    // select row
+    tableHtml += '<tr class="cmp-select-row"><td class="cmp-label"></td>';
+    quotes.forEach(function(q, i) {
+        if (i === currentIdx) {
+            tableHtml += '<td><span class="cmp-current-tag">Active</span></td>';
+        } else {
+            tableHtml += '<td><button class="cmp-select-btn" data-idx="' + i + '">Select</button></td>';
+        }
+    });
+    tableHtml += '</tr>';
+
+    tableHtml += '</tbody></table>';
+
+    // find cheapest
+    var minCost = Infinity, minIdx = -1;
+    quotes.forEach(function(q, i) { if (q.total < minCost) { minCost = q.total; minIdx = i; }});
+    var savingsNote = '';
+    if (quotes.length >= 2) {
+        var costs = quotes.map(function(q) { return q.total; }).sort(function(a, b) { return a - b; });
+        var diff = costs[1] - costs[0];
+        if (diff > 0) savingsNote = '<p class="cmp-savings">Cheapest option saves you <strong>KSH ' + fmt(diff) + '</strong></p>';
+    }
+
+    var overlay = document.createElement('div');
+    overlay.className = 'cmp-overlay';
+    overlay.innerHTML =
+        '<div class="cmp-card">' +
+            '<div class="cmp-head">' +
+                '<h2><i data-lucide="columns-2"></i> Compare Quotes</h2>' +
+                '<button class="cmp-close"><i data-lucide="x"></i></button>' +
+            '</div>' +
+            '<div class="cmp-body">' + tableHtml + savingsNote + '</div>' +
+            '<div class="cmp-foot">' +
+                '<button class="cmp-clear-btn"><i data-lucide="trash-2"></i> Clear Saved Quotes</button>' +
+            '</div>' +
+        '</div>';
+
+    document.body.appendChild(overlay);
+    refreshIcons();
+
+    // mark cheapest column
+    var tds = overlay.querySelectorAll('.cmp-highlight td');
+    if (tds.length > 1 && minIdx >= 0) tds[minIdx + 1].classList.add('cmp-best');
+
+    overlay.querySelector('.cmp-close').addEventListener('click', function() { overlay.remove(); });
+    overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+    overlay.querySelector('.cmp-clear-btn').addEventListener('click', function() {
+        state.savedQuotes = [];
+        persistSavedQuotes();
+        overlay.remove();
+        updateCompareBtn();
+        toast('Saved quotes cleared', 'info');
+    });
+
+    // select buttons — remove chosen quote from saved list, keep the rest
+    overlay.querySelectorAll('.cmp-select-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var idx = parseInt(btn.dataset.idx);
+            var picked = quotes[idx];
+            if (!picked) return;
+            // remove the selected quote from saved (user chose it)
+            var savedList = loadSavedQuotes();
+            savedList.splice(idx, 1);
+            state.savedQuotes = savedList;
+            persistSavedQuotes();
+            overlay.remove();
+            updateCompareBtn();
+            toast('Selected: ' + picked.company + ' ' + picked.inverterLabel + ' — KSH ' + fmt(picked.total), 'success');
+        });
+    });
+}
+
+function updateCompareBtn() {
+    var btn = $('#compare-quote-btn');
+    var viewBtn = $('#compare-view-btn');
+    var count = state.savedQuotes.length;
+    if (btn) {
+        if (count > 0) {
+            btn.innerHTML = '<i data-lucide="columns-2"></i> Compare (' + count + ' saved)';
+            btn.classList.add('has-saved');
+        } else {
+            btn.innerHTML = '<i data-lucide="plus-circle"></i> Save &amp; Build Another Quote to Compare';
+            btn.classList.remove('has-saved');
+        }
+    }
+    if (viewBtn) {
+        viewBtn.style.display = count > 0 ? 'flex' : 'none';
+    }
+    refreshIcons();
+}
+
 /* ---------- reset ---------- */
 function resetAll() {
     state.mode = '';
@@ -3695,7 +3901,9 @@ function resetAll() {
     state.guidedCustomDevices = [];
     state.guidedRunningWatts = 0; state.guidedPeakWatts = 0;
     state.guidedCatIdx = 0;
+    state.savedQuotes = [];
     clearState();
+    persistSavedQuotes();
     ['user-name', 'user-email', 'user-phone', 'sales-rep'].forEach(function(id) { var el = $('#' + id); if (el) el.value = ''; });
     ['name-error', 'email-error', 'phone-error'].forEach(function(id) { var el = $('#' + id); if (el) el.textContent = ''; });
     var billInput = $('#monthly-bill');
@@ -3725,6 +3933,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (state.inverter && !state.panelType) calcPanels();
         }
     } catch (e) {}
+    loadSavedQuotes(); // restore saved quotes from localStorage
 
     var hash = location.hash.slice(1);
     var validLanding = ['landing', 'phase', 'company', 'inverter', 'battery', 'summary', 'appliances', 'recommend', 'guided-battery'];
@@ -3797,6 +4006,18 @@ document.addEventListener('DOMContentLoaded', function() {
     if (pdfBtn) pdfBtn.addEventListener('click', downloadPDF);
     var resetBtn = $('#reset-selection');
     if (resetBtn) resetBtn.addEventListener('click', resetAll);
+
+    // Quote comparison
+    var cmpBtn = $('#compare-quote-btn');
+    if (cmpBtn) cmpBtn.addEventListener('click', function() {
+        if (state.savedQuotes.length > 0) {
+            showCompareOverlay();
+        } else {
+            saveQuoteAndStartNew();
+        }
+    });
+    var cmpViewBtn = $('#compare-view-btn');
+    if (cmpViewBtn) cmpViewBtn.addEventListener('click', showCompareOverlay);
 
     // Compare
     var compareBtn = $('#compare-btn');
