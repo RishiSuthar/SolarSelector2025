@@ -763,8 +763,8 @@ const kstarThreePhasePackages = [
 const atessThreePhasePackages = [
     {
         id: 'atess-30kw',
-        name: '30KW + 30KWH Indoor System',
-        subtitle: 'Support work with Digital Generator',
+        name: '30KW + Lithium Battery Bank Indoor System',
+        subtitle: 'Support work with Diesel Generator',
         model: 'HPS30000TL',
         watts: 30000,
         bestFor: 'Large commercial / Industrial',
@@ -795,12 +795,12 @@ const atessThreePhasePackages = [
                 { masters: 3, totalUnits: 6, capacity: '30.72KWH' }
             ]
         },
-        inverterNotes: ['30KW hybrid inverter, indoor unit', '10 year warranty', 'Works with Digital Generator (DG)']
+        inverterNotes: ['30KW hybrid inverter, indoor unit', '10 year warranty', 'Works with Diesel Generator (DG)']
     },
     {
         id: 'atess-20kw',
-        name: '20KW + 30KWH Indoor System',
-        subtitle: 'Support work with Digital Generator',
+        name: '20KW + Lithium Battery Bank Indoor System',
+        subtitle: 'Support work with Diesel Generator',
         model: 'HPS20000TL',
         watts: 20000,
         bestFor: 'Medium-large commercial',
@@ -831,12 +831,12 @@ const atessThreePhasePackages = [
                 { masters: 3, totalUnits: 6, capacity: '30.72KWH' }
             ]
         },
-        inverterNotes: ['20KW hybrid inverter, indoor unit', '10 year warranty', 'Works with Digital Generator (DG)']
+        inverterNotes: ['20KW hybrid inverter, indoor unit', '10 year warranty', 'Works with Diesel Generator (DG)']
     },
     {
         id: 'atess-15kw',
-        name: '15KW + 30KWH Indoor System',
-        subtitle: 'Support work with Digital Generator',
+        name: '15KW + Lithium Battery Bank Indoor System',
+        subtitle: 'Support work with Diesel Generator',
         model: 'HPS15000TL',
         watts: 15000,
         bestFor: 'Small-medium commercial',
@@ -866,7 +866,7 @@ const atessThreePhasePackages = [
                 { masters: 3, totalUnits: 6, capacity: '30.72KWH' }
             ]
         },
-        inverterNotes: ['15KW hybrid inverter, indoor unit', '10 year warranty', 'Works with Digital Generator (DG)']
+        inverterNotes: ['15KW hybrid inverter, indoor unit', '10 year warranty', 'Works with Diesel Generator (DG)']
     }
 ];
 
