@@ -3159,19 +3159,47 @@ function calculateSavings() {
     var billInput = $('#monthly-bill');
     var results = $('#savings-results');
     if (!billInput || !results) return;
-    var bill = parseFloat(billInput.value) || 0;
-    if (bill <= 0 || state.panels === 0) { results.classList.add('hidden'); return; }
+    var monthlyBill = parseFloat(billInput.value) || 0;
+    if (monthlyBill <= 0 || state.panels === 0) { results.classList.add('hidden'); return; }
     results.classList.remove('hidden');
+
+    // Kenya Power average blended rate (KSH per kWh)
     var ratePerKwh = 25;
-    var impact = calcImpact();
-    var monthlyGen = impact.kwh / 12;
-    var monthlyGenValue = monthlyGen * ratePerKwh;
-    var offsetFactor = 0.85;
-    var monthlySaving = Math.min(monthlyGenValue * offsetFactor, bill * offsetFactor);
+
+    // Monthly electricity consumption implied by their bill
+    var monthlyConsumptionKwh = monthlyBill / ratePerKwh;
+
+    // Monthly solar generation from panels
+    var pw = state.panelType ? state.panelType.watts : 600;
+    var sunHoursPerDay = 4.1;
+    var systemEfficiency = 0.85; // accounts for inverter losses, dust, wiring
+    var daysPerMonth = 30.4;
+    var monthlyGenKwh = (state.panels * pw * sunHoursPerDay * daysPerMonth * systemEfficiency) / 1000;
+
+    // Self-consumption ratio: not all solar generation is used directly;
+    // some is exported or wasted. Typical residential self-consumption ~80-90%.
+    var selfConsumptionRatio = 0.85;
+    var usableSolarKwh = monthlyGenKwh * selfConsumptionRatio;
+
+    // Monthly saving = value of solar energy actually consumed (can't save more than the bill)
+    var kwhOffset = Math.min(usableSolarKwh, monthlyConsumptionKwh);
+    var monthlySaving = kwhOffset * ratePerKwh;
+
     var yearlySaving = monthlySaving * 12;
     var totalCost = getTotal();
+
+    // Payback = system cost / yearly saving
     var paybackYears = yearlySaving > 0 ? totalCost / yearlySaving : 0;
-    var tenYearNet = (yearlySaving * 10) - totalCost;
+
+    // 10-year net savings (account for ~2% annual panel degradation)
+    var tenYearSaving = 0;
+    for (var yr = 0; yr < 10; yr++) {
+        var degradation = Math.pow(0.98, yr);
+        var yrKwhOffset = Math.min(usableSolarKwh * degradation * 12, monthlyConsumptionKwh * 12);
+        tenYearSaving += yrKwhOffset * ratePerKwh;
+    }
+    var tenYearNet = tenYearSaving - totalCost;
+
     $('#monthly-savings').textContent = 'KSH ' + fmt(Math.round(monthlySaving));
     $('#yearly-savings').textContent = 'KSH ' + fmt(Math.round(yearlySaving));
     $('#payback-period').textContent = paybackYears > 0 ? paybackYears.toFixed(1) + ' years' : '—';
