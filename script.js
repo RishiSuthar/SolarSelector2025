@@ -97,11 +97,11 @@ const RICH_APPLIANCES = [
         id: 'fluorescent', name: 'Fluorescent Tube', category: 'lighting', icon: 'lightbulb',
         desc: 'Standard fluorescent tube light',
         variants: [
-            { label: '18W (2ft)', watts: 18, startMultiplier: 1.5 },
-            { label: '36W (4ft)', watts: 36, startMultiplier: 1.5 },
-            { label: '58W (5ft)', watts: 58, startMultiplier: 1.5 }
+            { label: '10W (2ft)', watts: 10, startMultiplier: 1.5 },
+            { label: '20W (4ft)', watts: 20, startMultiplier: 1.5 },
+            { label: '30W (5ft)', watts: 30, startMultiplier: 1.5 }
         ],
-        maxQty: 30, defaultQty: 2, spaces: ['office', 'commercial']
+        maxQty: 30, defaultQty: 2, spaces: ['home', 'office', 'commercial']
     },
     {
         id: 'spotlight', name: 'Spotlight / Downlight', category: 'lighting', icon: 'sun',
