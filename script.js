@@ -18,6 +18,9 @@ const state = {
     atessMasterCount: 3,
     // guided mode state
     guidedSpace: 'home',
+    guidedPhase: '',         // 'single' or 'three' — chosen in builder intro
+    guidedIntroShown: false, // whether the intro screen has been passed
+    knightUnits: 1,          // 1-6 parallel Knight Series units
     guidedAppliances: {},    // { applianceId: [ { variantIdx: 0, qty: 1 }, ... ] }
     guidedCustomDevices: [],  // [ { name, watts, qty } ]
     guidedRunningWatts: 0,
@@ -473,9 +476,9 @@ const USD_PRICES = {
 
 /* ---------- product data: single phase Kstar ---------- */
 const kstarSingleInverters = [
-    /* --- Night Series --- */
+    /* --- Knight Series --- */
     {
-        series: 'Night Series', kva: 3.6, voltage: 24, maxWatts: 3600,
+        series: 'Knight Series', kva: 3.6, voltage: 24, maxWatts: 3600,
         bestFor: 'Medium home (2–3 bedrooms)',
         usdPrice: 423.076923, usdLabour: 267.692308,
         price: 0, labour: 0,
@@ -496,7 +499,7 @@ const kstarSingleInverters = [
         }
     },
     {
-        series: 'Night Series', kva: 3.6, voltage: 48, maxWatts: 3600,
+        series: 'Knight Series', kva: 3.6, voltage: 48, maxWatts: 3600,
         bestFor: 'Medium-large home (3–4 bedrooms)',
         usdPrice: 484.615385, usdLabour: 267.692308,
         price: 0, labour: 0,
@@ -517,7 +520,7 @@ const kstarSingleInverters = [
         }
     },
     {
-        series: 'Night Series', kva: 6.0, voltage: 48, maxWatts: 6000,
+        series: 'Knight Series', kva: 6.0, voltage: 48, maxWatts: 6000,
         bestFor: 'Large home / Small office',
         usdPrice: 576.923077, usdLabour: 356.923077,
         price: 0, labour: 0,
@@ -976,8 +979,9 @@ function getTotal() {
 function getSinglePhaseTotal() {
     if (!state.inverter) return 0;
     var inv = state.inverter;
-    var invCost = inv.price;
-    var labCost = inv.labour;
+    var parallelUnits = state.knightUnits || 1;
+    var invCost = inv.price * parallelUnits;
+    var labCost = inv.labour * parallelUnits;
     var panCost = state.panels * getPanelPrice();
     var accCost = getSinglePhaseAccessoryCost();
 
@@ -1339,9 +1343,9 @@ function updateNeedsResult() {
     if (watts <= 450) rec = 'A <strong>Fortuner 0.7kVA</strong> or <strong>Kstar Sky 1kVA</strong> can handle this load.';
     else if (watts <= 900) rec = 'A <strong>Kstar Sky 1kVA</strong> is ideal for this load.';
     else if (watts <= 1200) rec = 'A <strong>Kstar Sky 2kVA</strong> is the sweet spot, or <strong>Fortuner 2.2kVA</strong>.';
-    else if (watts <= 1600) rec = 'Consider a <strong>Kstar Sky 2kVA</strong> or <strong>Kstar Night 3.6kVA</strong>.';
-    else if (watts <= 3600) rec = 'A <strong>Kstar Night 3.6kVA</strong> is the sweet spot for this load.';
-    else if (watts <= 6000) rec = 'You need at least a <strong>Kstar Night 6.0kVA</strong>.';
+    else if (watts <= 1600) rec = 'Consider a <strong>Kstar Sky 2kVA</strong> or <strong>Kstar Knight 3.6kVA</strong>.';
+    else if (watts <= 3600) rec = 'A <strong>Kstar Knight 3.6kVA</strong> is the sweet spot for this load.';
+    else if (watts <= 6000) rec = 'You need at least a <strong>Kstar Knight 6.0kVA</strong>.';
     else if (watts <= 10000) rec = 'A <strong>Kstar Residential ESS 10KW</strong> is ideal for this heavy load.';
     else rec = 'Heavy usage — consider a <strong>Three Phase</strong> system for reliable high-load support.';
     if (recEl) recEl.innerHTML = rec;
@@ -1428,7 +1432,7 @@ function renderSinglePhaseInverters() {
             var hdr = document.createElement('div');
             hdr.className = 'series-header';
             var seriesDesc = '';
-            if (currentSeries === 'Night Series') seriesDesc = 'High-efficiency hybrid inverters';
+            if (currentSeries === 'Knight Series') seriesDesc = 'High-efficiency hybrid inverters — parallelable up to 6 units';
             else if (currentSeries === 'Sky Series') seriesDesc = 'Compact & affordable';
             else if (currentSeries === 'Residential ESS') seriesDesc = 'Premium energy storage system';
             hdr.innerHTML = '<h3>' + currentSeries + '</h3><p>' + seriesDesc + '</p>';
@@ -1476,7 +1480,10 @@ function renderSinglePhaseInverters() {
             '</div>';
         el.addEventListener('click', function(e) {
             if (outOfStock) return;
-            if (!e.target.closest('a') && !e.target.closest('.compat-btn')) selectInverter(inv);
+            if (!e.target.closest('a') && !e.target.closest('.compat-btn')) {
+                if (inv.series === 'Knight Series') showKnightUnitsModal(inv, state.company, 'custom', state.knightUnits || 1, 1);
+                else selectInverter(inv);
+            }
         });
         wrap.appendChild(el);
     });
@@ -1646,19 +1653,21 @@ function getBatteryCompat(bat) {
             if (inv.kva === 1.0) return { count: 1, compatible: true, reason: '1 unit for 12V system' };
             if (inv.kva === 2.0) return { count: 2, compatible: true, reason: '2 units in series for 24V system' };
         }
-        // Night Series
-        if (inv.series === 'Night Series') {
+        // Knight Series
+        if (inv.series === 'Knight Series') {
+            var n = state.knightUnits || 1;
+            var nStr = n > 1 ? n + '× ' : '';
             if (inv.kva === 3.6 && inv.voltage === 24) {
                 if (bat.type === 'lithium') return { count: 0, compatible: false, reason: 'Not compatible — 24V inverter doesn\'t support lithium' };
-                return { count: 2, compatible: true, reason: '2 units in series for 24V system' };
+                return { count: 2 * n, compatible: true, reason: nStr + '2 units in series for 24V system' };
             }
             if (inv.kva === 3.6 && inv.voltage === 48) {
-                if (bat.type === 'lithium') return { count: 1, compatible: true, reason: '51.2V lithium matches your 48V system' };
-                return { count: 4, compatible: true, reason: '4 units in series for 48V system' };
+                if (bat.type === 'lithium') return { count: 1 * n, compatible: true, reason: nStr + '51.2V lithium matches your 48V system' };
+                return { count: 4 * n, compatible: true, reason: nStr + '4 units in series for 48V system' };
             }
             if (inv.kva === 6.0 && inv.voltage === 48) {
-                if (bat.type === 'lithium') return { count: 2, compatible: true, reason: '2 lithium units for extended capacity' };
-                return { count: 4, compatible: true, reason: '4 units in series for 48V system' };
+                if (bat.type === 'lithium') return { count: 2 * n, compatible: true, reason: nStr + '2 lithium units for extended capacity' };
+                return { count: 4 * n, compatible: true, reason: nStr + '4 units in series for 48V system' };
             }
         }
         // ESS handled separately (no battery step)
@@ -1714,6 +1723,7 @@ function selectCompany(name) {
 function selectInverter(inv) {
     if (inv.outOfStock) { toast(inv.kva + 'kVA is currently out of stock', 'warning'); return; }
     state.inverter = inv;
+    if (inv.series !== 'Knight Series') state.knightUnits = 1;
     state.battery = null;
     state.compareList = [];
     calcPanels();
@@ -1790,7 +1800,8 @@ function calcPanels() {
             state.panels = 20;
             state.panelType = PANEL_600W;
         } else {
-            state.panels = (state.inverter.kva === 6.0 && state.inverter.voltage === 48) ? 10 : 6;
+            var basePanels = (state.inverter.kva === 6.0 && state.inverter.voltage === 48) ? 10 : 6;
+            state.panels = basePanels * (state.inverter.series === 'Knight Series' ? (state.knightUnits || 1) : 1);
             state.panelType = PANEL_600W;
         }
     }
@@ -1852,7 +1863,87 @@ function getVisibleCategories() {
     });
 }
 
+function renderBuilderIntro() {
+    var headerEl = $('#ab-wizard-header');
+    var progEl = $('#ab-cat-progress');
+    var container = $('#appliance-builder');
+    var navEl = $('#ab-wizard-nav');
+    if (!container) return;
+
+    if (headerEl) {
+        headerEl.innerHTML =
+            '<div class="ab-wiz-head">' +
+                '<div class="ab-wiz-greeting">' +
+                    '<div class="ab-wiz-icon"><i data-lucide="settings-2"></i></div>' +
+                    '<h2>Let\'s set up your system</h2>' +
+                    '<p>Tell us where this solar system will be installed.</p>' +
+                '</div>' +
+            '</div>';
+    }
+    if (progEl) progEl.innerHTML = '';
+
+    var sv = state.guidedSpace || 'home';
+    var pv = state.guidedPhase || '';
+    var showPhase = (sv === 'home' || sv === 'office');
+
+    container.innerHTML =
+        '<div class="ab-intro-wrap">' +
+            '<div class="ab-intro-section">' +
+                '<h3 class="ab-intro-label"><i data-lucide="map-pin"></i> What is this system for?</h3>' +
+                '<div class="ab-intro-options" id="intro-space-opts">' +
+                    '<button class="ab-intro-btn' + (sv === 'home' ? ' active' : '') + '" data-val="home"><i data-lucide="house"></i> Home</button>' +
+                    '<button class="ab-intro-btn' + (sv === 'office' ? ' active' : '') + '" data-val="office"><i data-lucide="briefcase"></i> Office</button>' +
+                    '<button class="ab-intro-btn' + (sv === 'commercial' ? ' active' : '') + '" data-val="commercial"><i data-lucide="building-2"></i> Commercial</button>' +
+                '</div>' +
+            '</div>' +
+            '<div class="ab-intro-section" id="ab-intro-phase-section"' + (showPhase ? '' : ' style="display:none"') + '>' +
+                '<h3 class="ab-intro-label"><i data-lucide="zap"></i> What type of electrical connection do you have?</h3>' +
+                '<div class="ab-intro-options" id="intro-phase-opts">' +
+                    '<button class="ab-intro-btn' + (pv === 'single' ? ' active' : '') + '" data-val="single"><i data-lucide="minus"></i> Single Phase</button>' +
+                    '<button class="ab-intro-btn' + (pv === 'three' ? ' active' : '') + '" data-val="three"><i data-lucide="triangle"></i> Three Phase</button>' +
+                '</div>' +
+                '<p class="ab-intro-hint">Not sure? Most homes and small offices are single phase.</p>' +
+            '</div>' +
+        '</div>';
+
+    container.querySelectorAll('#intro-space-opts .ab-intro-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            state.guidedSpace = btn.dataset.val;
+            if (state.guidedSpace === 'commercial') state.guidedPhase = '';
+            renderBuilderIntro();
+        });
+    });
+    container.querySelectorAll('#intro-phase-opts .ab-intro-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            state.guidedPhase = btn.dataset.val;
+            renderBuilderIntro();
+        });
+    });
+
+    if (navEl) {
+        var canContinue = (state.guidedSpace === 'commercial') || (state.guidedPhase !== '');
+        navEl.innerHTML =
+            '<div class="ab-nav-row">' +
+                '<button class="ab-nav-btn ab-nav-back" id="ab-intro-back-landing"><i data-lucide="arrow-left"></i> Back to Start</button>' +
+                '<div class="ab-nav-right">' +
+                    '<button class="ab-nav-btn ab-nav-next" id="ab-intro-continue"' + (canContinue ? '' : ' disabled') + '>Select Appliances <i data-lucide="arrow-right"></i></button>' +
+                '</div>' +
+            '</div>';
+        var backBtn = navEl.querySelector('#ab-intro-back-landing');
+        if (backBtn) backBtn.addEventListener('click', function() { goTo('landing'); });
+        var continueBtn = navEl.querySelector('#ab-intro-continue');
+        if (continueBtn) continueBtn.addEventListener('click', function() {
+            if (!canContinue) return;
+            state.guidedIntroShown = true;
+            state.guidedCatIdx = 0;
+            renderApplianceBuilder();
+        });
+    }
+    refreshIcons();
+}
+
 function renderApplianceBuilder() {
+    if (!state.guidedIntroShown) { renderBuilderIntro(); return; }
     var cats = getVisibleCategories();
     if (state.guidedCatIdx >= cats.length) state.guidedCatIdx = cats.length - 1;
     if (state.guidedCatIdx < 0) state.guidedCatIdx = 0;
@@ -1864,28 +1955,24 @@ function renderApplianceBuilder() {
     // ── Header ──
     var headerEl = $('#ab-wizard-header');
     if (headerEl) {
-        var spaceButtons =
-            '<div class="guided-space-toggle">' +
-                '<button class="space-btn' + (state.guidedSpace === 'home' ? ' active' : '') + '" data-space="home"><i data-lucide="house"></i> Home</button>' +
-                '<button class="space-btn' + (state.guidedSpace === 'office' ? ' active' : '') + '" data-space="office"><i data-lucide="briefcase"></i> Office</button>' +
-                '<button class="space-btn' + (state.guidedSpace === 'commercial' ? ' active' : '') + '" data-space="commercial"><i data-lucide="building-2"></i> Commercial</button>' +
-            '</div>';
+        var spaceLabel = state.guidedSpace.charAt(0).toUpperCase() + state.guidedSpace.slice(1);
+        var phaseLabel = state.guidedPhase === 'single' ? ' · Single Phase' : (state.guidedPhase === 'three' ? ' · Three Phase' : '');
+        var setupChip = isFirst ?
+            '<div class="ab-setup-chip"><i data-lucide="settings-2"></i><span>' + spaceLabel + phaseLabel + '</span>' +
+            '<button class="ab-setup-edit" id="ab-setup-edit-btn" type="button">Edit</button></div>' : '';
         headerEl.innerHTML =
             '<div class="ab-wiz-head">' +
-                (isFirst ? spaceButtons : '') +
+                setupChip +
                 '<div class="ab-wiz-greeting">' +
                     '<div class="ab-wiz-icon"><i data-lucide="' + cat.icon + '"></i></div>' +
                     '<h2>' + cat.greeting + '</h2>' +
                     '<p>' + cat.subtext + '</p>' +
                 '</div>' +
             '</div>';
-        // Re-attach space button listeners
-        headerEl.querySelectorAll('.space-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                state.guidedSpace = btn.dataset.space;
-                state.guidedCatIdx = 0;
-                renderApplianceBuilder();
-            });
+        var editBtn = headerEl.querySelector('#ab-setup-edit-btn');
+        if (editBtn) editBtn.addEventListener('click', function() {
+            state.guidedIntroShown = false;
+            renderBuilderIntro();
         });
     }
 
@@ -2083,7 +2170,10 @@ function renderApplianceBuilder() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
         var backLanding = navEl.querySelector('#ab-nav-back-landing');
-        if (backLanding) backLanding.addEventListener('click', function() { goTo('landing'); });
+        if (backLanding) backLanding.addEventListener('click', function() {
+            state.guidedIntroShown = false;
+            renderBuilderIntro();
+        });
         var finishBtn = navEl.querySelector('#ab-nav-finish');
         if (finishBtn) finishBtn.addEventListener('click', function() { showApplianceReview(); });
     }
@@ -2340,7 +2430,42 @@ function renderRecommendations() {
     wrap.innerHTML = '';
 
     // Determine recommended phase
-    var recommendThreePhase = watts > 10000 || peakWatts > 15000;
+    var userPhaseSet = state.guidedPhase !== '' && state.guidedSpace !== 'commercial';
+
+    // Single phase but > 5800W → recommend Knight Series parallel
+    if (userPhaseSet && state.guidedPhase === 'single' && watts > 5800) {
+        state.phase = 'single';
+        if (phaseInfo) phaseInfo.innerHTML =
+            '<div class="rec-phase-badge overload">' +
+                '<i data-lucide="alert-triangle"></i>' +
+                '<div><strong>Parallel System Recommended</strong>' +
+                '<p>Your ' + fmt(watts) + 'W load exceeds single-phase limits. Select multiple Kstar Knight 6kVA units (up to 6) — stays on single phase, no supply upgrade needed.</p></div>' +
+            '</div>';
+        var knight6k = kstarSingleInverters.find(function(inv) {
+            return inv.series === 'Knight Series' && inv.kva === 6.0;
+        });
+        if (knight6k) {
+            var selN = state.inverter && state.inverter.kva === knight6k.kva && state.inverter.series === knight6k.series && state.knightUnits > 1;
+            var elN = document.createElement('div');
+            elN.className = 'product-card' + (selN ? ' selected' : '');
+            elN.innerHTML =
+                '<span class="card-badge badge-rec"><i data-lucide="zap"></i> Recommended Parallel Setup</span>' +
+                '<div class="card-check"><i data-lucide="check"></i></div>' +
+                '<div class="card-thumb"><img src="' + knight6k.img + '" alt="Inverter" loading="lazy"></div>' +
+                '<div class="card-body">' +
+                    '<span class="card-title">Kstar Knight Series 6kVA (48V)</span>' +
+                    '<span class="card-subtitle">Select quantity (2–6 units) — stays on single phase</span>' +
+                    '<span class="card-price">' + fmt(knight6k.price) + ' Ksh <small>per unit</small></span>' +
+                    '<span class="card-meta">Efficiency: ' + knight6k.details.efficiency + ' \u00b7 6,000W per unit \u00b7 Parallelable up to 6</span>' +
+                '</div>';
+            elN.addEventListener('click', function() { showKnightUnitsModal(knight6k, 'Kstar', 'guided', 2, 2); });
+            wrap.appendChild(elN);
+        }
+        refreshIcons();
+        return;
+    }
+
+    var recommendThreePhase = userPhaseSet ? (state.guidedPhase === 'three') : (watts > 10000 || peakWatts > 15000);
 
     if (recommendThreePhase) {
         state.phase = 'three';
@@ -2470,15 +2595,91 @@ function renderRecommendations() {
                     (inv.essBattery ? '<div class="ess-battery-banner"><i data-lucide="battery-charging"></i> Includes ' + inv.essBattery.count + '× ' + inv.essBattery.name + ' (' + inv.essBattery.totalCapacity + ') — no battery selection needed</div>' : '') +
                     matchBar +
                 '</div>';
-            el.addEventListener('click', function() { guidedSelectInverter(inv, brand); });
+            el.addEventListener('click', function() {
+                if (inv.series === 'Knight Series') showKnightUnitsModal(inv, brand, 'guided', state.knightUnits || 1, 1);
+                else guidedSelectInverter(inv, brand);
+            });
             wrap.appendChild(el);
         });
     }
 }
 
+function showKnightUnitsModal(inv, brand, flow, defaultUnits, minUnits) {
+    // Remove any existing knight modal
+    var existing = document.getElementById('knight-modal-overlay');
+    if (existing) existing.remove();
+
+    var current = defaultUnits || 1;
+    var min = minUnits || 1;
+    var max = 6;
+
+    var overlay = document.createElement('div');
+    overlay.id = 'knight-modal-overlay';
+    overlay.className = 'knight-modal-overlay';
+
+    function render() {
+        var totalKW = (inv.kva * current).toFixed(1);
+        var totalPrice = fmt(inv.price * current);
+        var pips = '';
+        for (var p = 1; p <= max; p++) {
+            var active = p <= current;
+            var allowed = p >= min;
+            pips += '<button class="kq-pip' + (active ? ' active' : '') + (p === current ? ' current' : '') + '"' +
+                    ' data-n="' + p + '"' + (!allowed ? ' disabled' : '') + '>' + p + '</button>';
+        }
+        overlay.innerHTML =
+            '<div class="knight-modal">' +
+                '<button class="km-close" id="kq-cancel"><i data-lucide="x"></i></button>' +
+                '<div class="km-header">' +
+                    '<div class="km-thumb"><img src="' + inv.img + '" alt="Inverter"></div>' +
+                    '<div class="km-title">' +
+                        '<span class="km-brand">Kstar Knight Series</span>' +
+                        '<span class="km-model">' + inv.kva + 'kVA / ' + inv.voltage + 'V</span>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="km-divider"></div>' +
+                '<label class="km-label">Select number of units</label>' +
+                '<div class="kq-pips">' + pips + '</div>' +
+                '<div class="km-stats">' +
+                    '<div class="km-stat">' +
+                        '<span class="km-stat-val">' + totalKW + 'kW</span>' +
+                        '<span class="km-stat-lbl">Total capacity</span>' +
+                    '</div>' +
+                    '<div class="km-stat">' +
+                        '<span class="km-stat-val">' + totalPrice + '</span>' +
+                        '<span class="km-stat-lbl">Ksh (inverters)</span>' +
+                    '</div>' +
+                '</div>' +
+                '<button class="km-confirm" id="kq-confirm">' +
+                    '<i data-lucide="check"></i> Confirm ' + current + (current > 1 ? ' units' : ' unit') +
+                '</button>' +
+            '</div>';
+        // Bind pip buttons
+        overlay.querySelectorAll('.kq-pip').forEach(function(btn) {
+            btn.onclick = function() {
+                var n = parseInt(btn.dataset.n);
+                if (n >= min && n <= max) { current = n; render(); }
+            };
+        });
+        overlay.querySelector('#kq-confirm').onclick = function() {
+            state.knightUnits = current;
+            overlay.remove();
+            if (flow === 'guided') guidedSelectInverter(inv, brand);
+            else selectInverter(inv);
+        };
+        overlay.querySelector('#kq-cancel').onclick = function() { overlay.remove(); };
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    document.body.appendChild(overlay);
+    render();
+    overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+}
+
 function guidedSelectInverter(inv, brand) {
     state.company = brand;
     state.inverter = inv;
+    if (inv.series !== 'Knight Series') state.knightUnits = 1;
     state.battery = null;
     state.compareList = [];
     calcPanels();
@@ -2488,10 +2689,17 @@ function guidedSelectInverter(inv, brand) {
         setTimeout(function() { goTo('summary'); }, 250);
     } else {
         var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
-        toast(inv.kva + 'kVA' + w + ' selected — now pick your battery', 'success');
+        var unitsPrefix = (state.knightUnits || 1) > 1 ? (state.knightUnits + '× ') : '';
+        toast(unitsPrefix + inv.kva + 'kVA' + w + ' selected — now pick your battery', 'success');
         setTimeout(function() { goTo('guided-battery'); }, 250);
     }
     saveState();
+}
+
+function guidedSelectParallelInverter(inv, brand) {
+    // Legacy shim — handled via showKnightUnitsModal
+    if (state.knightUnits < 2) state.knightUnits = 2;
+    guidedSelectInverter(inv, brand);
 }
 
 function guidedSelectPackage(pkg, brand) {
@@ -2644,7 +2852,8 @@ function renderSelectionOverview() {
     } else {
         var inv = state.inverter;
         var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
-        var invLabel = inv.series ? inv.series + ' ' + inv.kva + 'kVA' + w : inv.kva + 'kVA' + w;
+        var parallelPrefix = (state.knightUnits > 1) ? state.knightUnits + '× ' : '';
+        var invLabel = parallelPrefix + (inv.series ? inv.series + ' ' + inv.kva + 'kVA' + w : inv.kva + 'kVA' + w);
         html += '<div class="sel-card">' +
             '<div class="sel-card-icon"><i data-lucide="zap"></i></div>' +
             '<div class="sel-card-info"><span class="sel-card-label">Inverter</span><span class="sel-card-val">' + invLabel + ' – ' + inv.voltage + 'V</span></div>' +
@@ -2755,9 +2964,11 @@ function renderCostBreakdown() {
 function renderSinglePhaseCostBreakdown(summaryEl, totalEl, noSolarEl) {
     var inv = state.inverter;
     var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
-    var invLabel = (inv.series ? inv.series + ' ' : '') + inv.kva + 'kVA' + w + ' – ' + inv.voltage + 'V';
-    var invCost = inv.price;
-    var labCost = inv.labour;
+    var parallelUnits = state.knightUnits || 1;
+    var parallelPrefix = parallelUnits > 1 ? parallelUnits + '× ' : '';
+    var invLabel = parallelPrefix + (inv.series ? inv.series + ' ' : '') + inv.kva + 'kVA' + w + ' – ' + inv.voltage + 'V';
+    var invCost = inv.price * parallelUnits;
+    var labCost = inv.labour * parallelUnits;
     var panCost = state.panels * getPanelPrice();
     var accCost = getSinglePhaseAccessoryCost();
     var batCost, batLabel;
@@ -3426,7 +3637,8 @@ function resetAll() {
     state.battery = null; state.panels = 0; state.panelType = null;
     state.compareList = []; state.atessMasterCount = 3;
     state.needs = {}; state.totalWatts = 0;
-    state.guidedSpace = 'home'; state.guidedAppliances = {};
+    state.guidedSpace = 'home'; state.guidedPhase = ''; state.guidedIntroShown = false; state.knightUnits = 1;
+    state.guidedAppliances = {};
     state.guidedCustomDevices = [];
     state.guidedRunningWatts = 0; state.guidedPeakWatts = 0;
     state.guidedCatIdx = 0;
@@ -3481,6 +3693,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (modeGuided) modeGuided.addEventListener('click', function() {
         state.mode = 'guided';
         state.guidedSpace = 'home';
+        state.guidedPhase = '';
+        state.guidedIntroShown = false;
+        state.knightUnits = 1;
         state.guidedAppliances = {};
         saveState();
         goTo('appliances');
