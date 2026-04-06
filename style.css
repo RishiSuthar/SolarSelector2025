@@ -41,9 +41,26 @@
     --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
     --dur: .4s;
     --error: hsl(0 84% 64%);
+    /* Aliases used in dynamic/component styles */
+    --bg: var(--bg-2);
+    --text: var(--text-0);
+    --border: var(--glass-border);
+    --card: var(--bg-1);
+    --muted: var(--text-2);
+    color-scheme: dark;
 }
 
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+/* Ensure all dropdowns render correctly on Windows (dark theme) */
+select{
+    background:var(--bg-2);color:var(--text-0);
+    border:1px solid var(--glass-border);
+    color-scheme:dark;
+}
+select option{
+    background:var(--bg-2);color:var(--text-0);
+}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 
 body{
