@@ -3169,20 +3169,16 @@ function calculateSavings() {
     // Monthly electricity consumption implied by their bill
     var monthlyConsumptionKwh = monthlyBill / ratePerKwh;
 
-    // Monthly solar generation from panels
+    // Daily solar generation: totalKW × peakSunHours × efficiency
     var pw = state.panelType ? state.panelType.watts : 600;
-    var sunHoursPerDay = 4.1;
-    var systemEfficiency = 0.85; // accounts for inverter losses, dust, wiring
-    var daysPerMonth = 30.4;
-    var monthlyGenKwh = (state.panels * pw * sunHoursPerDay * daysPerMonth * systemEfficiency) / 1000;
+    var totalKw = (state.panels * pw) / 1000;
+    var sunHoursPerDay = 5;       // Kenya equatorial average peak sun hours
+    var systemEfficiency = 0.80;  // inverter + wiring + dust + temp losses
+    var dailyGenKwh = totalKw * sunHoursPerDay * systemEfficiency;
+    var monthlyGenKwh = dailyGenKwh * 30.4;
 
-    // Self-consumption ratio: not all solar generation is used directly;
-    // some is exported or wasted. Typical residential self-consumption ~80-90%.
-    var selfConsumptionRatio = 0.85;
-    var usableSolarKwh = monthlyGenKwh * selfConsumptionRatio;
-
-    // Monthly saving = value of solar energy actually consumed (can't save more than the bill)
-    var kwhOffset = Math.min(usableSolarKwh, monthlyConsumptionKwh);
+    // Offset: can't save more kWh than you consume
+    var kwhOffset = Math.min(monthlyGenKwh, monthlyConsumptionKwh);
     var monthlySaving = kwhOffset * ratePerKwh;
 
     var yearlySaving = monthlySaving * 12;
@@ -3195,7 +3191,7 @@ function calculateSavings() {
     var tenYearSaving = 0;
     for (var yr = 0; yr < 10; yr++) {
         var degradation = Math.pow(0.98, yr);
-        var yrKwhOffset = Math.min(usableSolarKwh * degradation * 12, monthlyConsumptionKwh * 12);
+        var yrKwhOffset = Math.min(monthlyGenKwh * degradation * 12, monthlyConsumptionKwh * 12);
         tenYearSaving += yrKwhOffset * ratePerKwh;
     }
     var tenYearNet = tenYearSaving - totalCost;
