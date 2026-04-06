@@ -1810,6 +1810,34 @@ a:hover{color:var(--accent)}
 .rec-phase-badge.overload{background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.25);}
 .rec-phase-badge.overload i,.rec-phase-badge.overload strong{color:#f97316;}
 
+/* ===== What It Powers (expandable on inverter cards) ===== */
+.powers-wrap{
+    margin-top:10px;border-top:1px solid var(--glass-border);
+    padding-top:8px;
+}
+.powers-toggle{
+    display:inline-flex;align-items:center;gap:5px;
+    background:none;border:1px solid rgba(56,189,248,.2);border-radius:var(--radius-sm);
+    color:var(--accent-soft);font-size:.74rem;font-weight:600;
+    cursor:pointer;padding:5px 10px;font-family:inherit;
+    transition:background .2s,border-color .2s;
+}
+.powers-toggle:hover{background:rgba(56,189,248,.06);border-color:rgba(56,189,248,.35);}
+.powers-toggle i{width:13px;height:13px;}
+.powers-chev{transition:transform .25s var(--ease-out);}
+.powers-wrap.open .powers-chev{transform:rotate(180deg);}
+.powers-list{
+    display:none;flex-wrap:wrap;gap:5px;margin-top:8px;
+}
+.powers-wrap.open .powers-list{display:flex;}
+.powers-pill{
+    display:inline-flex;align-items:center;gap:4px;
+    padding:4px 9px;border-radius:20px;
+    background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.15);
+    font-size:.7rem;color:var(--text-1);white-space:nowrap;
+}
+.powers-pill strong{color:var(--accent);font-weight:700;font-size:.72rem;}
+
 /* ===== Knight Series Units Modal ===== */
 .knight-modal-overlay{
     position:fixed;inset:0;z-index:9999;

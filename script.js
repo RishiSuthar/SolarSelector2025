@@ -1409,6 +1409,32 @@ function renderInverters() {
     renderSinglePhaseInverters();
 }
 
+/* ---------- "What it powers" helper ---------- */
+function buildPowersHtml(invOrPkg) {
+    var apps = invOrPkg.appliances;
+    if (!apps) {
+        // Auto-generate for three-phase from wattage
+        var w = invOrPkg.watts || 0;
+        apps = [];
+        if (w >= 500) apps.push({ name: 'LED Lights', count: Math.min(Math.floor(w / 50), 100) });
+        if (w >= 1000) apps.push({ name: 'Fridges', count: Math.min(Math.floor(w / 300), 10) });
+        if (w >= 2000) apps.push({ name: 'TVs', count: Math.min(Math.floor(w / 200), 15) });
+        if (w >= 1500) apps.push({ name: 'Laptops', count: Math.min(Math.floor(w / 80), 20) });
+        if (w >= 3000) apps.push({ name: 'Microwaves', count: Math.min(Math.floor(w / 1200), 6) });
+        if (w >= 3000) apps.push({ name: 'Washing Machines', count: Math.min(Math.floor(w / 500), 8) });
+        if (w >= 5000) apps.push({ name: 'Water Pumps', count: Math.min(Math.floor(w / 1000), 10) });
+        if (w >= 5000) apps.push({ name: 'AC Units', count: Math.min(Math.floor(w / 1500), 10) });
+        if (w >= 10000) apps.push({ name: 'Welding Machines', count: Math.min(Math.floor(w / 3000), 5) });
+        if (w >= 20000) apps.push({ name: 'Industrial Motors', count: Math.min(Math.floor(w / 5000), 6) });
+        if (w >= 500) apps.push({ name: 'Phone Charging', count: Math.min(Math.floor(w / 25), 30) });
+    }
+    if (!apps || !apps.length) return '';
+    var pills = apps.map(function(a) {
+        return '<span class="powers-pill"><strong>' + a.count + '×</strong> ' + a.name + '</span>';
+    }).join('');
+    return '<div class="powers-wrap"><button class="powers-toggle" onclick="this.parentElement.classList.toggle(\'open\');event.stopPropagation();"><i data-lucide="zap"></i> What it powers <i data-lucide="chevron-down" class="powers-chev"></i></button><div class="powers-list">' + pills + '</div></div>';
+}
+
 function renderSinglePhaseInverters() {
     var inverters = state.company === 'Kstar' ? kstarSingleInverters : fortunerInverters;
     var wrap = $('#inverter-options');
@@ -1472,6 +1498,7 @@ function renderSinglePhaseInverters() {
                 '<span class="card-meta">Efficiency: ' + inv.details.efficiency + ' · Max: ' + fmt(inv.maxWatts) + 'W</span>' +
                 (inv.essBattery ? '<div class="ess-battery-banner"><i data-lucide="battery-charging"></i> Includes ' + inv.essBattery.count + '× ' + inv.essBattery.name + ' (' + inv.essBattery.totalCapacity + ') — no battery selection needed</div>' : '') +
                 matchBar +
+                buildPowersHtml(inv) +
                 '<div class="card-actions">' +
                     '<a href="' + inv.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i data-lucide="external-link"></i> Specs</a>' +
                     (inv.essBattery ? '<a href="' + inv.essBattery.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i data-lucide="battery-charging"></i> Battery Specs</a>' : '') +
@@ -1538,6 +1565,7 @@ function renderThreePhasePackages() {
                 '<span class="card-meta"><i data-lucide="sun"></i> ' + pkg.panelCount + '× 600W Solar Panels</span>' +
                 batInfo +
                 features +
+                buildPowersHtml(pkg) +
                 '<div class="card-actions">' +
                     '<a href="' + pkg.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i data-lucide="external-link"></i> Specs</a>' +
                     (pkg.batteries && pkg.batteries.specsLink ? '<a href="' + pkg.batteries.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i data-lucide="battery-charging"></i> Battery Specs</a>' : '') +
@@ -2594,6 +2622,7 @@ function renderRecommendations() {
                     '<span class="card-meta">Efficiency: ' + inv.details.efficiency + ' · Max: ' + fmt(inv.maxWatts) + 'W</span>' +
                     (inv.essBattery ? '<div class="ess-battery-banner"><i data-lucide="battery-charging"></i> Includes ' + inv.essBattery.count + '× ' + inv.essBattery.name + ' (' + inv.essBattery.totalCapacity + ') — no battery selection needed</div>' : '') +
                     matchBar +
+                    buildPowersHtml(inv) +
                 '</div>';
             el.addEventListener('click', function() {
                 if (inv.series === 'Knight Series') showKnightUnitsModal(inv, brand, 'guided', state.knightUnits || 1, 1);
