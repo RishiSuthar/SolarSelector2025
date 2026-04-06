@@ -1898,75 +1898,84 @@ function renderBuilderIntro() {
     var navEl = $('#ab-wizard-nav');
     if (!container) return;
 
-    if (headerEl) {
-        headerEl.innerHTML =
-            '<div class="ab-wiz-head">' +
-                '<div class="ab-wiz-greeting">' +
-                    '<div class="ab-wiz-icon"><i data-lucide="settings-2"></i></div>' +
-                    '<h2>Let\'s set up your system</h2>' +
-                    '<p>Tell us where this solar system will be installed.</p>' +
-                '</div>' +
-            '</div>';
-    }
+    if (headerEl) headerEl.innerHTML = '';
     if (progEl) progEl.innerHTML = '';
 
     var sv = state.guidedSpace || 'home';
     var pv = state.guidedPhase || '';
     var showPhase = (sv === 'home' || sv === 'office');
+    var canContinue = (sv === 'commercial') || (pv !== '');
 
-    container.innerHTML =
-        '<div class="ab-intro-wrap">' +
-            '<div class="ab-intro-section">' +
-                '<h3 class="ab-intro-label"><i data-lucide="map-pin"></i> What is this system for?</h3>' +
-                '<div class="ab-intro-options" id="intro-space-opts">' +
-                    '<button class="ab-intro-btn' + (sv === 'home' ? ' active' : '') + '" data-val="home"><i data-lucide="house"></i> Home</button>' +
-                    '<button class="ab-intro-btn' + (sv === 'office' ? ' active' : '') + '" data-val="office"><i data-lucide="briefcase"></i> Office</button>' +
-                    '<button class="ab-intro-btn' + (sv === 'commercial' ? ' active' : '') + '" data-val="commercial"><i data-lucide="building-2"></i> Commercial</button>' +
-                '</div>' +
+    var spaceCards = [
+        { val: 'home', icon: 'house', label: 'Home', desc: 'Residential 1–6 bedrooms' },
+        { val: 'office', icon: 'briefcase', label: 'Office', desc: 'Small to mid-size workspace' },
+        { val: 'commercial', icon: 'building-2', label: 'Commercial', desc: 'Shops, factories & large sites' }
+    ];
+
+    var spaceHtml = spaceCards.map(function(s) {
+        var active = sv === s.val;
+        return '<button class="intro-card' + (active ? ' active' : '') + '" data-val="' + s.val + '">' +
+            '<div class="intro-card-icon"><i data-lucide="' + s.icon + '"></i></div>' +
+            '<span class="intro-card-label">' + s.label + '</span>' +
+            '<span class="intro-card-desc">' + s.desc + '</span>' +
+            (active ? '<span class="intro-card-check"><i data-lucide="check"></i></span>' : '') +
+        '</button>';
+    }).join('');
+
+    var phaseHtml =
+        '<div class="intro-phase-row" id="ab-intro-phase-section"' + (showPhase ? '' : ' style="display:none"') + '>' +
+            '<div class="intro-phase-label"><i data-lucide="zap"></i> Electrical connection</div>' +
+            '<div class="intro-phase-opts" id="intro-phase-opts">' +
+                '<button class="intro-phase-btn' + (pv === 'single' ? ' active' : '') + '" data-val="single"><i data-lucide="minus"></i> Single Phase</button>' +
+                '<button class="intro-phase-btn' + (pv === 'three' ? ' active' : '') + '" data-val="three"><i data-lucide="triangle"></i> Three Phase</button>' +
             '</div>' +
-            '<div class="ab-intro-section" id="ab-intro-phase-section"' + (showPhase ? '' : ' style="display:none"') + '>' +
-                '<h3 class="ab-intro-label"><i data-lucide="zap"></i> What type of electrical connection do you have?</h3>' +
-                '<div class="ab-intro-options" id="intro-phase-opts">' +
-                    '<button class="ab-intro-btn' + (pv === 'single' ? ' active' : '') + '" data-val="single"><i data-lucide="minus"></i> Single Phase</button>' +
-                    '<button class="ab-intro-btn' + (pv === 'three' ? ' active' : '') + '" data-val="three"><i data-lucide="triangle"></i> Three Phase</button>' +
-                '</div>' +
-                '<p class="ab-intro-hint">Not sure? Most homes and small offices are single phase.</p>' +
-            '</div>' +
+            '<p class="intro-phase-hint">Not sure? Most homes and small offices are single phase.</p>' +
         '</div>';
 
-    container.querySelectorAll('#intro-space-opts .ab-intro-btn').forEach(function(btn) {
+    container.innerHTML =
+        '<div class="intro-screen">' +
+            '<div class="intro-hero">' +
+                '<div class="intro-hero-icon"><i data-lucide="sun"></i></div>' +
+                '<h2 class="intro-hero-title">Build Your Solar System</h2>' +
+                '<p class="intro-hero-sub">We\'ll help you find the perfect setup. Start by telling us about your space.</p>' +
+            '</div>' +
+            '<div class="intro-step">' +
+                '<span class="intro-step-num">1</span>' +
+                '<span class="intro-step-text">Where will this system be installed?</span>' +
+            '</div>' +
+            '<div class="intro-cards" id="intro-space-opts">' + spaceHtml + '</div>' +
+            phaseHtml +
+            '<button class="intro-continue-btn" id="ab-intro-continue"' + (canContinue ? '' : ' disabled') + '>' +
+                'Continue to Appliances <i data-lucide="arrow-right"></i>' +
+            '</button>' +
+            '<button class="intro-back-link" id="ab-intro-back-landing"><i data-lucide="arrow-left"></i> Back to start</button>' +
+        '</div>';
+
+    container.querySelectorAll('#intro-space-opts .intro-card').forEach(function(btn) {
         btn.addEventListener('click', function() {
             state.guidedSpace = btn.dataset.val;
             if (state.guidedSpace === 'commercial') state.guidedPhase = '';
             renderBuilderIntro();
         });
     });
-    container.querySelectorAll('#intro-phase-opts .ab-intro-btn').forEach(function(btn) {
+    container.querySelectorAll('#intro-phase-opts .intro-phase-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
             state.guidedPhase = btn.dataset.val;
             renderBuilderIntro();
         });
     });
 
-    if (navEl) {
-        var canContinue = (state.guidedSpace === 'commercial') || (state.guidedPhase !== '');
-        navEl.innerHTML =
-            '<div class="ab-nav-row">' +
-                '<button class="ab-nav-btn ab-nav-back" id="ab-intro-back-landing"><i data-lucide="arrow-left"></i> Back to Start</button>' +
-                '<div class="ab-nav-right">' +
-                    '<button class="ab-nav-btn ab-nav-next" id="ab-intro-continue"' + (canContinue ? '' : ' disabled') + '>Select Appliances <i data-lucide="arrow-right"></i></button>' +
-                '</div>' +
-            '</div>';
-        var backBtn = navEl.querySelector('#ab-intro-back-landing');
-        if (backBtn) backBtn.addEventListener('click', function() { goTo('landing'); });
-        var continueBtn = navEl.querySelector('#ab-intro-continue');
-        if (continueBtn) continueBtn.addEventListener('click', function() {
-            if (!canContinue) return;
-            state.guidedIntroShown = true;
-            state.guidedCatIdx = 0;
-            renderApplianceBuilder();
-        });
-    }
+    var backBtn = container.querySelector('#ab-intro-back-landing');
+    if (backBtn) backBtn.addEventListener('click', function() { goTo('landing'); });
+    var continueBtn = container.querySelector('#ab-intro-continue');
+    if (continueBtn) continueBtn.addEventListener('click', function() {
+        if (!canContinue) return;
+        state.guidedIntroShown = true;
+        state.guidedCatIdx = 0;
+        renderApplianceBuilder();
+    });
+
+    if (navEl) navEl.innerHTML = '';
     refreshIcons();
 }
 
