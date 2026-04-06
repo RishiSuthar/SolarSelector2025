@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sangyug Solar | Build Your System</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 </head>
 <body>
@@ -19,8 +19,8 @@
                 <img src="images/sangyuglogo.png" alt="Sangyug" class="topbar-logo">
             </a>
             <div class="topbar-nav-links">
-                <button class="topbar-nav-btn" id="topbar-home" title="Back to Home"><i class="fas fa-house"></i> Home</button>
-                <a href="case-studies.html" class="topbar-nav-btn"><i class="fas fa-clipboard-check"></i> Case Studies</a>
+                <button class="topbar-nav-btn" id="topbar-home" title="Back to Home"><i data-lucide="house"></i> Home</button>
+                <a href="case-studies.html" class="topbar-nav-btn"><i data-lucide="clipboard-check"></i> Case Studies</a>
             </div>
             <div class="topbar-total" id="topbar-total">
                 <span class="topbar-rate" id="fx-rate-pill">USD/KES: --</span>
@@ -48,31 +48,31 @@
             <div class="mode-grid">
                 <div class="mode-card" id="mode-guided">
                     <div class="mode-icon-wrap mode-icon-guided">
-                        <i class="fas fa-hand-holding-heart"></i>
+                        <i data-lucide="heart-handshake"></i>
                     </div>
                     <h2 class="mode-title">Guide Me Through</h2>
                     <p class="mode-desc">Tell us what appliances you have, and we'll find the perfect system for you.</p>
                     <ul class="mode-features">
-                        <li><i class="fas fa-check"></i> Select your appliances & brands</li>
-                        <li><i class="fas fa-check"></i> Get smart recommendations</li>
-                        <li><i class="fas fa-check"></i> Compare options side by side</li>
-                        <li><i class="fas fa-check"></i> No technical knowledge needed</li>
+                        <li><i data-lucide="check"></i> Select your appliances & brands</li>
+                        <li><i data-lucide="check"></i> Get smart recommendations</li>
+                        <li><i data-lucide="check"></i> Compare options side by side</li>
+                        <li><i data-lucide="check"></i> No technical knowledge needed</li>
                     </ul>
-                    <span class="mode-tag"><i class="fas fa-star"></i> Recommended for first-timers</span>
+                    <span class="mode-tag"><i data-lucide="star"></i> Recommended for first-timers</span>
                 </div>
                 <div class="mode-card" id="mode-custom">
                     <div class="mode-icon-wrap mode-icon-custom">
-                        <i class="fas fa-sliders-h"></i>
+                        <i data-lucide="sliders-horizontal"></i>
                     </div>
                     <h2 class="mode-title">Full Custom Builder</h2>
                     <p class="mode-desc">Already know what you need? Jump straight into selecting your components.</p>
                     <ul class="mode-features">
-                        <li><i class="fas fa-check"></i> Pick phase, brand, inverter</li>
-                        <li><i class="fas fa-check"></i> Choose your own battery</li>
-                        <li><i class="fas fa-check"></i> Full control over every choice</li>
-                        <li><i class="fas fa-check"></i> For pros & experienced users</li>
+                        <li><i data-lucide="check"></i> Pick phase, brand, inverter</li>
+                        <li><i data-lucide="check"></i> Choose your own battery</li>
+                        <li><i data-lucide="check"></i> Full control over every choice</li>
+                        <li><i data-lucide="check"></i> For pros & experienced users</li>
                     </ul>
-                    <span class="mode-tag"><i class="fas fa-bolt"></i> For those who know their gear</span>
+                    <span class="mode-tag"><i data-lucide="zap"></i> For those who know their gear</span>
                 </div>
             </div>
         </section>
@@ -101,12 +101,12 @@
                         <span class="load-stat-val" id="appliance-count">0</span>
                     </div>
                     <div class="load-size-badge" id="load-size-badge">
-                        <i class="fas fa-bolt"></i>
+                        <i data-lucide="zap"></i>
                         <span id="load-size-text">Add appliances to begin</span>
                     </div>
                 </div>
                 <button class="cta-btn guided-next-btn" id="guided-next-from-appliances" disabled>
-                    <span>Finish</span> <i class="fas fa-arrow-right"></i>
+                    <span>Finish</span> <i data-lucide="arrow-right"></i>
                 </button>
             </div>
 
@@ -124,7 +124,7 @@
 
             <div id="rec-inverter-options" class="card-grid"></div>
 
-            <button class="back-btn" id="back-from-recommend"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="back-btn" id="back-from-recommend"><i data-lucide="arrow-left"></i> Back</button>
         </section>
 
         <!-- GUIDED: Battery Selection -->
@@ -139,7 +139,7 @@
 
             <div id="guided-battery-options" class="card-grid"></div>
 
-            <button class="back-btn" id="back-from-guided-battery"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="back-btn" id="back-from-guided-battery"><i data-lucide="arrow-left"></i> Back</button>
         </section>
 
         <!-- STEP: Phase Selection -->
@@ -172,22 +172,22 @@
             </div>
             <div class="resource-links" id="inverter-links">
                 <a href="https://drive.google.com/file/d/1X_Azx91o4wRf9H45SUOGCV_l9N45dfT6/view?usp=sharing" target="_blank" rel="noopener" class="res-link kstar-only">
-                    <i class="fas fa-book-open"></i> User Manual
+                    <i data-lucide="book-open"></i> User Manual
                 </a>
                 <a href="https://drive.google.com/file/d/1sx29gQLQzLj1ThCVjoHGLXOGOZG-XCgi/view?usp=sharing" target="_blank" rel="noopener" class="res-link kstar-only">
-                    <i class="fas fa-star"></i> Features
+                    <i data-lucide="star"></i> Features
                 </a>
                 <a href="https://drive.google.com/file/d/1LGHqj75hovaBsraE4k5FIrT-4pDXfNzd/view?usp=sharing" target="_blank" rel="noopener" class="res-link fortuner-only">
-                    <i class="fas fa-star"></i> Features
+                    <i data-lucide="star"></i> Features
                 </a>
             </div>
             <div id="compare-bar" class="compare-bar hidden">
-                <span><i class="fas fa-columns"></i> <span id="compare-count">0</span> selected to compare</span>
+                <span><i data-lucide="columns-2"></i> <span id="compare-count">0</span> selected to compare</span>
                 <button id="compare-btn" class="cta-btn cta-small">Compare Now</button>
                 <button id="compare-clear" class="cta-btn cta-ghost cta-small">Clear</button>
             </div>
             <div id="inverter-options" class="card-grid"></div>
-            <button class="back-btn" id="back-from-inverter"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="back-btn" id="back-from-inverter"><i data-lucide="arrow-left"></i> Back</button>
         </section>
 
         <!-- STEP: Battery -->
@@ -198,7 +198,7 @@
                 <p id="battery-subtitle">Pick the energy storage that fits your needs and budget.</p>
             </div>
             <div id="battery-options" class="card-grid"></div>
-            <button class="back-btn" id="back-from-battery"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="back-btn" id="back-from-battery"><i data-lucide="arrow-left"></i> Back</button>
         </section>
 
         <!-- STEP: Summary / Quote -->
@@ -206,7 +206,7 @@
 
             <!-- Page header -->
             <div class="quote-page-header">
-                <div class="quote-page-icon"><i class="fas fa-file-invoice"></i></div>
+                <div class="quote-page-icon"><i data-lucide="file-text"></i></div>
                 <h1>Your Solar Quote</h1>
                 <p class="quote-page-sub">Review your selections, see the full cost breakdown, and share or download your quote.</p>
             </div>
@@ -278,22 +278,22 @@
                 </div>
                 <div class="env-grid" id="env-grid">
                     <div class="env-card" data-impact="energy">
-                        <div class="env-icon"><i class="fas fa-bolt"></i></div>
+                        <div class="env-icon"><i data-lucide="zap"></i></div>
                         <span class="env-label">Energy Produced</span>
                         <span id="energy-produced" class="env-value">0 kWh/yr</span>
                     </div>
                     <div class="env-card" data-impact="co2">
-                        <div class="env-icon"><i class="fas fa-leaf"></i></div>
+                        <div class="env-icon"><i data-lucide="leaf"></i></div>
                         <span class="env-label">CO&#8322; Reduced</span>
                         <span id="co2-reduced" class="env-value">0 kg/yr</span>
                     </div>
                     <div class="env-card" data-impact="trees">
-                        <div class="env-icon"><i class="fas fa-tree"></i></div>
+                        <div class="env-icon"><i data-lucide="trees"></i></div>
                         <span class="env-label">Trees Equivalent</span>
                         <span id="trees-planted" class="env-value">0 trees/yr</span>
                     </div>
                     <div class="env-card" data-impact="offset">
-                        <div class="env-icon"><i class="fas fa-chart-pie"></i></div>
+                        <div class="env-icon"><i data-lucide="pie-chart"></i></div>
                         <span class="env-label">Carbon Offset</span>
                         <div class="ring-wrap">
                             <svg class="ring-svg" viewBox="0 0 80 80">
@@ -327,7 +327,7 @@
 
                 <div class="financing-row" id="financing-row">
                     <div class="financing-head">
-                        <i class="fas fa-calendar-alt"></i>
+                        <i data-lucide="calendar"></i>
                         <span class="financing-label">Payment Plans</span>
                     </div>
                     <div class="financing-options">
@@ -348,7 +348,7 @@
                 </div>
 
                 <div class="disclaimer">
-                    <i class="fas fa-info-circle"></i>
+                    <i data-lucide="info"></i>
                     <p>Quote includes solar mounting/structure. Final pricing confirmed after site survey.</p>
                 </div>
             </div>
@@ -391,15 +391,15 @@
                 </div>
 
                 <div class="cta-row">
-                    <button id="share-summary" class="cta-btn"><i class="fas fa-envelope"></i> Email Quote</button>
-                    <button id="share-whatsapp" class="cta-btn cta-green"><i class="fab fa-whatsapp"></i> WhatsApp</button>
-                    <button id="download-pdf" class="cta-btn cta-red"><i class="fas fa-file-pdf"></i> Download PDF</button>
+                    <button id="share-summary" class="cta-btn"><i data-lucide="mail"></i> Email Quote</button>
+                    <button id="share-whatsapp" class="cta-btn cta-green"><i data-lucide="message-circle"></i> WhatsApp</button>
+                    <button id="download-pdf" class="cta-btn cta-red"><i data-lucide="file-down"></i> Download PDF</button>
                 </div>
             </div>
 
             <div class="quote-footer-actions">
-                <button class="back-btn" id="back-from-summary"><i class="fas fa-arrow-left"></i> Back</button>
-                <button id="reset-selection" class="cta-btn cta-ghost"><i class="fas fa-rotate-right"></i> Start Over</button>
+                <button class="back-btn" id="back-from-summary"><i data-lucide="arrow-left"></i> Back</button>
+                <button id="reset-selection" class="cta-btn cta-ghost"><i data-lucide="rotate-cw"></i> Start Over</button>
             </div>
         </section>
 
@@ -408,7 +408,7 @@
     <!-- Appliance compatibility modal -->
     <div id="appliance-modal" class="overlay hidden">
         <div class="overlay-card">
-            <button class="overlay-close" aria-label="Close"><i class="fas fa-xmark"></i></button>
+            <button class="overlay-close" aria-label="Close"><i data-lucide="x"></i></button>
             <h3 id="modal-title">Appliance Compatibility</h3>
             <div id="modal-body"></div>
         </div>
@@ -417,23 +417,23 @@
     <!-- Comparison modal -->
     <div id="compare-modal" class="overlay hidden">
         <div class="overlay-card overlay-wide">
-            <button class="overlay-close" aria-label="Close"><i class="fas fa-xmark"></i></button>
+            <button class="overlay-close" aria-label="Close"><i data-lucide="x"></i></button>
             <h3>Inverter Comparison</h3>
             <div id="compare-body" class="compare-grid"></div>
         </div>
     </div>
 
     <button id="scroll-to-top" class="fab-top" aria-label="Scroll to top">
-        <i class="fas fa-chevron-up"></i>
+        <i data-lucide="chevron-up"></i>
     </button>
 
     <footer class="site-footer">
         <div class="footer-inner">
             <div class="footer-links">
-                <a href="mailto:info@sangyug.com"><i class="fas fa-envelope"></i> info@sangyug.com</a>
-                <a href="tel:+254723984559"><i class="fas fa-phone"></i> +254 723 984 559</a>
-                <a href="https://www.sangyug.com" target="_blank" rel="noopener"><i class="fas fa-globe"></i> sangyug.com</a>
-                <span><i class="fas fa-map-marker-alt"></i> The Big Bang &mdash; Ngara, Opp. Rainbow Plaza</span>
+                <a href="mailto:info@sangyug.com"><i data-lucide="mail"></i> info@sangyug.com</a>
+                <a href="tel:+254723984559"><i data-lucide="phone"></i> +254 723 984 559</a>
+                <a href="https://www.sangyug.com" target="_blank" rel="noopener"><i data-lucide="globe"></i> sangyug.com</a>
+                <span><i data-lucide="map-pin"></i> The Big Bang &mdash; Ngara, Opp. Rainbow Plaza</span>
             </div>
             <div class="footer-credits">
                 <span>Crafted by <a href="https://dynamicdesignsca.netlify.app/" target="_blank" rel="noopener">Dynamic Designs</a></span>

@@ -2,6 +2,17 @@
    SANGYUG SOLAR SELECTOR v3
    =================================================== */
 
+/* Lucide icon defaults */
+[data-lucide] {
+    width: 1em;
+    height: 1em;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+    vertical-align: -0.125em;
+    display: inline-block;
+}
+
 :root {
     --hue: 220;
     --bg-0: hsl(var(--hue) 25% 7%);

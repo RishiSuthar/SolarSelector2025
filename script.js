@@ -34,47 +34,47 @@ const pricingState = {
 
 /* ---------- appliances (legacy — kept for custom mode needs assessment) ---------- */
 const APPLIANCES = [
-    { id: 'bulbs', name: 'LED Lights (×10)', watts: 100, icon: 'fa-lightbulb' },
-    { id: 'tv', name: 'Television', watts: 120, icon: 'fa-tv' },
-    { id: 'fridge', name: 'Fridge', watts: 150, icon: 'fa-temperature-low' },
-    { id: 'fan', name: 'Fans (×2)', watts: 150, icon: 'fa-fan' },
-    { id: 'laptop', name: 'Laptop', watts: 65, icon: 'fa-laptop' },
-    { id: 'router', name: 'WiFi Router', watts: 15, icon: 'fa-wifi' },
-    { id: 'phone', name: 'Phone Charging', watts: 25, icon: 'fa-mobile-screen' },
-    { id: 'micro', name: 'Microwave', watts: 1200, icon: 'fa-fire' },
-    { id: 'iron', name: 'Iron', watts: 1000, icon: 'fa-shirt' },
-    { id: 'washer', name: 'Washing Machine', watts: 500, icon: 'fa-soap' },
-    { id: 'pump', name: 'Water Pump', watts: 1000, icon: 'fa-faucet' },
-    { id: 'blender', name: 'Blender', watts: 400, icon: 'fa-blender' }
+    { id: 'bulbs', name: 'LED Lights (×10)', watts: 100, icon: 'lightbulb' },
+    { id: 'tv', name: 'Television', watts: 120, icon: 'tv' },
+    { id: 'fridge', name: 'Fridge', watts: 150, icon: 'thermometer' },
+    { id: 'fan', name: 'Fans (×2)', watts: 150, icon: 'fan' },
+    { id: 'laptop', name: 'Laptop', watts: 65, icon: 'laptop' },
+    { id: 'router', name: 'WiFi Router', watts: 15, icon: 'wifi' },
+    { id: 'phone', name: 'Phone Charging', watts: 25, icon: 'smartphone' },
+    { id: 'micro', name: 'Microwave', watts: 1200, icon: 'flame' },
+    { id: 'iron', name: 'Iron', watts: 1000, icon: 'shirt' },
+    { id: 'washer', name: 'Washing Machine', watts: 500, icon: 'droplets' },
+    { id: 'pump', name: 'Water Pump', watts: 1000, icon: 'droplets' },
+    { id: 'blender', name: 'Blender', watts: 400, icon: 'cup-soda' }
 ];
 
 /* ---------- rich appliance database (guided mode) ---------- */
 const APPLIANCE_CATEGORIES = [
-    { id: 'lighting', name: 'Lighting', icon: 'fa-lightbulb',
+    { id: 'lighting', name: 'Lighting', icon: 'lightbulb',
       greeting: 'Lighting',
       subtext: 'Most homes have 5–15 bulbs. LEDs are the cheapest to run — don\'t forget outdoor lights.' },
-    { id: 'entertainment', name: 'Entertainment', icon: 'fa-tv',
+    { id: 'entertainment', name: 'Entertainment', icon: 'tv',
       greeting: 'Entertainment',
       subtext: 'TVs are relatively light on power. A 43" TV uses less than a single light bulb used to.' },
-    { id: 'kitchen', name: 'Kitchen', icon: 'fa-utensils',
+    { id: 'kitchen', name: 'Kitchen', icon: 'utensils',
       greeting: 'Kitchen',
       subtext: 'Your fridge runs 24/7 — it\'s usually your biggest kitchen draw. Kettles and cookers are power-hungry but used briefly.' },
-    { id: 'cooling', name: 'Cooling & Heating', icon: 'fa-fan',
+    { id: 'cooling', name: 'Cooling & Heating', icon: 'fan',
       greeting: 'Cooling & Heating',
       subtext: 'ACs need 3-4x their rated watts to start up. This heavily affects which inverter you need.' },
-    { id: 'laundry', name: 'Laundry', icon: 'fa-soap',
+    { id: 'laundry', name: 'Laundry', icon: 'droplets',
       greeting: 'Laundry',
       subtext: 'Washing machines have a motor surge on startup. Irons are heavy but used in short sessions.' },
-    { id: 'office', name: 'Office & Tech', icon: 'fa-laptop',
+    { id: 'office', name: 'Office & Tech', icon: 'laptop',
       greeting: 'Office & Tech',
       subtext: 'Laptops are very efficient. Desktops draw more. Don\'t forget your router — it runs all day.' },
-    { id: 'water', name: 'Water & Pumps', icon: 'fa-faucet',
+    { id: 'water', name: 'Water & Pumps', icon: 'droplets',
       greeting: 'Water & Pumps',
       subtext: 'Pumps need 3x power to start and can push you into a bigger inverter. Instant water heaters are rarely practical on solar.' },
-    { id: 'security', name: 'Security', icon: 'fa-shield-halved',
+    { id: 'security', name: 'Security', icon: 'shield',
       greeting: 'Security',
       subtext: 'CCTV and alarms are low-power but run 24/7. Good candidates for solar backup.' },
-    { id: 'other', name: 'Other', icon: 'fa-plug',
+    { id: 'other', name: 'Other', icon: 'plug',
       greeting: 'Other Devices',
       subtext: 'Anything we missed? You can add custom devices with their wattage below.' }
 ];
@@ -82,7 +82,7 @@ const APPLIANCE_CATEGORIES = [
 const RICH_APPLIANCES = [
     // LIGHTING
     {
-        id: 'led-bulb', name: 'LED Bulb', category: 'lighting', icon: 'fa-lightbulb',
+        id: 'led-bulb', name: 'LED Bulb', category: 'lighting', icon: 'lightbulb',
         desc: 'Energy-efficient LED light',
         variants: [
             { label: '7W LED', watts: 7, startMultiplier: 1 },
@@ -94,7 +94,7 @@ const RICH_APPLIANCES = [
         popular: true
     },
     {
-        id: 'fluorescent', name: 'Fluorescent Tube', category: 'lighting', icon: 'fa-lightbulb',
+        id: 'fluorescent', name: 'Fluorescent Tube', category: 'lighting', icon: 'lightbulb',
         desc: 'Standard fluorescent tube light',
         variants: [
             { label: '18W (2ft)', watts: 18, startMultiplier: 1.5 },
@@ -104,7 +104,7 @@ const RICH_APPLIANCES = [
         maxQty: 30, defaultQty: 2, spaces: ['office', 'commercial']
     },
     {
-        id: 'spotlight', name: 'Spotlight / Downlight', category: 'lighting', icon: 'fa-sun',
+        id: 'spotlight', name: 'Spotlight / Downlight', category: 'lighting', icon: 'sun',
         desc: 'Recessed or surface-mount spotlight',
         variants: [
             { label: '5W LED Spot', watts: 5, startMultiplier: 1 },
@@ -115,7 +115,7 @@ const RICH_APPLIANCES = [
     },
     // ENTERTAINMENT
     {
-        id: 'tv', name: 'Television', category: 'entertainment', icon: 'fa-tv',
+        id: 'tv', name: 'Television', category: 'entertainment', icon: 'tv',
         desc: 'Flat screen TV — power depends on size',
         variants: [
             { label: '24" – 32" (Small)', watts: 40, startMultiplier: 1 },
@@ -129,7 +129,7 @@ const RICH_APPLIANCES = [
         popular: true
     },
     {
-        id: 'decoder', name: 'Decoder / Set-Top Box', category: 'entertainment', icon: 'fa-satellite-dish',
+        id: 'decoder', name: 'Decoder / Set-Top Box', category: 'entertainment', icon: 'satellite-dish',
         desc: 'DStv, StarTimes, Zuku etc.',
         variants: [
             { label: 'Standard Decoder', watts: 25, startMultiplier: 1 },
@@ -138,7 +138,7 @@ const RICH_APPLIANCES = [
         maxQty: 3, defaultQty: 1, spaces: ['home']
     },
     {
-        id: 'sound-system', name: 'Sound System', category: 'entertainment', icon: 'fa-volume-high',
+        id: 'sound-system', name: 'Sound System', category: 'entertainment', icon: 'volume-2',
         desc: 'Speakers, soundbar, or home theatre',
         variants: [
             { label: 'Soundbar', watts: 50, startMultiplier: 1 },
@@ -149,7 +149,7 @@ const RICH_APPLIANCES = [
         maxQty: 3, defaultQty: 1, spaces: ['home', 'commercial']
     },
     {
-        id: 'gaming', name: 'Gaming Console', category: 'entertainment', icon: 'fa-gamepad',
+        id: 'gaming', name: 'Gaming Console', category: 'entertainment', icon: 'gamepad-2',
         desc: 'PlayStation, Xbox, Nintendo',
         variants: [
             { label: 'Nintendo Switch', watts: 40, startMultiplier: 1 },
@@ -159,7 +159,7 @@ const RICH_APPLIANCES = [
     },
     // KITCHEN
     {
-        id: 'fridge', name: 'Refrigerator', category: 'kitchen', icon: 'fa-temperature-low',
+        id: 'fridge', name: 'Refrigerator', category: 'kitchen', icon: 'thermometer',
         desc: 'Running watts + high starting surge',
         variants: [
             { label: 'Bar Fridge (90L)', watts: 80, startMultiplier: 3 },
@@ -173,7 +173,7 @@ const RICH_APPLIANCES = [
         popular: true
     },
     {
-        id: 'microwave', name: 'Microwave', category: 'kitchen', icon: 'fa-fire',
+        id: 'microwave', name: 'Microwave', category: 'kitchen', icon: 'flame',
         desc: 'Countertop microwave oven',
         variants: [
             { label: 'Small (700W)', watts: 700, startMultiplier: 1 },
@@ -184,7 +184,7 @@ const RICH_APPLIANCES = [
         note: 'Heavy draw — best used in short bursts'
     },
     {
-        id: 'kettle', name: 'Electric Kettle', category: 'kitchen', icon: 'fa-mug-hot',
+        id: 'kettle', name: 'Electric Kettle', category: 'kitchen', icon: 'coffee',
         desc: 'Boils water quickly — very high wattage',
         variants: [
             { label: 'Small (1500W)', watts: 1500, startMultiplier: 1 },
@@ -195,7 +195,7 @@ const RICH_APPLIANCES = [
         note: 'Very heavy draw — use briefly'
     },
     {
-        id: 'blender', name: 'Blender / Mixer', category: 'kitchen', icon: 'fa-blender',
+        id: 'blender', name: 'Blender / Mixer', category: 'kitchen', icon: 'cup-soda',
         desc: 'Blender, food processor, or mixer',
         variants: [
             { label: 'Small Blender (300W)', watts: 300, startMultiplier: 2 },
@@ -206,7 +206,7 @@ const RICH_APPLIANCES = [
         maxQty: 2, defaultQty: 1, spaces: ['home', 'commercial']
     },
     {
-        id: 'toaster', name: 'Toaster / Sandwich Maker', category: 'kitchen', icon: 'fa-bread-slice',
+        id: 'toaster', name: 'Toaster / Sandwich Maker', category: 'kitchen', icon: 'sandwich',
         desc: 'Bread toaster or sandwich press',
         variants: [
             { label: '2-Slice Toaster (800W)', watts: 800, startMultiplier: 1 },
@@ -216,7 +216,7 @@ const RICH_APPLIANCES = [
         maxQty: 2, defaultQty: 1, spaces: ['home', 'office']
     },
     {
-        id: 'cooker', name: 'Electric Cooker / Hotplate', category: 'kitchen', icon: 'fa-fire-burner',
+        id: 'cooker', name: 'Electric Cooker / Hotplate', category: 'kitchen', icon: 'flame',
         desc: 'Single or double hotplate',
         variants: [
             { label: 'Single Hotplate (1000W)', watts: 1000, startMultiplier: 1 },
@@ -228,7 +228,7 @@ const RICH_APPLIANCES = [
     },
     // COOLING & HEATING
     {
-        id: 'fan', name: 'Fan', category: 'cooling', icon: 'fa-fan',
+        id: 'fan', name: 'Fan', category: 'cooling', icon: 'fan',
         desc: 'Standing, ceiling, or desk fan',
         variants: [
             { label: 'Desk Fan (35W)', watts: 35, startMultiplier: 1.5 },
@@ -240,7 +240,7 @@ const RICH_APPLIANCES = [
         popular: true
     },
     {
-        id: 'ac', name: 'Air Conditioner', category: 'cooling', icon: 'fa-snowflake',
+        id: 'ac', name: 'Air Conditioner', category: 'cooling', icon: 'snowflake',
         desc: 'Split-unit AC — heavy starting surge',
         variants: [
             { label: '9000 BTU / 1HP (900W)', watts: 900, startMultiplier: 3.5 },
@@ -252,7 +252,7 @@ const RICH_APPLIANCES = [
         note: 'ACs require 3–4× wattage to start. Needs a powerful inverter.'
     },
     {
-        id: 'heater', name: 'Space Heater', category: 'cooling', icon: 'fa-temperature-arrow-up',
+        id: 'heater', name: 'Space Heater', category: 'cooling', icon: 'thermometer-sun',
         desc: 'Electric room heater',
         variants: [
             { label: 'Small (800W)', watts: 800, startMultiplier: 1 },
@@ -263,7 +263,7 @@ const RICH_APPLIANCES = [
     },
     // LAUNDRY
     {
-        id: 'washer', name: 'Washing Machine', category: 'laundry', icon: 'fa-soap',
+        id: 'washer', name: 'Washing Machine', category: 'laundry', icon: 'droplets',
         desc: 'Top-load or front-load washer',
         variants: [
             { label: 'Top Load (400W)', watts: 400, startMultiplier: 2.5 },
@@ -274,7 +274,7 @@ const RICH_APPLIANCES = [
         note: 'Motor draw is higher on startup'
     },
     {
-        id: 'iron', name: 'Iron', category: 'laundry', icon: 'fa-shirt',
+        id: 'iron', name: 'Iron', category: 'laundry', icon: 'shirt',
         desc: 'Clothes iron — dry or steam',
         variants: [
             { label: 'Dry Iron (1000W)', watts: 1000, startMultiplier: 1 },
@@ -284,7 +284,7 @@ const RICH_APPLIANCES = [
         maxQty: 2, defaultQty: 1, spaces: ['home', 'commercial']
     },
     {
-        id: 'dryer', name: 'Hair Dryer', category: 'laundry', icon: 'fa-wind',
+        id: 'dryer', name: 'Hair Dryer', category: 'laundry', icon: 'wind',
         desc: 'Hair dryer / blow dryer',
         variants: [
             { label: 'Travel (800W)', watts: 800, startMultiplier: 1 },
@@ -295,7 +295,7 @@ const RICH_APPLIANCES = [
     },
     // OFFICE & TECH
     {
-        id: 'laptop', name: 'Laptop', category: 'office', icon: 'fa-laptop',
+        id: 'laptop', name: 'Laptop', category: 'office', icon: 'laptop',
         desc: 'Laptop computer with charger',
         variants: [
             { label: 'Ultrabook / Light (45W)', watts: 45, startMultiplier: 1 },
@@ -307,7 +307,7 @@ const RICH_APPLIANCES = [
         popular: true
     },
     {
-        id: 'desktop', name: 'Desktop Computer', category: 'office', icon: 'fa-desktop',
+        id: 'desktop', name: 'Desktop Computer', category: 'office', icon: 'monitor',
         desc: 'Desktop PC + monitor',
         variants: [
             { label: 'Basic PC + Monitor (200W)', watts: 200, startMultiplier: 1 },
@@ -317,7 +317,7 @@ const RICH_APPLIANCES = [
         maxQty: 10, defaultQty: 1, spaces: ['home', 'office', 'commercial']
     },
     {
-        id: 'printer', name: 'Printer', category: 'office', icon: 'fa-print',
+        id: 'printer', name: 'Printer', category: 'office', icon: 'printer',
         desc: 'Inkjet or laser printer',
         variants: [
             { label: 'Inkjet (30W)', watts: 30, startMultiplier: 1 },
@@ -327,7 +327,7 @@ const RICH_APPLIANCES = [
         maxQty: 5, defaultQty: 1, spaces: ['office', 'commercial']
     },
     {
-        id: 'router', name: 'WiFi Router / Switch', category: 'office', icon: 'fa-wifi',
+        id: 'router', name: 'WiFi Router / Switch', category: 'office', icon: 'wifi',
         desc: 'Internet router or network switch',
         variants: [
             { label: 'Home Router (12W)', watts: 12, startMultiplier: 1 },
@@ -338,7 +338,7 @@ const RICH_APPLIANCES = [
         popular: true
     },
     {
-        id: 'phone-charge', name: 'Phone Charger', category: 'office', icon: 'fa-mobile-screen',
+        id: 'phone-charge', name: 'Phone Charger', category: 'office', icon: 'smartphone',
         desc: 'Smartphone charging',
         variants: [
             { label: 'Standard (10W)', watts: 10, startMultiplier: 1 },
@@ -349,7 +349,7 @@ const RICH_APPLIANCES = [
         popular: true
     },
     {
-        id: 'projector', name: 'Projector', category: 'office', icon: 'fa-chalkboard',
+        id: 'projector', name: 'Projector', category: 'office', icon: 'presentation',
         desc: 'Presentation or home theatre projector',
         variants: [
             { label: 'Mini / Portable (50W)', watts: 50, startMultiplier: 1 },
@@ -360,7 +360,7 @@ const RICH_APPLIANCES = [
     },
     // WATER & PUMPS
     {
-        id: 'pump', name: 'Water Pump', category: 'water', icon: 'fa-faucet',
+        id: 'pump', name: 'Water Pump', category: 'water', icon: 'droplets',
         desc: 'Booster or borehole pump',
         variants: [
             { label: '0.5 HP (370W)', watts: 370, startMultiplier: 3 },
@@ -372,7 +372,7 @@ const RICH_APPLIANCES = [
         note: 'Pumps require 3× wattage to start'
     },
     {
-        id: 'water-heater', name: 'Water Heater (Instant)', category: 'water', icon: 'fa-hot-tub-person',
+        id: 'water-heater', name: 'Water Heater (Instant)', category: 'water', icon: 'shower-head',
         desc: 'Instant / tankless water heater',
         variants: [
             { label: 'Small (3000W)', watts: 3000, startMultiplier: 1 },
@@ -383,7 +383,7 @@ const RICH_APPLIANCES = [
     },
     // SECURITY
     {
-        id: 'cctv', name: 'CCTV System', category: 'security', icon: 'fa-video',
+        id: 'cctv', name: 'CCTV System', category: 'security', icon: 'video',
         desc: 'Cameras + DVR/NVR',
         variants: [
             { label: '4-Camera + DVR (60W)', watts: 60, startMultiplier: 1 },
@@ -394,7 +394,7 @@ const RICH_APPLIANCES = [
         popular: true
     },
     {
-        id: 'alarm', name: 'Alarm System', category: 'security', icon: 'fa-bell',
+        id: 'alarm', name: 'Alarm System', category: 'security', icon: 'bell',
         desc: 'Security alarm panel + sensors',
         variants: [
             { label: 'Basic Panel (15W)', watts: 15, startMultiplier: 1 },
@@ -403,7 +403,7 @@ const RICH_APPLIANCES = [
         maxQty: 2, defaultQty: 1, spaces: ['home', 'office', 'commercial']
     },
     {
-        id: 'electric-fence', name: 'Electric Fence', category: 'security', icon: 'fa-shield-halved',
+        id: 'electric-fence', name: 'Electric Fence', category: 'security', icon: 'shield',
         desc: 'Perimeter electric fence energizer',
         variants: [
             { label: 'Small Property (20W)', watts: 20, startMultiplier: 1 },
@@ -413,7 +413,7 @@ const RICH_APPLIANCES = [
     },
     // OTHER
     {
-        id: 'pos', name: 'POS / Cash Register', category: 'other', icon: 'fa-cash-register',
+        id: 'pos', name: 'POS / Cash Register', category: 'other', icon: 'receipt',
         desc: 'Point-of-sale terminal',
         variants: [
             { label: 'Tablet POS (30W)', watts: 30, startMultiplier: 1 },
@@ -422,7 +422,7 @@ const RICH_APPLIANCES = [
         maxQty: 5, defaultQty: 1, spaces: ['commercial']
     },
     {
-        id: 'sewing', name: 'Sewing Machine', category: 'other', icon: 'fa-gears',
+        id: 'sewing', name: 'Sewing Machine', category: 'other', icon: 'settings',
         desc: 'Electric sewing machine',
         variants: [
             { label: 'Home (100W)', watts: 100, startMultiplier: 2 },
@@ -431,7 +431,7 @@ const RICH_APPLIANCES = [
         maxQty: 5, defaultQty: 1, spaces: ['home', 'commercial']
     },
     {
-        id: 'vacuum', name: 'Vacuum Cleaner', category: 'other', icon: 'fa-broom',
+        id: 'vacuum', name: 'Vacuum Cleaner', category: 'other', icon: 'sparkles',
         desc: 'Upright or handheld vacuum',
         variants: [
             { label: 'Handheld / Stick (200W)', watts: 200, startMultiplier: 1.5 },
@@ -1113,6 +1113,11 @@ function clearState() {
     try { localStorage.removeItem('solarState'); } catch (e) {}
 }
 
+/* ---------- lucide icons ---------- */
+function refreshIcons() {
+    if (window.lucide) lucide.createIcons();
+}
+
 /* ---------- toast ---------- */
 function toast(message, type, duration) {
     type = type || 'info'; duration = duration || 3000;
@@ -1120,9 +1125,10 @@ function toast(message, type, duration) {
     if (!container) return;
     var el = document.createElement('div');
     el.className = 'toast toast-' + type;
-    var icons = { info: 'fa-circle-info', success: 'fa-circle-check', warning: 'fa-triangle-exclamation', error: 'fa-circle-xmark' };
-    el.innerHTML = '<i class="fas ' + (icons[type] || icons.info) + '"></i><span>' + message + '</span>';
+    var icons = { info: 'info', success: 'check-circle', warning: 'triangle-alert', error: 'circle-x' };
+    el.innerHTML = '<i data-lucide="' + (icons[type] || icons.info) + '"></i><span>' + message + '</span>';
     container.appendChild(el);
+    refreshIcons();
     requestAnimationFrame(function() { el.classList.add('show'); });
     setTimeout(function() { el.classList.remove('show'); el.addEventListener('transitionend', function() { el.remove(); }); }, duration);
 }
@@ -1211,7 +1217,7 @@ function resolveAccessibleStep(step) {
 }
 
 function renderStep(step) {
-    if (step === 'landing') return; // static HTML
+    if (step === 'landing') { refreshIcons(); return; }
     if (step === 'appliances') renderApplianceBuilder();
     else if (step === 'recommend') renderRecommendations();
     else if (step === 'guided-battery') renderGuidedBatteries();
@@ -1220,6 +1226,7 @@ function renderStep(step) {
     else if (step === 'inverter') renderInverters();
     else if (step === 'battery') renderBatteries();
     else if (step === 'summary') renderSummary();
+    refreshIcons();
 }
 
 function goTo(step) {
@@ -1298,7 +1305,7 @@ function renderNeeds() {
         el.className = 'needs-item' + (checked ? ' active' : '');
         el.innerHTML =
             '<input type="checkbox" ' + (checked ? 'checked' : '') + ' data-appliance="' + app.id + '" hidden>' +
-            '<i class="fas ' + app.icon + '"></i>' +
+            '<i data-lucide= +  + ></i>' +
             '<span class="needs-item-name">' + app.name + '</span>' +
             '<span class="needs-item-watts">' + app.watts + 'W</span>';
         el.addEventListener('click', function(e) {
@@ -1346,15 +1353,15 @@ function renderPhaseSelection() {
     if (!wrap) return;
     wrap.innerHTML = '';
     var phases = [
-        { id: 'single', name: 'Single Phase', icon: 'fa-house', tagline: 'For homes & small offices', desc: 'Kstar & Fortuner inverters with flexible battery options' },
-        { id: 'three', name: 'Three Phase', icon: 'fa-building', tagline: 'For commercial & industrial', desc: 'Kstar & ATESS complete power packages' }
+        { id: 'single', name: 'Single Phase', icon: 'house', tagline: 'For homes & small offices', desc: 'Kstar & Fortuner inverters with flexible battery options' },
+        { id: 'three', name: 'Three Phase', icon: 'building-2', tagline: 'For commercial & industrial', desc: 'Kstar & ATESS complete power packages' }
     ];
     phases.forEach(function(p) {
         var el = document.createElement('div');
         el.className = 'brand-card' + (state.phase === p.id ? ' selected' : '');
         el.innerHTML =
-            '<div class="brand-check"><i class="fas fa-check"></i></div>' +
-            '<div class="phase-icon-wrap"><i class="fas ' + p.icon + '"></i></div>' +
+            '<div class="brand-check"><i data-lucide="check"></i></div>' +
+            '<div class="phase-icon-wrap"><i data-lucide="' + p.icon + '"></i></div>' +
             '<span class="brand-name">' + p.name + '</span>' +
             '<span class="brand-tagline">' + p.tagline + '</span>' +
             '<span class="brand-range">' + p.desc + '</span>';
@@ -1383,7 +1390,7 @@ function renderCompanies() {
         var el = document.createElement('div');
         el.className = 'brand-card' + (state.company === c.name ? ' selected' : '');
         el.innerHTML =
-            '<div class="brand-check"><i class="fas fa-check"></i></div>' +
+            '<div class="brand-check"><i data-lucide="check"></i></div>' +
             '<img src="' + c.img + '" alt="' + c.name + '" class="brand-img" loading="lazy" onerror="this.style.display=\'none\'">' +
             '<span class="brand-name">' + c.name + '</span>' +
             '<span class="brand-tagline">' + c.tagline + '</span>' +
@@ -1432,8 +1439,8 @@ function renderSinglePhaseInverters() {
         var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
         var outOfStock = !!inv.outOfStock;
         var badge = '';
-        if (outOfStock) badge = '<span class="card-badge badge-out"><i class="fas fa-ban"></i> Out of Stock</span>';
-        else if (inv.series === 'Residential ESS') badge = '<span class="card-badge badge-premium"><i class="fas fa-gem"></i> Premium ESS</span>';
+        if (outOfStock) badge = '<span class="card-badge badge-out"><i data-lucide="ban"></i> Out of Stock</span>';
+        else if (inv.series === 'Residential ESS') badge = '<span class="card-badge badge-premium"><i data-lucide="gem"></i> Premium ESS</span>';
 
         var matchBar = '';
         if (userWatts > 0 && !outOfStock) {
@@ -1451,7 +1458,7 @@ function renderSinglePhaseInverters() {
         el.className = 'product-card' + (sel ? ' selected' : '') + (outOfStock ? ' out-of-stock' : '');
         el.innerHTML =
             badge +
-            '<div class="card-check"><i class="fas fa-check"></i></div>' +
+            '<div class="card-check"><i data-lucide="check"></i></div>' +
             '<div class="card-thumb"><img src="' + inv.img + '" alt="Inverter" loading="lazy"></div>' +
             '<div class="card-body">' +
                 '<span class="card-title">' + title + '</span>' +
@@ -1459,12 +1466,12 @@ function renderSinglePhaseInverters() {
                 '<span class="card-price">' + fmt(inv.price) + ' Ksh</span>' +
                 (outOfStock ? '<span class="card-meta stock-meta">Currently unavailable</span>' : '') +
                 '<span class="card-meta">Efficiency: ' + inv.details.efficiency + ' · Max: ' + fmt(inv.maxWatts) + 'W</span>' +
-                (inv.essBattery ? '<div class="ess-battery-banner"><i class="fas fa-car-battery"></i> Includes ' + inv.essBattery.count + '× ' + inv.essBattery.name + ' (' + inv.essBattery.totalCapacity + ') — no battery selection needed</div>' : '') +
+                (inv.essBattery ? '<div class="ess-battery-banner"><i data-lucide="battery-charging"></i> Includes ' + inv.essBattery.count + '× ' + inv.essBattery.name + ' (' + inv.essBattery.totalCapacity + ') — no battery selection needed</div>' : '') +
                 matchBar +
                 '<div class="card-actions">' +
-                    '<a href="' + inv.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i class="fas fa-external-link-alt"></i> Specs</a>' +
-                    (inv.essBattery ? '<a href="' + inv.essBattery.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i class="fas fa-car-battery"></i> Battery Specs</a>' : '') +
-                    (outOfStock ? '<span class="card-link stock-meta"><i class="fas fa-lock"></i> Disabled</span>' : '<button class="card-link card-btn compat-btn" data-idx="' + idx + '"><i class="fas fa-info-circle"></i> More Info</button>') +
+                    '<a href="' + inv.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i data-lucide="external-link"></i> Specs</a>' +
+                    (inv.essBattery ? '<a href="' + inv.essBattery.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i data-lucide="battery-charging"></i> Battery Specs</a>' : '') +
+                    (outOfStock ? '<span class="card-link stock-meta"><i data-lucide="lock"></i> Disabled</span>' : '<button class="card-link card-btn compat-btn" data-idx="' + idx + '"><i data-lucide="info"></i> More Info</button>') +
                 '</div>' +
             '</div>';
         el.addEventListener('click', function(e) {
@@ -1500,33 +1507,33 @@ function renderThreePhasePackages() {
 
         var features = '';
         if (pkg.inverterNotes) {
-            features = '<div class="pkg-features"><ul>' + pkg.inverterNotes.map(function(n) { return '<li><i class="fas fa-check"></i> ' + n + '</li>'; }).join('') + '</ul></div>';
+            features = '<div class="pkg-features"><ul>' + pkg.inverterNotes.map(function(n) { return '<li><i data-lucide="check"></i> ' + n + '</li>'; }).join('') + '</ul></div>';
         }
 
         var batInfo = '';
         if (state.company === 'Kstar' && pkg.batteries) {
-            batInfo = '<span class="card-meta"><i class="fas fa-car-battery"></i> Includes ' + pkg.batteries.count + '× ' + pkg.batteries.name + ' (' + pkg.batteries.totalCapacity + ')</span>';
+            batInfo = '<span class="card-meta"><i data-lucide="battery-charging"></i> Includes ' + pkg.batteries.count + '× ' + pkg.batteries.name + ' (' + pkg.batteries.totalCapacity + ')</span>';
         }
         if (state.company === 'ATESS' && pkg.battery) {
-            batInfo = '<span class="card-meta"><i class="fas fa-car-battery"></i> ' + pkg.battery.name + ' — configurable 1–3 master pairs</span>';
+            batInfo = '<span class="card-meta"><i data-lucide="battery-charging"></i> ' + pkg.battery.name + ' — configurable 1–3 master pairs</span>';
         }
 
         var el = document.createElement('div');
         el.className = 'product-card pkg-card' + (sel ? ' selected' : '');
         el.innerHTML =
-            '<span class="card-badge badge-premium"><i class="fas fa-bolt"></i> 3-Phase</span>' +
-            '<div class="card-check"><i class="fas fa-check"></i></div>' +
+            '<span class="card-badge badge-premium"><i data-lucide="zap"></i> 3-Phase</span>' +
+            '<div class="card-check"><i data-lucide="check"></i></div>' +
             '<div class="card-thumb"><img src="' + pkg.img + '" alt="Package" loading="lazy"></div>' +
             '<div class="card-body">' +
                 '<span class="card-title">' + state.company + ' ' + pkg.name + '</span>' +
                 '<span class="card-subtitle">' + pkg.bestFor + '</span>' +
                 '<span class="card-price">' + fmt(pkgPrice) + ' Ksh <small>(' + priceLabel + ')</small></span>' +
-                '<span class="card-meta"><i class="fas fa-solar-panel"></i> ' + pkg.panelCount + '× 600W Solar Panels</span>' +
+                '<span class="card-meta"><i data-lucide="sun"></i> ' + pkg.panelCount + '× 600W Solar Panels</span>' +
                 batInfo +
                 features +
                 '<div class="card-actions">' +
-                    '<a href="' + pkg.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i class="fas fa-external-link-alt"></i> Specs</a>' +
-                    (pkg.batteries && pkg.batteries.specsLink ? '<a href="' + pkg.batteries.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i class="fas fa-car-battery"></i> Battery Specs</a>' : '') +
+                    '<a href="' + pkg.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i data-lucide="external-link"></i> Specs</a>' +
+                    (pkg.batteries && pkg.batteries.specsLink ? '<a href="' + pkg.batteries.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i data-lucide="battery-charging"></i> Battery Specs</a>' : '') +
                 '</div>' +
             '</div>';
         el.addEventListener('click', function(e) {
@@ -1564,16 +1571,16 @@ function renderSinglePhaseBatteries() {
                 '<div class="card-body">' +
                     '<span class="card-title">' + bat.name + '</span>' +
                     '<span class="card-price">' + fmt(bat.price) + ' Ksh/unit</span>' +
-                    '<div class="incompat-reason"><i class="fas fa-ban"></i><span>' + reason + '</span></div>' +
+                    '<div class="incompat-reason"><i data-lucide="ban"></i><span>' + reason + '</span></div>' +
                 '</div>';
         } else {
             var totalCost = bat.price * count;
             var badge = '';
-            if (bat.type === 'lithium') badge = '<span class="card-badge badge-premium"><i class="fas fa-gem"></i> Premium</span>';
+            if (bat.type === 'lithium') badge = '<span class="card-badge badge-premium"><i data-lucide="gem"></i> Premium</span>';
             el.className = 'product-card' + (sel ? ' selected' : '');
             el.innerHTML =
                 badge +
-                '<div class="card-check"><i class="fas fa-check"></i></div>' +
+                '<div class="card-check"><i data-lucide="check"></i></div>' +
                 '<div class="card-thumb"><img src="' + bat.img + '" alt="Battery" loading="lazy"></div>' +
                 '<div class="card-body">' +
                     '<span class="card-title">' + bat.name + '</span>' +
@@ -1581,7 +1588,7 @@ function renderSinglePhaseBatteries() {
                     '<span class="card-price">' + fmt(bat.price) + ' Ksh <small>× ' + count + ' = ' + fmt(totalCost) + ' Ksh</small></span>' +
                     '<span class="card-meta">~' + (bat.backupHours * count).toFixed(1) + ' hrs backup · ' + bat.warranty + ' warranty</span>' +
                     '<span class="card-meta">' + reason + '</span>' +
-                    '<div class="card-actions"><a href="' + bat.specsLink + '" target="_blank" rel="noopener" class="card-link"><i class="fas fa-external-link-alt"></i> Specs</a></div>' +
+                    '<div class="card-actions"><a href="' + bat.specsLink + '" target="_blank" rel="noopener" class="card-link"><i data-lucide="external-link"></i> Specs</a></div>' +
                 '</div>';
             el.addEventListener('click', function(e) {
                 if (!e.target.closest('a')) selectBattery(bat, count);
@@ -1610,15 +1617,15 @@ function renderAtessBatteryConfig() {
         var el = document.createElement('div');
         el.className = 'product-card' + (sel ? ' selected' : '');
         el.innerHTML =
-            (cfg.masters === 3 ? '<span class="card-badge badge-rec"><i class="fas fa-star"></i> Maximum</span>' : '') +
-            '<div class="card-check"><i class="fas fa-check"></i></div>' +
+            (cfg.masters === 3 ? '<span class="card-badge badge-rec"><i data-lucide="star"></i> Maximum</span>' : '') +
+            '<div class="card-check"><i data-lucide="check"></i></div>' +
             '<div class="card-thumb"><img src="images/atessbatteries.png" alt="Battery" loading="lazy"></div>' +
             '<div class="card-body">' +
                 '<span class="card-title">' + cfg.masters + ' Master + ' + cfg.masters + ' Slave</span>' +
                 '<span class="card-subtitle">' + cfg.totalUnits + ' batteries total · ' + cfg.capacity + '</span>' +
                 '<span class="card-price">' + fmt(unitPrice) + ' Ksh <small>× ' + cfg.totalUnits + ' = ' + fmt(totalPrice) + ' Ksh</small></span>' +
                 '<span class="card-meta">' + inv.battery.warranty + ' warranty · ' + inv.battery.name + '</span>' +
-                '<div class="card-actions"><a href="' + inv.battery.specsLink + '" target="_blank" rel="noopener" class="card-link"><i class="fas fa-external-link-alt"></i> Specs</a></div>' +
+                '<div class="card-actions"><a href="' + inv.battery.specsLink + '" target="_blank" rel="noopener" class="card-link"><i data-lucide="external-link"></i> Specs</a></div>' +
             '</div>';
         el.addEventListener('click', function(e) {
             if (!e.target.closest('a')) selectAtessBatteryConfig(cfg.masters);
@@ -1824,6 +1831,7 @@ function showComparison() {
     html += '</div>';
     body.innerHTML = html;
     $('#compare-modal').classList.remove('hidden');
+    refreshIcons();
 }
 
 /* ---------- guided mode: appliance builder ---------- */
@@ -1858,15 +1866,15 @@ function renderApplianceBuilder() {
     if (headerEl) {
         var spaceButtons =
             '<div class="guided-space-toggle">' +
-                '<button class="space-btn' + (state.guidedSpace === 'home' ? ' active' : '') + '" data-space="home"><i class="fas fa-house"></i> Home</button>' +
-                '<button class="space-btn' + (state.guidedSpace === 'office' ? ' active' : '') + '" data-space="office"><i class="fas fa-briefcase"></i> Office</button>' +
-                '<button class="space-btn' + (state.guidedSpace === 'commercial' ? ' active' : '') + '" data-space="commercial"><i class="fas fa-building"></i> Commercial</button>' +
+                '<button class="space-btn' + (state.guidedSpace === 'home' ? ' active' : '') + '" data-space="home"><i data-lucide="house"></i> Home</button>' +
+                '<button class="space-btn' + (state.guidedSpace === 'office' ? ' active' : '') + '" data-space="office"><i data-lucide="briefcase"></i> Office</button>' +
+                '<button class="space-btn' + (state.guidedSpace === 'commercial' ? ' active' : '') + '" data-space="commercial"><i data-lucide="building-2"></i> Commercial</button>' +
             '</div>';
         headerEl.innerHTML =
             '<div class="ab-wiz-head">' +
                 (isFirst ? spaceButtons : '') +
                 '<div class="ab-wiz-greeting">' +
-                    '<div class="ab-wiz-icon"><i class="fas ' + cat.icon + '"></i></div>' +
+                    '<div class="ab-wiz-icon"><i data-lucide="' + cat.icon + '"></i></div>' +
                     '<h2>' + cat.greeting + '</h2>' +
                     '<p>' + cat.subtext + '</p>' +
                 '</div>' +
@@ -1893,7 +1901,7 @@ function renderApplianceBuilder() {
             var cls = 'ab-dot';
             if (i === state.guidedCatIdx) cls += ' current';
             else if (hasItems) cls += ' has-items';
-            return '<button class="' + cls + '" data-idx="' + i + '" title="' + c.name + '"><i class="fas ' + c.icon + '"></i></button>';
+            return '<button class="' + cls + '" data-idx="' + i + '" title="' + c.name + '"><i data-lucide="' + c.icon + '"></i></button>';
         }).join('');
         progEl.innerHTML = '<div class="ab-progress-bar">' + dots + '</div>';
         progEl.querySelectorAll('.ab-dot').forEach(function(dot) {
@@ -1932,7 +1940,7 @@ function renderApplianceBuilder() {
 
             instancesHtml +=
                 '<div class="ab-instance" data-idx="' + idx + '">' +
-                    (instances.length > 1 ? '<div class="ab-instance-label"><span>#' + (idx + 1) + '</span><button class="ab-instance-remove" data-idx="' + idx + '" type="button"><i class="fas fa-times"></i></button></div>' : '') +
+                    (instances.length > 1 ? '<div class="ab-instance-label"><span>#' + (idx + 1) + '</span><button class="ab-instance-remove" data-idx="' + idx + '" type="button"><i data-lucide="x"></i></button></div>' : '') +
                     '<div class="ab-select-row">' +
                         '<label>Type / Size</label>' +
                         '<select class="ab-variant-select" data-idx="' + idx + '">' + variantOptions + '</select>' +
@@ -1940,9 +1948,9 @@ function renderApplianceBuilder() {
                     '<div class="ab-qty-row">' +
                         '<label>Quantity</label>' +
                         '<div class="ab-qty-ctrl">' +
-                            '<button class="ab-qty-btn ab-qty-minus" data-idx="' + idx + '" type="button"><i class="fas fa-minus"></i></button>' +
+                            '<button class="ab-qty-btn ab-qty-minus" data-idx="' + idx + '" type="button"><i data-lucide="minus"></i></button>' +
                             '<span class="ab-qty-val" data-idx="' + idx + '">' + inst.qty + '</span>' +
-                            '<button class="ab-qty-btn ab-qty-plus" data-idx="' + idx + '" type="button"><i class="fas fa-plus"></i></button>' +
+                            '<button class="ab-qty-btn ab-qty-plus" data-idx="' + idx + '" type="button"><i data-lucide="plus"></i></button>' +
                         '</div>' +
                     '</div>' +
                     '<div class="ab-watts-row">' +
@@ -1954,7 +1962,7 @@ function renderApplianceBuilder() {
 
         card.innerHTML =
             '<div class="ab-card-top">' +
-                '<div class="ab-card-icon"><i class="fas ' + app.icon + '"></i></div>' +
+                '<div class="ab-card-icon"><i data-lucide="' + app.icon + '"></i></div>' +
                 '<div class="ab-card-info">' +
                     '<span class="ab-card-name">' + app.name + (app.popular ? '<span class="ab-popular-tag">Common</span>' : '') + '</span>' +
                     '<span class="ab-card-desc">' + app.desc + '</span>' +
@@ -1962,9 +1970,9 @@ function renderApplianceBuilder() {
                 '<label class="ab-toggle"><input type="checkbox" ' + (isActive ? 'checked' : '') + '><span class="ab-toggle-slider"></span></label>' +
             '</div>' +
             '<div class="ab-card-config' + (isActive ? ' open' : '') + '">' +
-                (app.note ? '<div class="ab-note"><i class="fas fa-info-circle"></i> ' + app.note + '</div>' : '') +
+                (app.note ? '<div class="ab-note"><i data-lucide="info"></i> ' + app.note + '</div>' : '') +
                 '<div class="ab-instances-wrap">' + instancesHtml + '</div>' +
-                (isActive ? '<button class="ab-add-another" type="button"><i class="fas fa-plus"></i> Add another ' + app.name + '</button>' : '') +
+                (isActive ? '<button class="ab-add-another" type="button"><i data-lucide="plus"></i> Add another ' + app.name + '</button>' : '') +
             '</div>';
 
         // Toggle handler
@@ -2042,17 +2050,17 @@ function renderApplianceBuilder() {
     if (navEl) {
         var leftBtn = '';
         if (isFirst) {
-            leftBtn = '<button class="ab-nav-btn ab-nav-back" id="ab-nav-back-landing"><i class="fas fa-arrow-left"></i> Back to Start</button>';
+            leftBtn = '<button class="ab-nav-btn ab-nav-back" id="ab-nav-back-landing"><i data-lucide="arrow-left"></i> Back to Start</button>';
         } else {
-            leftBtn = '<button class="ab-nav-btn ab-nav-back" id="ab-nav-prev"><i class="fas fa-arrow-left"></i> ' + cats[state.guidedCatIdx - 1].name + '</button>';
+            leftBtn = '<button class="ab-nav-btn ab-nav-back" id="ab-nav-prev"><i data-lucide="arrow-left"></i> ' + cats[state.guidedCatIdx - 1].name + '</button>';
         }
         var rightBtn = '';
         if (isLast) {
-            rightBtn = '<button class="ab-nav-btn ab-nav-skip" id="ab-nav-finish">Review All <i class="fas fa-list-check"></i></button>';
+            rightBtn = '<button class="ab-nav-btn ab-nav-skip" id="ab-nav-finish">Review All <i data-lucide="list-checks"></i></button>';
         } else {
             rightBtn =
-                '<button class="ab-nav-btn ab-nav-skip" id="ab-nav-skip">Skip <i class="fas fa-forward"></i></button>' +
-                '<button class="ab-nav-btn ab-nav-next" id="ab-nav-next">' + cats[state.guidedCatIdx + 1].name + ' <i class="fas fa-arrow-right"></i></button>';
+                '<button class="ab-nav-btn ab-nav-skip" id="ab-nav-skip">Skip <i data-lucide="skip-forward"></i></button>' +
+                '<button class="ab-nav-btn ab-nav-next" id="ab-nav-next">' + cats[state.guidedCatIdx + 1].name + ' <i data-lucide="arrow-right"></i></button>';
         }
         navEl.innerHTML = '<div class="ab-nav-row">' + leftBtn + '<div class="ab-nav-right">' + rightBtn + '</div></div>';
 
@@ -2097,7 +2105,7 @@ function showApplianceReview() {
     if (headerEl) {
         headerEl.innerHTML =
             '<div class="ab-wiz-head">' +
-                '<div class="ab-wiz-icon review"><i class="fas fa-clipboard-check"></i></div>' +
+                '<div class="ab-wiz-icon review"><i data-lucide="clipboard-check"></i></div>' +
                 '<h2>Here\'s your full list!</h2>' +
                 '<p>' + (!hasAnything ? 'You haven\'t selected any appliances yet. Go back and pick some!' : 'Review everything you\'ve selected. Toggle items off if you change your mind.') + '</p>' +
             '</div>';
@@ -2106,7 +2114,7 @@ function showApplianceReview() {
 
     container.innerHTML = '';
     if (!hasAnything) {
-        container.innerHTML = '<div class="ab-empty"><i class="fas fa-box-open"></i><p>No appliances selected yet</p><button class="ab-nav-btn ab-nav-next" id="ab-go-back-first">Start Selecting <i class="fas fa-arrow-right"></i></button></div>';
+        container.innerHTML = '<div class="ab-empty"><i data-lucide="package-open"></i><p>No appliances selected yet</p><button class="ab-nav-btn ab-nav-next" id="ab-go-back-first">Start Selecting <i data-lucide="arrow-right"></i></button></div>';
         var goBackBtn = container.querySelector('#ab-go-back-first');
         if (goBackBtn) goBackBtn.addEventListener('click', function() {
             state.guidedCatIdx = 0;
@@ -2132,7 +2140,7 @@ function showApplianceReview() {
         if (!grouped[cat.id] && !(cat.id === 'other' && hasCustom)) return;
         var section = document.createElement('div');
         section.className = 'ab-review-cat';
-        section.innerHTML = '<div class="ab-category-header"><i class="fas ' + cat.icon + '"></i><h3>' + cat.name + '</h3></div>';
+        section.innerHTML = '<div class="ab-category-header"><i data-lucide="' + cat.icon + '"></i><h3>' + cat.name + '</h3></div>';
 
         if (grouped[cat.id]) {
             grouped[cat.id].forEach(function(item) {
@@ -2142,11 +2150,11 @@ function showApplianceReview() {
                 row.className = 'ab-review-row';
                 row.innerHTML =
                     '<div class="ab-review-info">' +
-                        '<i class="fas ' + item.app.icon + '"></i>' +
+                        '<i data-lucide= +  + ></i>' +
                         '<div><strong>' + item.app.name + '</strong><span>' + v.label + ' × ' + item.inst.qty + '</span></div>' +
                     '</div>' +
                     '<div class="ab-review-watts">' + fmt(total) + 'W</div>' +
-                    '<button class="ab-review-remove" data-app-id="' + item.app.id + '" data-inst-idx="' + item.instIdx + '" title="Remove"><i class="fas fa-times"></i></button>';
+                    '<button class="ab-review-remove" data-app-id="' + item.app.id + '" data-inst-idx="' + item.instIdx + '" title="Remove"><i data-lucide="x"></i></button>';
                 row.querySelector('.ab-review-remove').addEventListener('click', function() {
                     state.guidedAppliances[item.app.id].splice(item.instIdx, 1);
                     if (state.guidedAppliances[item.app.id].length === 0) delete state.guidedAppliances[item.app.id];
@@ -2165,11 +2173,11 @@ function showApplianceReview() {
                 row.className = 'ab-review-row';
                 row.innerHTML =
                     '<div class="ab-review-info">' +
-                        '<i class="fas fa-plug"></i>' +
+                        '<i data-lucide="plug"></i>' +
                         '<div><strong>' + dev.name + '</strong><span>' + dev.watts + 'W × ' + dev.qty + '</span></div>' +
                     '</div>' +
                     '<div class="ab-review-watts">' + fmt(total) + 'W</div>' +
-                    '<button class="ab-review-remove" data-custom-idx="' + di + '" title="Remove"><i class="fas fa-times"></i></button>';
+                    '<button class="ab-review-remove" data-custom-idx="' + di + '" title="Remove"><i data-lucide="x"></i></button>';
                 row.querySelector('.ab-review-remove').addEventListener('click', function() {
                     state.guidedCustomDevices.splice(di, 1);
                     showApplianceReview();
@@ -2185,7 +2193,7 @@ function showApplianceReview() {
     if (navEl) {
         navEl.innerHTML =
             '<div class="ab-nav-row">' +
-                '<button class="ab-nav-btn ab-nav-back" id="ab-review-back"><i class="fas fa-arrow-left"></i> Add More</button>' +
+                '<button class="ab-nav-btn ab-nav-back" id="ab-review-back"><i data-lucide="arrow-left"></i> Add More</button>' +
                 '<div class="ab-nav-right"></div>' +
             '</div>';
         navEl.querySelector('#ab-review-back').addEventListener('click', function() {
@@ -2199,17 +2207,17 @@ function renderCustomDeviceSection(container) {
     var wrap = document.createElement('div');
     wrap.className = 'ab-custom-section';
     wrap.innerHTML =
-        '<div class="ab-custom-header"><i class="fas fa-plus-circle"></i><h3>Add a Custom Device</h3></div>' +
+        '<div class="ab-custom-header"><i data-lucide="circle-plus"></i><h3>Add a Custom Device</h3></div>' +
         '<p class="ab-custom-desc">Have something we didn\'t list? Enter it here.</p>' +
         '<div class="ab-custom-form">' +
             '<input type="text" class="ab-custom-input" id="custom-dev-name" placeholder="Device name (e.g. Fish Pond Pump)" maxlength="60">' +
             '<input type="number" class="ab-custom-input ab-custom-watts" id="custom-dev-watts" placeholder="Watts" min="1" max="50000">' +
             '<div class="ab-qty-ctrl">' +
-                '<button class="ab-qty-btn" id="custom-dev-qty-minus" type="button"><i class="fas fa-minus"></i></button>' +
+                '<button class="ab-qty-btn" id="custom-dev-qty-minus" type="button"><i data-lucide="minus"></i></button>' +
                 '<span class="ab-qty-val" id="custom-dev-qty">1</span>' +
-                '<button class="ab-qty-btn" id="custom-dev-qty-plus" type="button"><i class="fas fa-plus"></i></button>' +
+                '<button class="ab-qty-btn" id="custom-dev-qty-plus" type="button"><i data-lucide="plus"></i></button>' +
             '</div>' +
-            '<button class="ab-nav-btn ab-nav-next ab-custom-add-btn" id="custom-dev-add" type="button"><i class="fas fa-plus"></i> Add</button>' +
+            '<button class="ab-nav-btn ab-nav-next ab-custom-add-btn" id="custom-dev-add" type="button"><i data-lucide="plus"></i> Add</button>' +
         '</div>';
 
     // Existing custom devices list
@@ -2219,11 +2227,11 @@ function renderCustomDeviceSection(container) {
             var total = dev.watts * dev.qty;
             listHtml +=
                 '<div class="ab-review-row">' +
-                    '<div class="ab-review-info"><i class="fas fa-plug"></i>' +
+                    '<div class="ab-review-info"><i data-lucide="plug"></i>' +
                         '<div><strong>' + dev.name + '</strong><span>' + dev.watts + 'W × ' + dev.qty + '</span></div>' +
                     '</div>' +
                     '<div class="ab-review-watts">' + fmt(total) + 'W</div>' +
-                    '<button class="ab-custom-remove ab-review-remove" data-idx="' + di + '" title="Remove"><i class="fas fa-times"></i></button>' +
+                    '<button class="ab-custom-remove ab-review-remove" data-idx="' + di + '" title="Remove"><i data-lucide="x"></i></button>' +
                 '</div>';
         });
         listHtml += '</div>';
@@ -2301,16 +2309,21 @@ function recalcGuidedLoad() {
     var textEl = $('#load-size-text');
     if (badgeEl && textEl) {
         var tier;
-        if (running === 0)       tier = { label: 'Add appliances to begin', cls: 'empty', icon: 'fa-bolt' };
-        else if (running <= 800) tier = { label: 'Light use — a small inverter will do', cls: 'tiny', icon: 'fa-seedling' };
-        else if (running <= 1500) tier = { label: 'Small system — basic home backup', cls: 'small', icon: 'fa-house' };
-        else if (running <= 3500) tier = { label: 'Medium system — covers most homes', cls: 'medium', icon: 'fa-house-chimney' };
-        else if (running <= 6000) tier = { label: 'Large system — full home or small office', cls: 'large', icon: 'fa-building' };
-        else if (running <= 10000) tier = { label: 'Heavy system — large property or business', cls: 'heavy', icon: 'fa-industry' };
-        else                       tier = { label: 'Commercial grade — three-phase territory', cls: 'commercial', icon: 'fa-warehouse' };
+        if (running === 0)       tier = { label: 'Add appliances to begin', cls: 'empty', icon: 'zap' };
+        else if (running <= 800) tier = { label: 'Light use — a small inverter will do', cls: 'tiny', icon: 'sprout' };
+        else if (running <= 1500) tier = { label: 'Small system — basic home backup', cls: 'small', icon: 'house' };
+        else if (running <= 3500) tier = { label: 'Medium system — covers most homes', cls: 'medium', icon: 'house' };
+        else if (running <= 6000) tier = { label: 'Large system — full home or small office', cls: 'large', icon: 'building-2' };
+        else if (running <= 10000) tier = { label: 'Heavy system — large property or business', cls: 'heavy', icon: 'factory' };
+        else                       tier = { label: 'Commercial grade — three-phase territory', cls: 'commercial', icon: 'warehouse' };
         textEl.textContent = tier.label;
         badgeEl.className = 'load-size-badge ' + tier.cls;
-        badgeEl.querySelector('i').className = 'fas ' + tier.icon;
+        var iconEl = badgeEl.querySelector('[data-lucide]') || badgeEl.querySelector('i');
+        if (iconEl) {
+            iconEl.setAttribute('data-lucide', tier.icon);
+            iconEl.removeAttribute('class');
+        }
+        refreshIcons();
     }
 }
 
@@ -2333,7 +2346,7 @@ function renderRecommendations() {
         state.phase = 'three';
         if (phaseInfo) phaseInfo.innerHTML =
             '<div class="rec-phase-badge three">' +
-                '<i class="fas fa-building"></i>' +
+                '<i data-lucide="building-2"></i>' +
                 '<div><strong>Three Phase Recommended</strong><p>Your ' + fmt(watts) + 'W load needs a commercial-grade 3-phase system.</p></div>' +
             '</div>';
 
@@ -2363,10 +2376,10 @@ function renderRecommendations() {
 
             var batInfo = '';
             if (brand === 'Kstar' && pkg.batteries) {
-                batInfo = '<span class="card-meta"><i class="fas fa-car-battery"></i> Includes ' + pkg.batteries.count + '× ' + pkg.batteries.name + ' (' + pkg.batteries.totalCapacity + ')</span>';
+                batInfo = '<span class="card-meta"><i data-lucide="battery-charging"></i> Includes ' + pkg.batteries.count + '× ' + pkg.batteries.name + ' (' + pkg.batteries.totalCapacity + ')</span>';
             }
             if (brand === 'ATESS' && pkg.battery) {
-                batInfo = '<span class="card-meta"><i class="fas fa-car-battery"></i> ' + pkg.battery.name + ' — configurable 1–3 master pairs</span>';
+                batInfo = '<span class="card-meta"><i data-lucide="battery-charging"></i> ' + pkg.battery.name + ' — configurable 1–3 master pairs</span>';
             }
 
             var matchBar =
@@ -2376,14 +2389,14 @@ function renderRecommendations() {
             var el = document.createElement('div');
             el.className = 'product-card pkg-card' + (sel ? ' selected' : '');
             el.innerHTML =
-                '<span class="card-badge badge-premium"><i class="fas fa-bolt"></i> ' + brand + ' 3-Phase</span>' +
-                '<div class="card-check"><i class="fas fa-check"></i></div>' +
+                '<span class="card-badge badge-premium"><i data-lucide="zap"></i> ' + brand + ' 3-Phase</span>' +
+                '<div class="card-check"><i data-lucide="check"></i></div>' +
                 '<div class="card-thumb"><img src="' + pkg.img + '" alt="Package" loading="lazy"></div>' +
                 '<div class="card-body">' +
                     '<span class="card-title">' + brand + ' ' + pkg.name + '</span>' +
                     '<span class="card-subtitle">' + pkg.bestFor + '</span>' +
                     '<span class="card-price">' + fmt(pkgPrice) + ' Ksh <small>(' + priceLabel + ')</small></span>' +
-                    '<span class="card-meta"><i class="fas fa-solar-panel"></i> ' + pkg.panelCount + '× 600W Solar Panels</span>' +
+                    '<span class="card-meta"><i data-lucide="sun"></i> ' + pkg.panelCount + '× 600W Solar Panels</span>' +
                     batInfo +
                     matchBar +
                 '</div>';
@@ -2394,7 +2407,7 @@ function renderRecommendations() {
         state.phase = 'single';
         if (phaseInfo) phaseInfo.innerHTML =
             '<div class="rec-phase-badge single">' +
-                '<i class="fas fa-house"></i>' +
+                '<i data-lucide="house"></i>' +
                 '<div><strong>Single Phase — Perfect for Your Home</strong><p>Your ' + fmt(watts) + 'W load is well-suited for a single-phase inverter system.</p></div>' +
             '</div>';
 
@@ -2436,8 +2449,8 @@ function renderRecommendations() {
             }
 
             var badge = '';
-            if (idx === bestIdx) badge = '<span class="card-badge badge-rec"><i class="fas fa-thumbs-up"></i> Best Match</span>';
-            else if (inv.series === 'Residential ESS') badge = '<span class="card-badge badge-premium"><i class="fas fa-gem"></i> Premium ESS</span>';
+            if (idx === bestIdx) badge = '<span class="card-badge badge-rec"><i data-lucide="thumbs-up"></i> Best Match</span>';
+            else if (inv.series === 'Residential ESS') badge = '<span class="card-badge badge-premium"><i data-lucide="gem"></i> Premium ESS</span>';
 
             var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
             var title = brand + ' ' + (inv.series ? inv.series + ' ' : '') + inv.kva + 'kVA' + w + ' – ' + inv.voltage + 'V';
@@ -2447,14 +2460,14 @@ function renderRecommendations() {
             el.className = 'product-card' + (sel ? ' selected' : '');
             el.innerHTML =
                 badge +
-                '<div class="card-check"><i class="fas fa-check"></i></div>' +
+                '<div class="card-check"><i data-lucide="check"></i></div>' +
                 '<div class="card-thumb"><img src="' + inv.img + '" alt="Inverter" loading="lazy"></div>' +
                 '<div class="card-body">' +
                     '<span class="card-title">' + title + '</span>' +
                     '<span class="card-subtitle">' + inv.bestFor + '</span>' +
                     '<span class="card-price">' + fmt(inv.price) + ' Ksh</span>' +
                     '<span class="card-meta">Efficiency: ' + inv.details.efficiency + ' · Max: ' + fmt(inv.maxWatts) + 'W</span>' +
-                    (inv.essBattery ? '<div class="ess-battery-banner"><i class="fas fa-car-battery"></i> Includes ' + inv.essBattery.count + '× ' + inv.essBattery.name + ' (' + inv.essBattery.totalCapacity + ') — no battery selection needed</div>' : '') +
+                    (inv.essBattery ? '<div class="ess-battery-banner"><i data-lucide="battery-charging"></i> Includes ' + inv.essBattery.count + '× ' + inv.essBattery.name + ' (' + inv.essBattery.totalCapacity + ') — no battery selection needed</div>' : '') +
                     matchBar +
                 '</div>';
             el.addEventListener('click', function() { guidedSelectInverter(inv, brand); });
@@ -2515,7 +2528,7 @@ function renderGuidedBatteries() {
         var invLabel = state.company + ' ' + (inv.series ? inv.series + ' ' : '') + inv.kva + 'kVA' + w;
         if (inv.model) invLabel = state.company + ' ' + (inv.series ? inv.series + ' ' : '') + inv.model;
         reminderEl.innerHTML =
-            '<div class="guided-reminder-card"><i class="fas fa-bolt"></i>' +
+            '<div class="guided-reminder-card"><i data-lucide="zap"></i>' +
             '<div><strong>Your Inverter:</strong> ' + invLabel + '</div></div>';
     }
 
@@ -2555,25 +2568,25 @@ function renderGuidedBatteries() {
                 '<div class="card-body">' +
                     '<span class="card-title">' + bat.name + '</span>' +
                     '<span class="card-price">' + fmt(bat.price) + ' Ksh/unit</span>' +
-                    '<div class="incompat-reason"><i class="fas fa-ban"></i><span>' + reason + '</span></div>' +
+                    '<div class="incompat-reason"><i data-lucide="ban"></i><span>' + reason + '</span></div>' +
                 '</div>';
         } else {
             var totalCost = bat.price * count;
             var badge = '';
-            if (bat.type === 'lithium') badge = '<span class="card-badge badge-premium"><i class="fas fa-gem"></i> Premium</span>';
+            if (bat.type === 'lithium') badge = '<span class="card-badge badge-premium"><i data-lucide="gem"></i> Premium</span>';
             el.className = 'product-card' + (sel ? ' selected' : '');
             el.innerHTML =
                 badge +
-                '<div class="card-check"><i class="fas fa-check"></i></div>' +
+                '<div class="card-check"><i data-lucide="check"></i></div>' +
                 '<div class="card-thumb"><img src="' + bat.img + '" alt="Battery" loading="lazy"></div>' +
                 '<div class="card-body">' +
                     '<span class="card-title">' + bat.name + '</span>' +
                     '<span class="card-subtitle">' + bat.shortDesc + '</span>' +
                     '<span class="card-price">' + fmt(bat.price) + ' Ksh/unit</span>' +
                     '<span class="card-meta">' + count + ' units needed · Total: ' + fmt(totalCost) + ' Ksh</span>' +
-                    '<span class="card-meta"><i class="fas fa-clock"></i> Backup: ~' + bat.backupHours + ' hrs · ' + bat.warranty + ' warranty</span>' +
+                    '<span class="card-meta"><i data-lucide="clock"></i> Backup: ~' + bat.backupHours + ' hrs · ' + bat.warranty + ' warranty</span>' +
                     '<div class="card-actions">' +
-                        '<a href="' + bat.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i class="fas fa-external-link-alt"></i> Specs</a>' +
+                        '<a href="' + bat.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i data-lucide="external-link"></i> Specs</a>' +
                     '</div>' +
                 '</div>';
             el.addEventListener('click', function(e) {
@@ -2602,30 +2615,30 @@ function renderSelectionOverview() {
     var html = '';
 
     html += '<div class="sel-card">' +
-        '<div class="sel-card-icon"><i class="fas fa-wave-square"></i></div>' +
+        '<div class="sel-card-icon"><i data-lucide="activity"></i></div>' +
         '<div class="sel-card-info"><span class="sel-card-label">Phase</span><span class="sel-card-val">' + (state.phase === 'single' ? 'Single Phase' : 'Three Phase') + '</span></div>' +
-        '<button class="sel-card-edit" data-goto="phase"><i class="fas fa-pen"></i></button></div>';
+        '<button class="sel-card-edit" data-goto="phase"><i data-lucide="pencil"></i></button></div>';
 
     html += '<div class="sel-card">' +
-        '<div class="sel-card-icon"><i class="fas fa-building"></i></div>' +
+        '<div class="sel-card-icon"><i data-lucide="building-2"></i></div>' +
         '<div class="sel-card-info"><span class="sel-card-label">Brand</span><span class="sel-card-val">' + state.company + '</span></div>' +
-        '<button class="sel-card-edit" data-goto="company"><i class="fas fa-pen"></i></button></div>';
+        '<button class="sel-card-edit" data-goto="company"><i data-lucide="pencil"></i></button></div>';
 
     if (state.phase === 'three') {
         html += '<div class="sel-card">' +
-            '<div class="sel-card-icon"><i class="fas fa-bolt"></i></div>' +
+            '<div class="sel-card-icon"><i data-lucide="zap"></i></div>' +
             '<div class="sel-card-info"><span class="sel-card-label">Package</span><span class="sel-card-val">' + state.company + ' ' + state.inverter.name + '</span></div>' +
-            '<button class="sel-card-edit" data-goto="inverter"><i class="fas fa-pen"></i></button></div>';
+            '<button class="sel-card-edit" data-goto="inverter"><i data-lucide="pencil"></i></button></div>';
         if (state.company === 'ATESS') {
             var cfg = state.inverter.battery.configs[state.atessMasterCount - 1];
             html += '<div class="sel-card">' +
-                '<div class="sel-card-icon"><i class="fas fa-car-battery"></i></div>' +
+                '<div class="sel-card-icon"><i data-lucide="battery-charging"></i></div>' +
                 '<div class="sel-card-info"><span class="sel-card-label">Battery Config</span><span class="sel-card-val">' + cfg.totalUnits + '× ' + state.inverter.battery.name + ' (' + cfg.capacity + ')</span></div>' +
-                '<button class="sel-card-edit" data-goto="battery"><i class="fas fa-pen"></i></button></div>';
+                '<button class="sel-card-edit" data-goto="battery"><i data-lucide="pencil"></i></button></div>';
         } else {
             var bat = state.inverter.batteries;
             html += '<div class="sel-card">' +
-                '<div class="sel-card-icon"><i class="fas fa-car-battery"></i></div>' +
+                '<div class="sel-card-icon"><i data-lucide="battery-charging"></i></div>' +
                 '<div class="sel-card-info"><span class="sel-card-label">Battery (Included)</span><span class="sel-card-val">' + bat.count + '× ' + bat.name + ' (' + bat.totalCapacity + ')</span></div></div>';
         }
     } else {
@@ -2633,19 +2646,19 @@ function renderSelectionOverview() {
         var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
         var invLabel = inv.series ? inv.series + ' ' + inv.kva + 'kVA' + w : inv.kva + 'kVA' + w;
         html += '<div class="sel-card">' +
-            '<div class="sel-card-icon"><i class="fas fa-bolt"></i></div>' +
+            '<div class="sel-card-icon"><i data-lucide="zap"></i></div>' +
             '<div class="sel-card-info"><span class="sel-card-label">Inverter</span><span class="sel-card-val">' + invLabel + ' – ' + inv.voltage + 'V</span></div>' +
-            '<button class="sel-card-edit" data-goto="inverter"><i class="fas fa-pen"></i></button></div>';
+            '<button class="sel-card-edit" data-goto="inverter"><i data-lucide="pencil"></i></button></div>';
 
         if (inv.series === 'Residential ESS') {
             html += '<div class="sel-card">' +
-                '<div class="sel-card-icon"><i class="fas fa-car-battery"></i></div>' +
+                '<div class="sel-card-icon"><i data-lucide="battery-charging"></i></div>' +
                 '<div class="sel-card-info"><span class="sel-card-label">Battery (Included)</span><span class="sel-card-val">' + inv.essBattery.count + '× ' + inv.essBattery.name + ' (' + inv.essBattery.totalCapacity + ')</span></div></div>';
         } else if (state.battery) {
             html += '<div class="sel-card">' +
-                '<div class="sel-card-icon"><i class="fas fa-car-battery"></i></div>' +
+                '<div class="sel-card-icon"><i data-lucide="battery-charging"></i></div>' +
                 '<div class="sel-card-info"><span class="sel-card-label">Battery</span><span class="sel-card-val">' + state.battery.name + ' × ' + state.battery.count + '</span></div>' +
-                '<button class="sel-card-edit" data-goto="battery"><i class="fas fa-pen"></i></button></div>';
+                '<button class="sel-card-edit" data-goto="battery"><i data-lucide="pencil"></i></button></div>';
         }
     }
 
@@ -2665,7 +2678,7 @@ function renderPanelInfo() {
         panelInfo.innerHTML =
             '<p><strong>' + state.panels + '</strong> × ' + pw + 'W solar panels</p>' +
             '<p class="price">' + fmt(pp) + ' Ksh each · Total: ' + fmt(state.panels * pp) + ' Ksh</p>' +
-            '<a href="' + (state.panelType ? state.panelType.specsLink : '#') + '" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Panel Specs</a>';
+            '<a href="' + (state.panelType ? state.panelType.specsLink : '#') + '" target="_blank" rel="noopener"><i data-lucide="external-link"></i> Panel Specs</a>';
     } else {
         panelInfo.innerHTML = '<p>No solar panels needed for this configuration.</p>';
     }
@@ -2697,31 +2710,31 @@ function renderAccessoriesBlock() {
             var accHtml = '<div class="quote-block-header"><span class="qb-num">3</span><div><h2>Package Accessories</h2><p class="qb-hint">Equipment included with your system</p></div></div><div class="acc-grid">';
             state.inverter.accessories.forEach(function(acc) {
                 accHtml += '<div class="acc-card">' +
-                    '<i class="fas fa-microchip"></i>' +
+                    '<i data-lucide="cpu"></i>' +
                     '<span class="acc-name">' + acc.name + '</span>' +
                     '<span class="acc-price">' + fmt(usdToKes(acc.usdPrice)) + ' Ksh</span>' +
                     '<span class="acc-warranty">' + acc.warranty + '</span>' +
-                    (acc.specsLink ? '<a href="' + acc.specsLink + '" target="_blank" rel="noopener" class="acc-specs-link"><i class="fas fa-external-link-alt"></i> Specs</a>' : '') +
+                    (acc.specsLink ? '<a href="' + acc.specsLink + '" target="_blank" rel="noopener" class="acc-specs-link"><i data-lucide="external-link"></i> Specs</a>' : '') +
                 '</div>';
             });
-            accHtml += '<div class="acc-card"><i class="fas fa-solar-panel"></i><span class="acc-name">Mounting & Cables</span><span class="acc-price">' + fmt(getMountingCost()) + ' Ksh</span><span class="acc-warranty">' + state.panels + ' panels × ' + fmt(usdToKes(USD_PRICES.mountingPerPanel)) + ' Ksh</span></div>';
+            accHtml += '<div class="acc-card"><i data-lucide="sun"></i><span class="acc-name">Mounting & Cables</span><span class="acc-price">' + fmt(getMountingCost()) + ' Ksh</span><span class="acc-warranty">' + state.panels + ' panels × ' + fmt(usdToKes(USD_PRICES.mountingPerPanel)) + ' Ksh</span></div>';
             accHtml += '</div>';
             block.innerHTML = accHtml;
         } else {
             block.innerHTML =
                 '<div class="quote-block-header"><span class="qb-num">3</span><div><h2>Included Items</h2><p class="qb-hint">Equipment included with your system</p></div></div>' +
                 '<div class="acc-grid">' +
-                    '<div class="acc-card"><i class="fas fa-solar-panel"></i><span class="acc-name">Mounting & Cables</span><span class="acc-price">' + fmt(getMountingCost()) + ' Ksh</span><span class="acc-warranty">' + state.panels + ' panels × ' + fmt(usdToKes(USD_PRICES.mountingPerPanel)) + ' Ksh</span></div>' +
+                    '<div class="acc-card"><i data-lucide="sun"></i><span class="acc-name">Mounting & Cables</span><span class="acc-price">' + fmt(getMountingCost()) + ' Ksh</span><span class="acc-warranty">' + state.panels + ' panels × ' + fmt(usdToKes(USD_PRICES.mountingPerPanel)) + ' Ksh</span></div>' +
                 '</div>';
         }
     } else {
         block.innerHTML =
             '<div class="quote-block-header"><span class="qb-num">3</span><div><h2>Included Accessories</h2><p class="qb-hint">Standard items bundled with your inverter</p></div></div>' +
             '<div class="acc-grid">' +
-                '<div class="acc-card"><i class="fas fa-toggle-on"></i><span class="acc-name">Change Over Switch</span><span class="acc-price" id="acc-changeover-price">' + fmt(usdToKes(USD_PRICES.changeOverSwitch)) + ' Ksh</span></div>' +
-                '<div class="acc-card"><i class="fas fa-plug"></i><span class="acc-name">DC MCCB</span><span class="acc-price" id="acc-dc-mccb-price">' + fmt(usdToKes(USD_PRICES.accessories.dcMccb)) + ' Ksh</span></div>' +
-                '<div class="acc-card"><i class="fas fa-sliders-h"></i><span class="acc-name">AVS 30 AMPS</span><span class="acc-price" id="acc-avs-price">' + fmt(usdToKes(USD_PRICES.accessories.avs30Amps)) + ' Ksh</span></div>' +
-                '<div class="acc-card" id="mounting-cost"><i class="fas fa-solar-panel"></i><span class="acc-name">Mounting & Cables</span><span class="acc-price">' + fmt(getMountingCost()) + ' Ksh</span><span class="acc-warranty">' + state.panels + ' panels × ' + fmt(usdToKes(USD_PRICES.mountingPerPanel)) + ' Ksh</span></div>' +
+                '<div class="acc-card"><i data-lucide="toggle-right"></i><span class="acc-name">Change Over Switch</span><span class="acc-price" id="acc-changeover-price">' + fmt(usdToKes(USD_PRICES.changeOverSwitch)) + ' Ksh</span></div>' +
+                '<div class="acc-card"><i data-lucide="plug"></i><span class="acc-name">DC MCCB</span><span class="acc-price" id="acc-dc-mccb-price">' + fmt(usdToKes(USD_PRICES.accessories.dcMccb)) + ' Ksh</span></div>' +
+                '<div class="acc-card"><i data-lucide="sliders-horizontal"></i><span class="acc-name">AVS 30 AMPS</span><span class="acc-price" id="acc-avs-price">' + fmt(usdToKes(USD_PRICES.accessories.avs30Amps)) + ' Ksh</span></div>' +
+                '<div class="acc-card" id="mounting-cost"><i data-lucide="sun"></i><span class="acc-name">Mounting & Cables</span><span class="acc-price">' + fmt(getMountingCost()) + ' Ksh</span><span class="acc-warranty">' + state.panels + ' panels × ' + fmt(usdToKes(USD_PRICES.mountingPerPanel)) + ' Ksh</span></div>' +
             '</div>';
     }
 }
@@ -2933,14 +2946,15 @@ function showApplianceModal(inv) {
     var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
     var seriesLabel = inv.series ? inv.series + ' ' : '';
     $('#modal-title').textContent = state.company + ' ' + seriesLabel + inv.kva + 'kVA' + w + ' – Compatible Appliances';
-    var featureList = inv.details.features.map(function(f) { return '<li><i class="fas fa-check"></i> ' + f + '</li>'; }).join('');
+    var featureList = inv.details.features.map(function(f) { return '<li><i data-lucide="check"></i> ' + f + '</li>'; }).join('');
     $('#modal-body').innerHTML =
         '<ul class="compat-list">' + inv.appliances.map(function(a) {
-            return '<li><i class="fas fa-check-circle"></i> <strong>' + a.count + '×</strong> ' + a.name + '</li>';
+            return '<li><i data-lucide="check-circle"></i> <strong>' + a.count + '×</strong> ' + a.name + '</li>';
         }).join('') + '</ul>' +
         '<div class="detail-box"><p><strong>Efficiency:</strong> ' + inv.details.efficiency + '</p><p><strong>Battery Support:</strong> ' + inv.details.batteryCompatibility + '</p><p><strong>Max Output:</strong> ' + fmt(inv.maxWatts) + 'W continuous</p></div>' +
         '<div class="detail-box" style="margin-top:12px"><p><strong>Features:</strong></p><ul class="feature-list">' + featureList + '</ul></div>';
     $('#appliance-modal').classList.remove('hidden');
+    refreshIcons();
 }
 function closeModal(modal) { modal.classList.add('hidden'); }
 
@@ -3308,6 +3322,7 @@ document.addEventListener('DOMContentLoaded', function() {
         requestedStep = 'landing';
     }
     goTo(requestedStep);
+    refreshIcons();
 
     refreshExchangeRateAndPricing();
 

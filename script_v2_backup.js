@@ -26,18 +26,18 @@ const pricingState = {
 
 /* ---------- appliances ---------- */
 const APPLIANCES = [
-    { id: 'bulbs', name: 'LED Lights (×10)', watts: 100, icon: 'fa-lightbulb' },
-    { id: 'tv', name: 'Television', watts: 120, icon: 'fa-tv' },
-    { id: 'fridge', name: 'Fridge', watts: 150, icon: 'fa-temperature-low' },
-    { id: 'fan', name: 'Fans (×2)', watts: 150, icon: 'fa-fan' },
-    { id: 'laptop', name: 'Laptop', watts: 65, icon: 'fa-laptop' },
-    { id: 'router', name: 'WiFi Router', watts: 15, icon: 'fa-wifi' },
-    { id: 'phone', name: 'Phone Charging', watts: 25, icon: 'fa-mobile-screen' },
-    { id: 'micro', name: 'Microwave', watts: 1200, icon: 'fa-fire' },
-    { id: 'iron', name: 'Iron', watts: 1000, icon: 'fa-shirt' },
-    { id: 'washer', name: 'Washing Machine', watts: 500, icon: 'fa-soap' },
-    { id: 'pump', name: 'Water Pump', watts: 1000, icon: 'fa-faucet' },
-    { id: 'blender', name: 'Blender', watts: 400, icon: 'fa-blender' }
+    { id: 'bulbs', name: 'LED Lights (×10)', watts: 100, icon: 'lightbulb' },
+    { id: 'tv', name: 'Television', watts: 120, icon: 'tv' },
+    { id: 'fridge', name: 'Fridge', watts: 150, icon: 'thermometer' },
+    { id: 'fan', name: 'Fans (×2)', watts: 150, icon: 'fan' },
+    { id: 'laptop', name: 'Laptop', watts: 65, icon: 'laptop' },
+    { id: 'router', name: 'WiFi Router', watts: 15, icon: 'wifi' },
+    { id: 'phone', name: 'Phone Charging', watts: 25, icon: 'smartphone' },
+    { id: 'micro', name: 'Microwave', watts: 1200, icon: 'flame' },
+    { id: 'iron', name: 'Iron', watts: 1000, icon: 'shirt' },
+    { id: 'washer', name: 'Washing Machine', watts: 500, icon: 'droplets' },
+    { id: 'pump', name: 'Water Pump', watts: 1000, icon: 'droplets' },
+    { id: 'blender', name: 'Blender', watts: 400, icon: 'cup-soda' }
 ];
 
 /* ---------- panel types ---------- */
@@ -713,9 +713,10 @@ function toast(message, type, duration) {
     if (!container) return;
     var el = document.createElement('div');
     el.className = 'toast toast-' + type;
-    var icons = { info: 'fa-circle-info', success: 'fa-circle-check', warning: 'fa-triangle-exclamation', error: 'fa-circle-xmark' };
-    el.innerHTML = '<i class="fas ' + (icons[type] || icons.info) + '"></i><span>' + message + '</span>';
+    var icons = { info: 'info', success: 'check-circle', warning: 'triangle-alert', error: 'circle-x' };
+    el.innerHTML = '<i data-lucide="' + (icons[type] || icons.info) + '"></i><span>' + message + '</span>';
     container.appendChild(el);
+    if (window.lucide) lucide.createIcons({ attrs: { class: 'lucide-icon' }, nameAttr: 'data-lucide' });
     requestAnimationFrame(function() { el.classList.add('show'); });
     setTimeout(function() { el.classList.remove('show'); el.addEventListener('transitionend', function() { el.remove(); }); }, duration);
 }
@@ -840,7 +841,7 @@ function renderNeeds() {
         el.className = 'needs-item' + (checked ? ' active' : '');
         el.innerHTML =
             '<input type="checkbox" ' + (checked ? 'checked' : '') + ' data-appliance="' + app.id + '" hidden>' +
-            '<i class="fas ' + app.icon + '"></i>' +
+            '<i data-lucide= +  + ></i>' +
             '<span class="needs-item-name">' + app.name + '</span>' +
             '<span class="needs-item-watts">' + app.watts + 'W</span>';
         el.addEventListener('click', function(e) {
@@ -888,15 +889,15 @@ function renderPhaseSelection() {
     if (!wrap) return;
     wrap.innerHTML = '';
     var phases = [
-        { id: 'single', name: 'Single Phase', icon: 'fa-house', tagline: 'For homes & small offices', desc: 'Kstar & Fortuner inverters with flexible battery options' },
-        { id: 'three', name: 'Three Phase', icon: 'fa-building', tagline: 'For commercial & industrial', desc: 'Kstar & ATESS complete power packages' }
+        { id: 'single', name: 'Single Phase', icon: 'house', tagline: 'For homes & small offices', desc: 'Kstar & Fortuner inverters with flexible battery options' },
+        { id: 'three', name: 'Three Phase', icon: 'building-2', tagline: 'For commercial & industrial', desc: 'Kstar & ATESS complete power packages' }
     ];
     phases.forEach(function(p) {
         var el = document.createElement('div');
         el.className = 'brand-card' + (state.phase === p.id ? ' selected' : '');
         el.innerHTML =
-            '<div class="brand-check"><i class="fas fa-check"></i></div>' +
-            '<div class="phase-icon-wrap"><i class="fas ' + p.icon + '"></i></div>' +
+            '<div class="brand-check"><i data-lucide="check"></i></div>' +
+            '<div class="phase-icon-wrap"><i data-lucide="' + p.icon + '"></i></div>' +
             '<span class="brand-name">' + p.name + '</span>' +
             '<span class="brand-tagline">' + p.tagline + '</span>' +
             '<span class="brand-range">' + p.desc + '</span>';
@@ -925,7 +926,7 @@ function renderCompanies() {
         var el = document.createElement('div');
         el.className = 'brand-card' + (state.company === c.name ? ' selected' : '');
         el.innerHTML =
-            '<div class="brand-check"><i class="fas fa-check"></i></div>' +
+            '<div class="brand-check"><i data-lucide="check"></i></div>' +
             '<img src="' + c.img + '" alt="' + c.name + '" class="brand-img" loading="lazy" onerror="this.style.display=\'none\'">' +
             '<span class="brand-name">' + c.name + '</span>' +
             '<span class="brand-tagline">' + c.tagline + '</span>' +
@@ -974,8 +975,8 @@ function renderSinglePhaseInverters() {
         var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
         var outOfStock = !!inv.outOfStock;
         var badge = '';
-        if (outOfStock) badge = '<span class="card-badge badge-out"><i class="fas fa-ban"></i> Out of Stock</span>';
-        else if (inv.series === 'Residential ESS') badge = '<span class="card-badge badge-premium"><i class="fas fa-gem"></i> Premium ESS</span>';
+        if (outOfStock) badge = '<span class="card-badge badge-out"><i data-lucide="ban"></i> Out of Stock</span>';
+        else if (inv.series === 'Residential ESS') badge = '<span class="card-badge badge-premium"><i data-lucide="gem"></i> Premium ESS</span>';
 
         var matchBar = '';
         if (userWatts > 0 && !outOfStock) {
@@ -993,7 +994,7 @@ function renderSinglePhaseInverters() {
         el.className = 'product-card' + (sel ? ' selected' : '') + (outOfStock ? ' out-of-stock' : '');
         el.innerHTML =
             badge +
-            '<div class="card-check"><i class="fas fa-check"></i></div>' +
+            '<div class="card-check"><i data-lucide="check"></i></div>' +
             '<div class="card-thumb"><img src="' + inv.img + '" alt="Inverter" loading="lazy"></div>' +
             '<div class="card-body">' +
                 '<span class="card-title">' + title + '</span>' +
@@ -1001,12 +1002,12 @@ function renderSinglePhaseInverters() {
                 '<span class="card-price">' + fmt(inv.price) + ' Ksh</span>' +
                 (outOfStock ? '<span class="card-meta stock-meta">Currently unavailable</span>' : '') +
                 '<span class="card-meta">Efficiency: ' + inv.details.efficiency + ' · Max: ' + fmt(inv.maxWatts) + 'W</span>' +
-                (inv.essBattery ? '<div class="ess-battery-banner"><i class="fas fa-car-battery"></i> Includes ' + inv.essBattery.count + '× ' + inv.essBattery.name + ' (' + inv.essBattery.totalCapacity + ') — no battery selection needed</div>' : '') +
+                (inv.essBattery ? '<div class="ess-battery-banner"><i data-lucide="battery-charging"></i> Includes ' + inv.essBattery.count + '× ' + inv.essBattery.name + ' (' + inv.essBattery.totalCapacity + ') — no battery selection needed</div>' : '') +
                 matchBar +
                 '<div class="card-actions">' +
-                    '<a href="' + inv.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i class="fas fa-external-link-alt"></i> Specs</a>' +
-                    (inv.essBattery ? '<a href="' + inv.essBattery.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i class="fas fa-car-battery"></i> Battery Specs</a>' : '') +
-                    (outOfStock ? '<span class="card-link stock-meta"><i class="fas fa-lock"></i> Disabled</span>' : '<button class="card-link card-btn compat-btn" data-idx="' + idx + '"><i class="fas fa-info-circle"></i> More Info</button>') +
+                    '<a href="' + inv.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i data-lucide="external-link"></i> Specs</a>' +
+                    (inv.essBattery ? '<a href="' + inv.essBattery.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i data-lucide="battery-charging"></i> Battery Specs</a>' : '') +
+                    (outOfStock ? '<span class="card-link stock-meta"><i data-lucide="lock"></i> Disabled</span>' : '<button class="card-link card-btn compat-btn" data-idx="' + idx + '"><i data-lucide="info"></i> More Info</button>') +
                 '</div>' +
             '</div>';
         el.addEventListener('click', function(e) {
@@ -1042,33 +1043,33 @@ function renderThreePhasePackages() {
 
         var features = '';
         if (pkg.inverterNotes) {
-            features = '<div class="pkg-features"><ul>' + pkg.inverterNotes.map(function(n) { return '<li><i class="fas fa-check"></i> ' + n + '</li>'; }).join('') + '</ul></div>';
+            features = '<div class="pkg-features"><ul>' + pkg.inverterNotes.map(function(n) { return '<li><i data-lucide="check"></i> ' + n + '</li>'; }).join('') + '</ul></div>';
         }
 
         var batInfo = '';
         if (state.company === 'Kstar' && pkg.batteries) {
-            batInfo = '<span class="card-meta"><i class="fas fa-car-battery"></i> Includes ' + pkg.batteries.count + '× ' + pkg.batteries.name + ' (' + pkg.batteries.totalCapacity + ')</span>';
+            batInfo = '<span class="card-meta"><i data-lucide="battery-charging"></i> Includes ' + pkg.batteries.count + '× ' + pkg.batteries.name + ' (' + pkg.batteries.totalCapacity + ')</span>';
         }
         if (state.company === 'ATESS' && pkg.battery) {
-            batInfo = '<span class="card-meta"><i class="fas fa-car-battery"></i> ' + pkg.battery.name + ' — configurable 1–3 master pairs</span>';
+            batInfo = '<span class="card-meta"><i data-lucide="battery-charging"></i> ' + pkg.battery.name + ' — configurable 1–3 master pairs</span>';
         }
 
         var el = document.createElement('div');
         el.className = 'product-card pkg-card' + (sel ? ' selected' : '');
         el.innerHTML =
-            '<span class="card-badge badge-premium"><i class="fas fa-bolt"></i> 3-Phase</span>' +
-            '<div class="card-check"><i class="fas fa-check"></i></div>' +
+            '<span class="card-badge badge-premium"><i data-lucide="zap"></i> 3-Phase</span>' +
+            '<div class="card-check"><i data-lucide="check"></i></div>' +
             '<div class="card-thumb"><img src="' + pkg.img + '" alt="Package" loading="lazy"></div>' +
             '<div class="card-body">' +
                 '<span class="card-title">' + state.company + ' ' + pkg.name + '</span>' +
                 '<span class="card-subtitle">' + pkg.bestFor + '</span>' +
                 '<span class="card-price">' + fmt(pkgPrice) + ' Ksh <small>(' + priceLabel + ')</small></span>' +
-                '<span class="card-meta"><i class="fas fa-solar-panel"></i> ' + pkg.panelCount + '× 600W Solar Panels</span>' +
+                '<span class="card-meta"><i data-lucide="sun"></i> ' + pkg.panelCount + '× 600W Solar Panels</span>' +
                 batInfo +
                 features +
                 '<div class="card-actions">' +
-                    '<a href="' + pkg.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i class="fas fa-external-link-alt"></i> Specs</a>' +
-                    (pkg.batteries && pkg.batteries.specsLink ? '<a href="' + pkg.batteries.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i class="fas fa-car-battery"></i> Battery Specs</a>' : '') +
+                    '<a href="' + pkg.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i data-lucide="external-link"></i> Specs</a>' +
+                    (pkg.batteries && pkg.batteries.specsLink ? '<a href="' + pkg.batteries.specsLink + '" target="_blank" rel="noopener" class="card-link card-btn"><i data-lucide="battery-charging"></i> Battery Specs</a>' : '') +
                 '</div>' +
             '</div>';
         el.addEventListener('click', function(e) {
@@ -1106,16 +1107,16 @@ function renderSinglePhaseBatteries() {
                 '<div class="card-body">' +
                     '<span class="card-title">' + bat.name + '</span>' +
                     '<span class="card-price">' + fmt(bat.price) + ' Ksh/unit</span>' +
-                    '<div class="incompat-reason"><i class="fas fa-ban"></i><span>' + reason + '</span></div>' +
+                    '<div class="incompat-reason"><i data-lucide="ban"></i><span>' + reason + '</span></div>' +
                 '</div>';
         } else {
             var totalCost = bat.price * count;
             var badge = '';
-            if (bat.type === 'lithium') badge = '<span class="card-badge badge-premium"><i class="fas fa-gem"></i> Premium</span>';
+            if (bat.type === 'lithium') badge = '<span class="card-badge badge-premium"><i data-lucide="gem"></i> Premium</span>';
             el.className = 'product-card' + (sel ? ' selected' : '');
             el.innerHTML =
                 badge +
-                '<div class="card-check"><i class="fas fa-check"></i></div>' +
+                '<div class="card-check"><i data-lucide="check"></i></div>' +
                 '<div class="card-thumb"><img src="' + bat.img + '" alt="Battery" loading="lazy"></div>' +
                 '<div class="card-body">' +
                     '<span class="card-title">' + bat.name + '</span>' +
@@ -1123,7 +1124,7 @@ function renderSinglePhaseBatteries() {
                     '<span class="card-price">' + fmt(bat.price) + ' Ksh <small>× ' + count + ' = ' + fmt(totalCost) + ' Ksh</small></span>' +
                     '<span class="card-meta">~' + (bat.backupHours * count).toFixed(1) + ' hrs backup · ' + bat.warranty + ' warranty</span>' +
                     '<span class="card-meta">' + reason + '</span>' +
-                    '<div class="card-actions"><a href="' + bat.specsLink + '" target="_blank" rel="noopener" class="card-link"><i class="fas fa-external-link-alt"></i> Specs</a></div>' +
+                    '<div class="card-actions"><a href="' + bat.specsLink + '" target="_blank" rel="noopener" class="card-link"><i data-lucide="external-link"></i> Specs</a></div>' +
                 '</div>';
             el.addEventListener('click', function(e) {
                 if (!e.target.closest('a')) selectBattery(bat, count);
@@ -1152,15 +1153,15 @@ function renderAtessBatteryConfig() {
         var el = document.createElement('div');
         el.className = 'product-card' + (sel ? ' selected' : '');
         el.innerHTML =
-            (cfg.masters === 3 ? '<span class="card-badge badge-rec"><i class="fas fa-star"></i> Maximum</span>' : '') +
-            '<div class="card-check"><i class="fas fa-check"></i></div>' +
+            (cfg.masters === 3 ? '<span class="card-badge badge-rec"><i data-lucide="star"></i> Maximum</span>' : '') +
+            '<div class="card-check"><i data-lucide="check"></i></div>' +
             '<div class="card-thumb"><img src="images/battery-100ah-lithium.png" alt="Battery" loading="lazy"></div>' +
             '<div class="card-body">' +
                 '<span class="card-title">' + cfg.masters + ' Master + ' + cfg.masters + ' Slave</span>' +
                 '<span class="card-subtitle">' + cfg.totalUnits + ' batteries total · ' + cfg.capacity + '</span>' +
                 '<span class="card-price">' + fmt(unitPrice) + ' Ksh <small>× ' + cfg.totalUnits + ' = ' + fmt(totalPrice) + ' Ksh</small></span>' +
                 '<span class="card-meta">' + inv.battery.warranty + ' warranty · ' + inv.battery.name + '</span>' +
-                '<div class="card-actions"><a href="' + inv.battery.specsLink + '" target="_blank" rel="noopener" class="card-link"><i class="fas fa-external-link-alt"></i> Specs</a></div>' +
+                '<div class="card-actions"><a href="' + inv.battery.specsLink + '" target="_blank" rel="noopener" class="card-link"><i data-lucide="external-link"></i> Specs</a></div>' +
             '</div>';
         el.addEventListener('click', function(e) {
             if (!e.target.closest('a')) selectAtessBatteryConfig(cfg.masters);
@@ -1386,30 +1387,30 @@ function renderSelectionOverview() {
     var html = '';
 
     html += '<div class="sel-card">' +
-        '<div class="sel-card-icon"><i class="fas fa-wave-square"></i></div>' +
+        '<div class="sel-card-icon"><i data-lucide="activity"></i></div>' +
         '<div class="sel-card-info"><span class="sel-card-label">Phase</span><span class="sel-card-val">' + (state.phase === 'single' ? 'Single Phase' : 'Three Phase') + '</span></div>' +
-        '<button class="sel-card-edit" data-goto="phase"><i class="fas fa-pen"></i></button></div>';
+        '<button class="sel-card-edit" data-goto="phase"><i data-lucide="pencil"></i></button></div>';
 
     html += '<div class="sel-card">' +
-        '<div class="sel-card-icon"><i class="fas fa-building"></i></div>' +
+        '<div class="sel-card-icon"><i data-lucide="building-2"></i></div>' +
         '<div class="sel-card-info"><span class="sel-card-label">Brand</span><span class="sel-card-val">' + state.company + '</span></div>' +
-        '<button class="sel-card-edit" data-goto="company"><i class="fas fa-pen"></i></button></div>';
+        '<button class="sel-card-edit" data-goto="company"><i data-lucide="pencil"></i></button></div>';
 
     if (state.phase === 'three') {
         html += '<div class="sel-card">' +
-            '<div class="sel-card-icon"><i class="fas fa-bolt"></i></div>' +
+            '<div class="sel-card-icon"><i data-lucide="zap"></i></div>' +
             '<div class="sel-card-info"><span class="sel-card-label">Package</span><span class="sel-card-val">' + state.company + ' ' + state.inverter.name + '</span></div>' +
-            '<button class="sel-card-edit" data-goto="inverter"><i class="fas fa-pen"></i></button></div>';
+            '<button class="sel-card-edit" data-goto="inverter"><i data-lucide="pencil"></i></button></div>';
         if (state.company === 'ATESS') {
             var cfg = state.inverter.battery.configs[state.atessMasterCount - 1];
             html += '<div class="sel-card">' +
-                '<div class="sel-card-icon"><i class="fas fa-car-battery"></i></div>' +
+                '<div class="sel-card-icon"><i data-lucide="battery-charging"></i></div>' +
                 '<div class="sel-card-info"><span class="sel-card-label">Battery Config</span><span class="sel-card-val">' + cfg.totalUnits + '× ' + state.inverter.battery.name + ' (' + cfg.capacity + ')</span></div>' +
-                '<button class="sel-card-edit" data-goto="battery"><i class="fas fa-pen"></i></button></div>';
+                '<button class="sel-card-edit" data-goto="battery"><i data-lucide="pencil"></i></button></div>';
         } else {
             var bat = state.inverter.batteries;
             html += '<div class="sel-card">' +
-                '<div class="sel-card-icon"><i class="fas fa-car-battery"></i></div>' +
+                '<div class="sel-card-icon"><i data-lucide="battery-charging"></i></div>' +
                 '<div class="sel-card-info"><span class="sel-card-label">Battery (Included)</span><span class="sel-card-val">' + bat.count + '× ' + bat.name + ' (' + bat.totalCapacity + ')</span></div></div>';
         }
     } else {
@@ -1417,19 +1418,19 @@ function renderSelectionOverview() {
         var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
         var invLabel = inv.series ? inv.series + ' ' + inv.kva + 'kVA' + w : inv.kva + 'kVA' + w;
         html += '<div class="sel-card">' +
-            '<div class="sel-card-icon"><i class="fas fa-bolt"></i></div>' +
+            '<div class="sel-card-icon"><i data-lucide="zap"></i></div>' +
             '<div class="sel-card-info"><span class="sel-card-label">Inverter</span><span class="sel-card-val">' + invLabel + ' – ' + inv.voltage + 'V</span></div>' +
-            '<button class="sel-card-edit" data-goto="inverter"><i class="fas fa-pen"></i></button></div>';
+            '<button class="sel-card-edit" data-goto="inverter"><i data-lucide="pencil"></i></button></div>';
 
         if (inv.series === 'Residential ESS') {
             html += '<div class="sel-card">' +
-                '<div class="sel-card-icon"><i class="fas fa-car-battery"></i></div>' +
+                '<div class="sel-card-icon"><i data-lucide="battery-charging"></i></div>' +
                 '<div class="sel-card-info"><span class="sel-card-label">Battery (Included)</span><span class="sel-card-val">' + inv.essBattery.count + '× ' + inv.essBattery.name + ' (' + inv.essBattery.totalCapacity + ')</span></div></div>';
         } else if (state.battery) {
             html += '<div class="sel-card">' +
-                '<div class="sel-card-icon"><i class="fas fa-car-battery"></i></div>' +
+                '<div class="sel-card-icon"><i data-lucide="battery-charging"></i></div>' +
                 '<div class="sel-card-info"><span class="sel-card-label">Battery</span><span class="sel-card-val">' + state.battery.name + ' × ' + state.battery.count + '</span></div>' +
-                '<button class="sel-card-edit" data-goto="battery"><i class="fas fa-pen"></i></button></div>';
+                '<button class="sel-card-edit" data-goto="battery"><i data-lucide="pencil"></i></button></div>';
         }
     }
 
@@ -1449,7 +1450,7 @@ function renderPanelInfo() {
         panelInfo.innerHTML =
             '<p><strong>' + state.panels + '</strong> × ' + pw + 'W solar panels</p>' +
             '<p class="price">' + fmt(pp) + ' Ksh each · Total: ' + fmt(state.panels * pp) + ' Ksh</p>' +
-            '<a href="' + (state.panelType ? state.panelType.specsLink : '#') + '" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Panel Specs</a>';
+            '<a href="' + (state.panelType ? state.panelType.specsLink : '#') + '" target="_blank" rel="noopener"><i data-lucide="external-link"></i> Panel Specs</a>';
     } else {
         panelInfo.innerHTML = '<p>No solar panels needed for this configuration.</p>';
     }
@@ -1478,34 +1479,34 @@ function renderAccessoriesBlock() {
 
     if (state.phase === 'three') {
         if (state.company === 'ATESS') {
-            var accHtml = '<div class="quote-block-header"><i class="fas fa-toolbox"></i><h2>Package Accessories</h2></div><div class="acc-grid">';
+            var accHtml = '<div class="quote-block-header"><i data-lucide="wrench"></i><h2>Package Accessories</h2></div><div class="acc-grid">';
             state.inverter.accessories.forEach(function(acc) {
                 accHtml += '<div class="acc-card">' +
-                    '<i class="fas fa-microchip"></i>' +
+                    '<i data-lucide="cpu"></i>' +
                     '<span class="acc-name">' + acc.name + '</span>' +
                     '<span class="acc-price">' + fmt(usdToKes(acc.usdPrice)) + ' Ksh</span>' +
                     '<span class="acc-warranty">' + acc.warranty + '</span>' +
-                    (acc.specsLink ? '<a href="' + acc.specsLink + '" target="_blank" rel="noopener" class="acc-specs-link"><i class="fas fa-external-link-alt"></i> Specs</a>' : '') +
+                    (acc.specsLink ? '<a href="' + acc.specsLink + '" target="_blank" rel="noopener" class="acc-specs-link"><i data-lucide="external-link"></i> Specs</a>' : '') +
                 '</div>';
             });
-            accHtml += '<div class="acc-card"><i class="fas fa-solar-panel"></i><span class="acc-name">Mounting & Cables</span><span class="acc-price">' + fmt(getMountingCost()) + ' Ksh</span><span class="acc-warranty">' + state.panels + ' panels × ' + fmt(usdToKes(USD_PRICES.mountingPerPanel)) + ' Ksh</span></div>';
+            accHtml += '<div class="acc-card"><i data-lucide="sun"></i><span class="acc-name">Mounting & Cables</span><span class="acc-price">' + fmt(getMountingCost()) + ' Ksh</span><span class="acc-warranty">' + state.panels + ' panels × ' + fmt(usdToKes(USD_PRICES.mountingPerPanel)) + ' Ksh</span></div>';
             accHtml += '</div>';
             block.innerHTML = accHtml;
         } else {
             block.innerHTML =
-                '<div class="quote-block-header"><i class="fas fa-toolbox"></i><h2>Included Items</h2></div>' +
+                '<div class="quote-block-header"><i data-lucide="wrench"></i><h2>Included Items</h2></div>' +
                 '<div class="acc-grid">' +
-                    '<div class="acc-card"><i class="fas fa-solar-panel"></i><span class="acc-name">Mounting & Cables</span><span class="acc-price">' + fmt(getMountingCost()) + ' Ksh</span><span class="acc-warranty">' + state.panels + ' panels × ' + fmt(usdToKes(USD_PRICES.mountingPerPanel)) + ' Ksh</span></div>' +
+                    '<div class="acc-card"><i data-lucide="sun"></i><span class="acc-name">Mounting & Cables</span><span class="acc-price">' + fmt(getMountingCost()) + ' Ksh</span><span class="acc-warranty">' + state.panels + ' panels × ' + fmt(usdToKes(USD_PRICES.mountingPerPanel)) + ' Ksh</span></div>' +
                 '</div>';
         }
     } else {
         block.innerHTML =
-            '<div class="quote-block-header"><i class="fas fa-toolbox"></i><h2>Included Accessories</h2></div>' +
+            '<div class="quote-block-header"><i data-lucide="wrench"></i><h2>Included Accessories</h2></div>' +
             '<div class="acc-grid">' +
-                '<div class="acc-card"><i class="fas fa-toggle-on"></i><span class="acc-name">Change Over Switch</span><span class="acc-price" id="acc-changeover-price">' + fmt(usdToKes(USD_PRICES.changeOverSwitch)) + ' Ksh</span></div>' +
-                '<div class="acc-card"><i class="fas fa-plug"></i><span class="acc-name">DC MCCB</span><span class="acc-price" id="acc-dc-mccb-price">' + fmt(usdToKes(USD_PRICES.accessories.dcMccb)) + ' Ksh</span></div>' +
-                '<div class="acc-card"><i class="fas fa-sliders-h"></i><span class="acc-name">AVS 30 AMPS</span><span class="acc-price" id="acc-avs-price">' + fmt(usdToKes(USD_PRICES.accessories.avs30Amps)) + ' Ksh</span></div>' +
-                '<div class="acc-card" id="mounting-cost"><i class="fas fa-solar-panel"></i><span class="acc-name">Mounting & Cables</span><span class="acc-price">' + fmt(getMountingCost()) + ' Ksh</span><span class="acc-warranty">' + state.panels + ' panels × ' + fmt(usdToKes(USD_PRICES.mountingPerPanel)) + ' Ksh</span></div>' +
+                '<div class="acc-card"><i data-lucide="toggle-right"></i><span class="acc-name">Change Over Switch</span><span class="acc-price" id="acc-changeover-price">' + fmt(usdToKes(USD_PRICES.changeOverSwitch)) + ' Ksh</span></div>' +
+                '<div class="acc-card"><i data-lucide="plug"></i><span class="acc-name">DC MCCB</span><span class="acc-price" id="acc-dc-mccb-price">' + fmt(usdToKes(USD_PRICES.accessories.dcMccb)) + ' Ksh</span></div>' +
+                '<div class="acc-card"><i data-lucide="sliders-horizontal"></i><span class="acc-name">AVS 30 AMPS</span><span class="acc-price" id="acc-avs-price">' + fmt(usdToKes(USD_PRICES.accessories.avs30Amps)) + ' Ksh</span></div>' +
+                '<div class="acc-card" id="mounting-cost"><i data-lucide="sun"></i><span class="acc-name">Mounting & Cables</span><span class="acc-price">' + fmt(getMountingCost()) + ' Ksh</span><span class="acc-warranty">' + state.panels + ' panels × ' + fmt(usdToKes(USD_PRICES.mountingPerPanel)) + ' Ksh</span></div>' +
             '</div>';
     }
 }
@@ -1714,10 +1715,10 @@ function showApplianceModal(inv) {
     var w = inv.watts ? ' (' + inv.watts + 'W)' : '';
     var seriesLabel = inv.series ? inv.series + ' ' : '';
     $('#modal-title').textContent = state.company + ' ' + seriesLabel + inv.kva + 'kVA' + w + ' – Compatible Appliances';
-    var featureList = inv.details.features.map(function(f) { return '<li><i class="fas fa-check"></i> ' + f + '</li>'; }).join('');
+    var featureList = inv.details.features.map(function(f) { return '<li><i data-lucide="check"></i> ' + f + '</li>'; }).join('');
     $('#modal-body').innerHTML =
         '<ul class="compat-list">' + inv.appliances.map(function(a) {
-            return '<li><i class="fas fa-check-circle"></i> <strong>' + a.count + '×</strong> ' + a.name + '</li>';
+            return '<li><i data-lucide="check-circle"></i> <strong>' + a.count + '×</strong> ' + a.name + '</li>';
         }).join('') + '</ul>' +
         '<div class="detail-box"><p><strong>Efficiency:</strong> ' + inv.details.efficiency + '</p><p><strong>Battery Support:</strong> ' + inv.details.batteryCompatibility + '</p><p><strong>Max Output:</strong> ' + fmt(inv.maxWatts) + 'W continuous</p></div>' +
         '<div class="detail-box" style="margin-top:12px"><p><strong>Features:</strong></p><ul class="feature-list">' + featureList + '</ul></div>';

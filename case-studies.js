@@ -172,7 +172,7 @@ function renderGrid(filter) {
                     '<span class="cs-card-tag ' + s.type + '">' + s.type + '</span>' +
                 '</div>' +
                 '<h3 class="cs-card-title">' + s.title + '</h3>' +
-                '<div class="cs-card-location"><i class="fas fa-location-dot"></i> ' + s.location + '</div>' +
+                '<div class="cs-card-location"><i data-lucide="map-pin"></i> ' + s.location + '</div>' +
                 '<p class="cs-card-excerpt">' + s.excerpt + '</p>' +
                 '<div class="cs-card-specs">' +
                     '<div class="cs-card-spec"><span class="cs-card-spec-label">System</span><span class="cs-card-spec-val">' + s.systemSize + '</span></div>' +
@@ -180,7 +180,7 @@ function renderGrid(filter) {
                     '<div class="cs-card-spec"><span class="cs-card-spec-label">Panels</span><span class="cs-card-spec-val">' + s.panels + '</span></div>' +
                     '<div class="cs-card-spec"><span class="cs-card-spec-label">Saving</span><span class="cs-card-spec-val">' + s.monthlySavings + '/mo</span></div>' +
                 '</div>' +
-                '<div class="cs-card-read">Read full study <i class="fas fa-arrow-right"></i></div>' +
+                '<div class="cs-card-read">Read full study <i data-lucide="arrow-right"></i></div>' +
             '</div>' +
         '</div>';
     }).join('');
@@ -192,6 +192,7 @@ function renderGrid(filter) {
             openDetail(id);
         });
     });
+    if (window.lucide) lucide.createIcons();
 }
 
 /* ── DETAIL VIEW ── */
@@ -209,7 +210,7 @@ function openDetail(id) {
                 '<span class="cs-card-tag ' + study.type + '">' + study.type + '</span>' +
             '</div>' +
             '<h2 class="cs-detail-title">' + study.title + '</h2>' +
-            '<div class="cs-detail-location"><i class="fas fa-location-dot"></i> ' + study.location + ' &middot; Completed ' + study.completionDate + '</div>' +
+            '<div class="cs-detail-location"><i data-lucide="map-pin"></i> ' + study.location + ' &middot; Completed ' + study.completionDate + '</div>' +
 
             '<div class="cs-detail-stats">' +
                 '<div class="cs-detail-stat"><div class="cs-detail-stat-label">System Size</div><div class="cs-detail-stat-val accent">' + study.systemSize + '</div></div>' +
@@ -232,7 +233,7 @@ function openDetail(id) {
             '<div class="cs-detail-section">' +
                 '<h3>Results</h3>' +
                 '<ul>' + study.results.map(function(r) {
-                    return '<li><i class="fas fa-check-circle"></i> ' + r + '</li>';
+                    return '<li><i data-lucide="check-circle"></i> ' + r + '</li>';
                 }).join('') + '</ul>' +
             '</div>' +
 
@@ -244,6 +245,7 @@ function openDetail(id) {
 
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
+    if (window.lucide) lucide.createIcons();
 }
 
 function closeDetail() {
@@ -313,4 +315,5 @@ document.addEventListener('DOMContentLoaded', function() {
     initFilters();
     initDetailClose();
     animateStats();
+    if (window.lucide) lucide.createIcons();
 });
