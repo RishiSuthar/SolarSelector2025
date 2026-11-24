@@ -1246,6 +1246,7 @@ function goTo(step) {
     var target = $('#' + sectionId);
     if (target) target.classList.add('visible');
     state.step = step;
+    document.body.setAttribute('data-step', step);
     // Show/hide guided load summary (fixed bar) only on appliances step
     var loadBar = $('#guided-load-summary');
     if (loadBar) loadBar.style.display = step === 'appliances' ? '' : 'none';
@@ -1296,6 +1297,7 @@ function updateRunningTotal() {
     var el = $('#running-total');
     if (!el) return;
     var total = getTotal();
+    if (window.SolarMotion && window.SolarMotion.meter) { window.SolarMotion.meter(el, total); return; }
     el.textContent = total > 0 ? 'KSH ' + fmt(total) : 'KSH 0';
 }
 
