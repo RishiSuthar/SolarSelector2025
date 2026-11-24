@@ -4,25 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sangyug Solar | Build Your System</title>
+    <meta name="description" content="Size a solar system to the appliances you run and get a full quote in KSH from Sangyug Enterprises, Nairobi.">
+    <meta name="theme-color" content="#1B2C70">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 </head>
-<body>
+<body data-step="landing">
 
-    <div id="toast-container" class="toast-container"></div>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
-    <nav class="topbar" id="main-topbar">
+    <nav class="topbar" id="main-topbar" aria-label="Main">
         <div class="topbar-inner">
-            <a href="#" class="topbar-brand" id="brand-home">
-                <img src="images/sangyuglogo.png" alt="Sangyug" class="topbar-logo">
+            <a href="#" class="topbar-brand" id="brand-home" aria-label="Sangyug — start over">
+                <img src="images/sangyuglogo.png" alt="Sangyug Enterprises" class="topbar-logo">
             </a>
             <div class="topbar-nav-links">
-                <button class="topbar-nav-btn" id="topbar-home" title="Back to Home"><i data-lucide="house"></i> Home</button>
-                <a href="case-studies.html" class="topbar-nav-btn disabled" style="pointer-events:none;opacity:.4;cursor:default;"><i data-lucide="clipboard-check"></i> Case Studies</a>
+                <button class="topbar-nav-btn" id="topbar-home" title="Back to home"><i data-lucide="house"></i><span>Home</span></button>
+                <a href="case-studies.html" class="topbar-nav-btn is-soon" aria-disabled="true" tabindex="-1" title="Coming soon"><i data-lucide="clipboard-check"></i><span>Case studies</span></a>
             </div>
-            <div class="topbar-total" id="topbar-total">
+            <div class="topbar-total" id="topbar-total" aria-live="polite">
+                <span class="topbar-total-label">Quote total</span>
                 <span class="topbar-running" id="running-total">KSH 0</span>
             </div>
         </div>
@@ -31,48 +37,133 @@
     <!-- Step progress bar (below navbar) -->
     <div class="step-progress-bar" id="step-progress-bar">
         <div class="step-progress-inner" id="topbar-steps">
-            <!-- Pills rendered dynamically by JS -->
+            <!-- Steps rendered dynamically by JS -->
         </div>
     </div>
 
-    <main class="app-main">
+    <main class="app-main" id="main">
 
-        <!-- LANDING: Mode Selection -->
+        <!-- LANDING -->
         <section id="landing-section" class="panel visible" data-step="landing">
-            <div class="landing-hero">
-                <div class="landing-glow"></div>
-                <h1 class="landing-title">Build Your <span class="text-gradient">Solar System</span></h1>
-                <p class="landing-subtitle">Power your home or business with clean, affordable solar energy</p>
+
+            <div class="hero">
+                <div class="hero-inner">
+                    <div class="hero-copy">
+                        <h1 class="hero-title">Nairobi gets twelve hours of sun a day. Put&nbsp;it&nbsp;to&nbsp;work.</h1>
+                        <p class="hero-sub">Tell us what you plug in. We&rsquo;ll size the inverter, batteries and panels, and price every part in shillings &mdash; ready to download or send on WhatsApp.</p>
+
+                        <div class="mode-grid">
+                            <button class="mode-card mode-card-primary" id="mode-guided">
+                                <span class="mode-icon-wrap"><i data-lucide="plug-zap"></i></span>
+                                <span class="mode-text">
+                                    <span class="mode-title">Start from my appliances</span>
+                                    <span class="mode-desc">Pick what you run &mdash; lights, fridge, TV, pump. We recommend a system that covers it. No technical knowledge needed.</span>
+                                </span>
+                                <i data-lucide="chevron-right" class="mode-chev"></i>
+                            </button>
+                            <button class="mode-card" id="mode-custom">
+                                <span class="mode-icon-wrap"><i data-lucide="sliders-horizontal"></i></span>
+                                <span class="mode-text">
+                                    <span class="mode-title">Choose my own components</span>
+                                    <span class="mode-desc">Already know your gear? Pick phase, brand, inverter and battery yourself.</span>
+                                </span>
+                                <i data-lucide="chevron-right" class="mode-chev"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <figure class="sunpath" id="sunpath" aria-label="Solar output in Nairobi right now">
+                        <svg class="sunpath-svg" viewBox="0 0 560 380" role="img" aria-hidden="true">
+                            <defs>
+                                <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+                                    <stop offset="0" stop-color="#FFD25C" stop-opacity=".9"/>
+                                    <stop offset=".45" stop-color="#FFB400" stop-opacity=".35"/>
+                                    <stop offset="1" stop-color="#FFB400" stop-opacity="0"/>
+                                </radialGradient>
+                                <linearGradient id="glint" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0" stop-color="#FFE08A" stop-opacity=".95"/>
+                                    <stop offset=".5" stop-color="#7FA2FF" stop-opacity=".35"/>
+                                    <stop offset="1" stop-color="#2C47A8" stop-opacity="0"/>
+                                </linearGradient>
+                                <pattern id="cells" width="14" height="14" patternUnits="userSpaceOnUse">
+                                    <rect width="14" height="14" fill="#203487"/>
+                                    <path d="M14 0H0V14" fill="none" stroke="#4660C4" stroke-width="1.4"/>
+                                </pattern>
+                            </defs>
+                            <!-- hour ticks -->
+                            <g class="sp-ticks" id="sp-ticks"></g>
+                            <!-- sun path -->
+                            <path id="sp-track" class="sp-track" d="M48 262 A232 214 0 0 1 512 262"/>
+                            <path id="sp-trail" class="sp-trail" d="M48 262 A232 214 0 0 1 512 262" pathLength="1"/>
+                            <line class="sp-horizon" x1="16" y1="262" x2="544" y2="262"/>
+                            <text class="sp-time-label" x="48" y="286" text-anchor="middle">06:30</text>
+                            <text class="sp-time-label" x="280" y="34" text-anchor="middle">12:35</text>
+                            <text class="sp-time-label" x="512" y="286" text-anchor="middle">18:40</text>
+                            <!-- sun -->
+                            <g id="sp-sun" class="sp-sun" transform="translate(48 262)">
+                                <circle r="46" fill="url(#sunGlow)"/>
+                                <circle r="15" class="sp-sun-core"/>
+                            </g>
+                            <!-- rooftop array -->
+                            <g class="sp-array" transform="translate(64 300)">
+                                <g class="sp-panel"><path d="M10 0H70L60 64H0Z" fill="url(#cells)"/><path class="sp-glint" d="M10 0H70L60 64H0Z" fill="url(#glint)"/></g>
+                                <g class="sp-panel" transform="translate(74 0)"><path d="M10 0H70L60 64H0Z" fill="url(#cells)"/><path class="sp-glint" d="M10 0H70L60 64H0Z" fill="url(#glint)"/></g>
+                                <g class="sp-panel" transform="translate(148 0)"><path d="M10 0H70L60 64H0Z" fill="url(#cells)"/><path class="sp-glint" d="M10 0H70L60 64H0Z" fill="url(#glint)"/></g>
+                                <g class="sp-panel" transform="translate(222 0)"><path d="M10 0H70L60 64H0Z" fill="url(#cells)"/><path class="sp-glint" d="M10 0H70L60 64H0Z" fill="url(#glint)"/></g>
+                                <g class="sp-panel" transform="translate(296 0)"><path d="M10 0H70L60 64H0Z" fill="url(#cells)"/><path class="sp-glint" d="M10 0H70L60 64H0Z" fill="url(#glint)"/></g>
+                                <g class="sp-panel" transform="translate(370 0)"><path d="M10 0H70L60 64H0Z" fill="url(#cells)"/><path class="sp-glint" d="M10 0H70L60 64H0Z" fill="url(#glint)"/></g>
+                            </g>
+                        </svg>
+                        <figcaption class="sunpath-readout">
+                            <span class="sr-row">
+                                <span class="sr-label" id="sr-clock">Nairobi, now</span>
+                                <span class="sr-label" id="sr-state">A 3&nbsp;kW array is producing</span>
+                            </span>
+                            <span class="sr-big"><span id="sr-kw">0.0</span><small>kW</small></span>
+                            <span class="sr-meter" aria-hidden="true"><span class="sr-meter-fill" id="sr-meter"></span></span>
+                            <span class="sr-foot">Harvested today <strong id="sr-kwh">0.0 kWh</strong></span>
+                        </figcaption>
+                    </figure>
+                </div>
             </div>
-            <div class="mode-grid">
-                <div class="mode-card" id="mode-guided">
-                    <div class="mode-icon-wrap mode-icon-guided">
-                        <i data-lucide="heart-handshake"></i>
+
+            <div class="landing-body">
+                <section class="how" aria-labelledby="how-title">
+                    <h2 id="how-title" class="section-title">How your quote comes together</h2>
+                    <ol class="how-steps">
+                        <li>
+                            <span class="how-num">1</span>
+                            <h3>List what you run</h3>
+                            <p>We add up the running watts, plus the start-up surge that fridges, pumps and ACs pull when they switch on.</p>
+                        </li>
+                        <li>
+                            <span class="how-num">2</span>
+                            <h3>Choose a system</h3>
+                            <p>Kstar, Fortuner or ATESS inverters that cover your load, with the batteries and panels to match.</p>
+                        </li>
+                        <li>
+                            <span class="how-num">3</span>
+                            <h3>Take your quote</h3>
+                            <p>Every part priced in KSH, installation included. Download a PDF, email it, or send it on WhatsApp.</p>
+                        </li>
+                    </ol>
+                </section>
+
+                <section class="assure" aria-labelledby="assure-title">
+                    <div class="assure-brands">
+                        <h2 id="assure-title" class="section-title">Brands we supply and install</h2>
+                        <div class="brand-strip">
+                            <img src="images/kstar-logo.png" alt="Kstar" loading="lazy">
+                            <img src="images/fortuner-logo.png" alt="Fortuner" loading="lazy">
+                            <img src="images/atess-logo.png" alt="ATESS" loading="lazy">
+                        </div>
                     </div>
-                    <h2 class="mode-title">Guide Me Through</h2>
-                    <p class="mode-desc">Tell us what appliances you have, and we'll find the perfect system for you.</p>
-                    <ul class="mode-features">
-                        <li><i data-lucide="check"></i> Select your appliances & brands</li>
-                        <li><i data-lucide="check"></i> Get smart recommendations</li>
-                        <li><i data-lucide="check"></i> Compare options side by side</li>
-                        <li><i data-lucide="check"></i> No technical knowledge needed</li>
+                    <ul class="assure-list">
+                        <li><i data-lucide="calendar-range"></i><div><strong>Pay over 6, 12 or 24 months</strong><span>Each quote shows the monthly amount for every plan.</span></div></li>
+                        <li><i data-lucide="receipt-text"></i><div><strong>See what you save on KPLC</strong><span>Enter your monthly bill to see your payback period.</span></div></li>
+                        <li><i data-lucide="ruler"></i><div><strong>Final price after a site survey</strong><span>Mounting and installation are already in the estimate.</span></div></li>
                     </ul>
-                    <span class="mode-tag"><i data-lucide="star"></i> Recommended for first-timers</span>
-                </div>
-                <div class="mode-card" id="mode-custom">
-                    <div class="mode-icon-wrap mode-icon-custom">
-                        <i data-lucide="sliders-horizontal"></i>
-                    </div>
-                    <h2 class="mode-title">Full Custom Builder</h2>
-                    <p class="mode-desc">Already know what you need? Jump straight into selecting your components.</p>
-                    <ul class="mode-features">
-                        <li><i data-lucide="check"></i> Pick phase, brand, inverter</li>
-                        <li><i data-lucide="check"></i> Choose your own battery</li>
-                        <li><i data-lucide="check"></i> Full control over every choice</li>
-                        <li><i data-lucide="check"></i> For pros & experienced users</li>
-                    </ul>
-                    <span class="mode-tag"><i data-lucide="zap"></i> For those who know their gear</span>
-                </div>
+                </section>
             </div>
         </section>
 
@@ -444,20 +535,25 @@
 
     <footer class="site-footer">
         <div class="footer-inner">
-            <div class="footer-links">
-                <a href="mailto:info@sangyug.com"><i data-lucide="mail"></i> info@sangyug.com</a>
-                <a href="tel:+254723984559"><i data-lucide="phone"></i> +254 723 984 559</a>
-                <a href="https://www.sangyug.com" target="_blank" rel="noopener"><i data-lucide="globe"></i> sangyug.com</a>
-                <span><i data-lucide="map-pin"></i> The Big Bang &mdash; Ngara, Opp. Rainbow Plaza</span>
+            <div class="footer-visit">
+                <img src="images/sangyuglogo.png" alt="Sangyug Enterprises" class="footer-logo" loading="lazy">
+                <p class="footer-lede">Visit the showroom to see the inverters and batteries in person, or call and we&rsquo;ll talk through your quote.</p>
             </div>
-            <div class="footer-credits">
-                <span>Crafted by <a href="https://dynamicdesignsca.netlify.app/" target="_blank" rel="noopener">Dynamic Designs</a></span>
-                <span>&copy; 2025 Sangyug Enterprises</span>
-            </div>
+            <ul class="footer-links">
+                <li><i data-lucide="map-pin"></i><span>The Big Bang, Ngara<br>Opposite Rainbow Plaza, Nairobi</span></li>
+                <li><i data-lucide="phone"></i><a href="tel:+254723984559">+254 723 984 559</a></li>
+                <li><i data-lucide="mail"></i><a href="mailto:info@sangyug.com">info@sangyug.com</a></li>
+                <li><i data-lucide="globe"></i><a href="https://www.sangyug.com" target="_blank" rel="noopener">sangyug.com</a></li>
+            </ul>
+        </div>
+        <div class="footer-credits">
+            <span>&copy; 2025 Sangyug Enterprises</span>
+            <span>Crafted by <a href="https://dynamicdesignsca.netlify.app/" target="_blank" rel="noopener">Dynamic Designs</a></span>
         </div>
     </footer>
 
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script defer src="script.js"></script>
+    <script defer src="motion.js"></script>
 </body>
 </html>
