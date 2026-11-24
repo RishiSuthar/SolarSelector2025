@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sangyug Solar | Build Your System</title>
     <meta name="description" content="Size a solar system to the appliances you run and get a full quote in KSH from Sangyug Enterprises, Nairobi.">
-    <meta name="theme-color" content="#1B2C70">
+    <meta name="theme-color" content="#0D1530">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
@@ -18,28 +18,26 @@
     <a class="skip-link" href="#main">Skip to content</a>
     <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
-    <nav class="topbar" id="main-topbar" aria-label="Main">
+    <header class="topbar" id="main-topbar">
         <div class="topbar-inner">
-            <a href="#" class="topbar-brand" id="brand-home" aria-label="Sangyug — start over">
+            <a href="#" class="topbar-brand" id="brand-home" aria-label="Sangyug, start over">
                 <img src="images/sangyuglogo.png" alt="Sangyug Enterprises" class="topbar-logo">
             </a>
-            <div class="topbar-nav-links">
-                <button class="topbar-nav-btn" id="topbar-home" title="Back to home"><i data-lucide="house"></i><span>Home</span></button>
-                <a href="case-studies.html" class="topbar-nav-btn is-soon" aria-disabled="true" tabindex="-1" title="Coming soon"><i data-lucide="clipboard-check"></i><span>Case studies</span></a>
-            </div>
-            <div class="topbar-total" id="topbar-total" aria-live="polite">
-                <span class="topbar-total-label">Quote total</span>
-                <span class="topbar-running" id="running-total">KSH 0</span>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Step progress bar (below navbar) -->
-    <div class="step-progress-bar" id="step-progress-bar">
-        <div class="step-progress-inner" id="topbar-steps">
-            <!-- Steps rendered dynamically by JS -->
+            <nav class="step-progress-bar" id="step-progress-bar" aria-label="Quote steps">
+                <div class="step-progress-inner" id="topbar-steps"></div>
+            </nav>
+
+            <div class="topbar-end">
+                <button class="topbar-nav-btn" id="topbar-home" title="Back to home"><i data-lucide="house"></i><span>Home</span></button>
+                <a href="case-studies.html" class="topbar-nav-btn is-soon" aria-disabled="true" tabindex="-1" title="Coming soon"><span>Case studies</span></a>
+                <div class="topbar-total" id="topbar-total" aria-live="polite">
+                    <span class="topbar-total-label">Estimate</span>
+                    <span class="topbar-running" id="running-total">KSH 0</span>
+                </div>
+            </div>
         </div>
-    </div>
+    </header>
 
     <main class="app-main" id="main">
 
@@ -49,465 +47,456 @@
             <div class="hero">
                 <div class="hero-inner">
                     <div class="hero-copy">
-                        <h1 class="hero-title">Nairobi gets twelve hours of sun a day. Put&nbsp;it&nbsp;to&nbsp;work.</h1>
-                        <p class="hero-sub">Tell us what you plug in. We&rsquo;ll size the inverter, batteries and panels, and price every part in shillings &mdash; ready to download or send on WhatsApp.</p>
+                        <h1 class="hero-title">Twelve hours of sun. Every day of the&nbsp;year.</h1>
+                        <p class="hero-sub">Nairobi sits on the equator. Tell us what you run and we&rsquo;ll size the inverter, batteries and panels to match, priced to the shilling with installation included.</p>
 
                         <div class="mode-grid">
                             <button class="mode-card mode-card-primary" id="mode-guided">
-                                <span class="mode-icon-wrap"><i data-lucide="plug-zap"></i></span>
-                                <span class="mode-text">
-                                    <span class="mode-title">Start from my appliances</span>
-                                    <span class="mode-desc">Pick what you run &mdash; lights, fridge, TV, pump. We recommend a system that covers it. No technical knowledge needed.</span>
-                                </span>
-                                <i data-lucide="chevron-right" class="mode-chev"></i>
+                                <span class="mode-title">Start with my appliances</span>
+                                <span class="mode-desc">Recommended. No technical knowledge needed.</span>
                             </button>
                             <button class="mode-card" id="mode-custom">
-                                <span class="mode-icon-wrap"><i data-lucide="sliders-horizontal"></i></span>
-                                <span class="mode-text">
-                                    <span class="mode-title">Choose my own components</span>
-                                    <span class="mode-desc">Already know your gear? Pick phase, brand, inverter and battery yourself.</span>
-                                </span>
-                                <i data-lucide="chevron-right" class="mode-chev"></i>
+                                <span class="mode-title">Choose components myself</span>
+                                <span class="mode-desc">Pick phase, brand, inverter and battery.</span>
                             </button>
                         </div>
+                        <p class="hero-note"><i data-lucide="clock-3"></i> Takes about five minutes. Your progress is saved on this device.</p>
                     </div>
 
-                    <figure class="sunpath" id="sunpath" aria-label="Solar output in Nairobi right now">
-                        <svg class="sunpath-svg" viewBox="0 0 560 380" role="img" aria-hidden="true">
-                            <defs>
-                                <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
-                                    <stop offset="0" stop-color="#FFD25C" stop-opacity=".9"/>
-                                    <stop offset=".45" stop-color="#FFB400" stop-opacity=".35"/>
-                                    <stop offset="1" stop-color="#FFB400" stop-opacity="0"/>
-                                </radialGradient>
-                                <linearGradient id="glint" x1="0" y1="0" x2="1" y2="1">
-                                    <stop offset="0" stop-color="#FFE08A" stop-opacity=".95"/>
-                                    <stop offset=".5" stop-color="#7FA2FF" stop-opacity=".35"/>
-                                    <stop offset="1" stop-color="#2C47A8" stop-opacity="0"/>
-                                </linearGradient>
-                                <pattern id="cells" width="14" height="14" patternUnits="userSpaceOnUse">
-                                    <rect width="14" height="14" fill="#203487"/>
-                                    <path d="M14 0H0V14" fill="none" stroke="#4660C4" stroke-width="1.4"/>
-                                </pattern>
-                            </defs>
-                            <!-- hour ticks -->
-                            <g class="sp-ticks" id="sp-ticks"></g>
-                            <!-- sun path -->
-                            <path id="sp-track" class="sp-track" d="M48 262 A232 214 0 0 1 512 262"/>
-                            <path id="sp-trail" class="sp-trail" d="M48 262 A232 214 0 0 1 512 262" pathLength="1"/>
-                            <line class="sp-horizon" x1="16" y1="262" x2="544" y2="262"/>
-                            <text class="sp-time-label" x="48" y="286" text-anchor="middle">06:30</text>
-                            <text class="sp-time-label" x="280" y="34" text-anchor="middle">12:35</text>
-                            <text class="sp-time-label" x="512" y="286" text-anchor="middle">18:40</text>
-                            <!-- sun -->
-                            <g id="sp-sun" class="sp-sun" transform="translate(48 262)">
-                                <circle r="46" fill="url(#sunGlow)"/>
-                                <circle r="15" class="sp-sun-core"/>
-                            </g>
-                            <!-- rooftop array -->
-                            <g class="sp-array" transform="translate(64 300)">
-                                <g class="sp-panel"><path d="M10 0H70L60 64H0Z" fill="url(#cells)"/><path class="sp-glint" d="M10 0H70L60 64H0Z" fill="url(#glint)"/></g>
-                                <g class="sp-panel" transform="translate(74 0)"><path d="M10 0H70L60 64H0Z" fill="url(#cells)"/><path class="sp-glint" d="M10 0H70L60 64H0Z" fill="url(#glint)"/></g>
-                                <g class="sp-panel" transform="translate(148 0)"><path d="M10 0H70L60 64H0Z" fill="url(#cells)"/><path class="sp-glint" d="M10 0H70L60 64H0Z" fill="url(#glint)"/></g>
-                                <g class="sp-panel" transform="translate(222 0)"><path d="M10 0H70L60 64H0Z" fill="url(#cells)"/><path class="sp-glint" d="M10 0H70L60 64H0Z" fill="url(#glint)"/></g>
-                                <g class="sp-panel" transform="translate(296 0)"><path d="M10 0H70L60 64H0Z" fill="url(#cells)"/><path class="sp-glint" d="M10 0H70L60 64H0Z" fill="url(#glint)"/></g>
-                                <g class="sp-panel" transform="translate(370 0)"><path d="M10 0H70L60 64H0Z" fill="url(#cells)"/><path class="sp-glint" d="M10 0H70L60 64H0Z" fill="url(#glint)"/></g>
-                            </g>
-                        </svg>
-                        <figcaption class="sunpath-readout">
-                            <span class="sr-row">
-                                <span class="sr-label" id="sr-clock">Nairobi, now</span>
-                                <span class="sr-label" id="sr-state">A 3&nbsp;kW array is producing</span>
-                            </span>
-                            <span class="sr-big"><span id="sr-kw">0.0</span><small>kW</small></span>
-                            <span class="sr-meter" aria-hidden="true"><span class="sr-meter-fill" id="sr-meter"></span></span>
-                            <span class="sr-foot">Harvested today <strong id="sr-kwh">0.0 kWh</strong></span>
-                        </figcaption>
-                    </figure>
+                    <div class="hero-stage">
+                        <div class="stage stage-demo" id="hero-stage" aria-label="Example: a home solar system in Nairobi right now"></div>
+                    </div>
                 </div>
             </div>
 
             <div class="landing-body">
+
                 <section class="how" aria-labelledby="how-title">
-                    <h2 id="how-title" class="section-title">How your quote comes together</h2>
+                    <div class="section-head">
+                        <h2 id="how-title">From your appliance list to a priced quote</h2>
+                        <p>Three steps, all in one place. Change anything and the price updates as you go.</p>
+                    </div>
                     <ol class="how-steps">
-                        <li>
-                            <span class="how-num">1</span>
-                            <h3>List what you run</h3>
+                        <li class="how-step">
+                            <div class="how-visual" aria-hidden="true">
+                                <div class="mini-row"><span class="mini-ic"><i data-lucide="refrigerator"></i></span><span class="mini-name">Fridge<small>Double door, 200 W</small></span><span class="mini-switch on"></span></div>
+                                <div class="mini-row"><span class="mini-ic"><i data-lucide="tv"></i></span><span class="mini-name">Television<small>43 inch, 70 W</small></span><span class="mini-switch on"></span></div>
+                                <div class="mini-row dim"><span class="mini-ic"><i data-lucide="microwave"></i></span><span class="mini-name">Microwave<small>900 W</small></span><span class="mini-switch"></span></div>
+                            </div>
+                            <h3><span class="how-num">1</span>List what you run</h3>
                             <p>We add up the running watts, plus the start-up surge that fridges, pumps and ACs pull when they switch on.</p>
                         </li>
-                        <li>
-                            <span class="how-num">2</span>
-                            <h3>Choose a system</h3>
-                            <p>Kstar, Fortuner or ATESS inverters that cover your load, with the batteries and panels to match.</p>
+                        <li class="how-step">
+                            <div class="how-visual" aria-hidden="true">
+                                <div class="mini-option sel"><img src="images/kstarinverter.png" alt=""><span class="mini-name">Knight 3.6 kVA<small>Covers your 1,840 W</small></span><span class="mini-check"><i data-lucide="check"></i></span></div>
+                                <div class="mini-option"><img src="images/kstarskyseries.png" alt=""><span class="mini-name">Sky 2 kVA<small>Covers your 1,840 W</small></span></div>
+                            </div>
+                            <h3><span class="how-num">2</span>Choose a system</h3>
+                            <p>Kstar, Fortuner and ATESS inverters that cover your load, with batteries and panels sized to match.</p>
                         </li>
-                        <li>
-                            <span class="how-num">3</span>
-                            <h3>Take your quote</h3>
-                            <p>Every part priced in KSH, installation included. Download a PDF, email it, or send it on WhatsApp.</p>
+                        <li class="how-step">
+                            <div class="how-visual" aria-hidden="true">
+                                <div class="mini-quote">
+                                    <div class="mini-line"><span>Inverter</span><span>55,846</span></div>
+                                    <div class="mini-line"><span>Batteries</span><span>45,692</span></div>
+                                    <div class="mini-line"><span>Panels and mounting</span><span>68,410</span></div>
+                                    <div class="mini-total"><span>Total</span><span>KSH 217,468</span></div>
+                                </div>
+                            </div>
+                            <h3><span class="how-num">3</span>Take your quote</h3>
+                            <p>Every part itemised, installation included. Download a PDF, email it, or send it on WhatsApp.</p>
                         </li>
                     </ol>
                 </section>
 
+                <section class="legend-band" aria-labelledby="legend-title">
+                    <div class="section-head">
+                        <h2 id="legend-title">See what every part is doing</h2>
+                        <p>The diagram follows your build from start to finish, so you always know what you&rsquo;re paying for.</p>
+                    </div>
+                    <ul class="legend-list">
+                        <li><span class="legend-swatch solar"></span><div><strong>Panels</strong><span>Turn daylight into power. We size the array to your inverter.</span></div></li>
+                        <li><span class="legend-swatch store"></span><div><strong>Batteries</strong><span>Charge during the day and carry your home through evenings and blackouts.</span></div></li>
+                        <li><span class="legend-swatch load"></span><div><strong>Your load</strong><span>Everything you plug in, from the fridge that never sleeps to the morning kettle.</span></div></li>
+                    </ul>
+                </section>
+
                 <section class="assure" aria-labelledby="assure-title">
-                    <div class="assure-brands">
-                        <h2 id="assure-title" class="section-title">Brands we supply and install</h2>
+                    <div class="assure-copy">
+                        <h2 id="assure-title">Brands we supply and install</h2>
                         <div class="brand-strip">
                             <img src="images/kstar-logo.png" alt="Kstar" loading="lazy">
-                            <img src="images/fortuner-logo.png" alt="Fortuner" loading="lazy">
+                            <img src="images/fortuner-logo.png" alt="Fortuner" loading="lazy" class="brand-fortuner">
                             <img src="images/atess-logo.png" alt="ATESS" loading="lazy">
                         </div>
                     </div>
                     <ul class="assure-list">
-                        <li><i data-lucide="calendar-range"></i><div><strong>Pay over 6, 12 or 24 months</strong><span>Each quote shows the monthly amount for every plan.</span></div></li>
+                        <li><i data-lucide="calendar-range"></i><div><strong>Pay over 6, 12 or 24 months</strong><span>Every quote shows the monthly amount for each plan.</span></div></li>
                         <li><i data-lucide="receipt-text"></i><div><strong>See what you save on KPLC</strong><span>Enter your monthly bill to see your payback period.</span></div></li>
                         <li><i data-lucide="ruler"></i><div><strong>Final price after a site survey</strong><span>Mounting and installation are already in the estimate.</span></div></li>
                     </ul>
                 </section>
+
+                <section class="closing">
+                    <h2>Ready when you are.</h2>
+                    <p>Start with your appliances and have a quote in a few minutes.</p>
+                    <button class="cta-btn cta-lg" type="button" data-start="guided">Start my quote</button>
+                </section>
             </div>
         </section>
 
-        <!-- GUIDED: Appliance Builder -->
-        <section id="appliances-section" class="panel" data-step="appliances">
+        <!-- WORKSPACE: flow (left) + live system (right) -->
+        <div class="workspace">
+            <div class="flow">
 
-            <!-- Dynamic wizard area rendered by JS -->
-            <div id="ab-wizard-header"></div>
-            <div id="ab-cat-progress"></div>
-            <div id="appliance-builder" class="appliance-builder"></div>
-            <div id="ab-wizard-nav"></div>
+                <!-- GUIDED: Appliance Builder -->
+                <section id="appliances-section" class="panel" data-step="appliances">
 
-            <div class="guided-load-summary" id="guided-load-summary">
-                <div class="load-summary-inner">
-                    <div class="load-stat">
-                        <span class="load-stat-label">Running Load</span>
-                        <span class="load-stat-val" id="running-watts">0W</span>
-                    </div>
-                    <div class="load-stat">
-                        <span class="load-stat-label">Peak / Starting</span>
-                        <span class="load-stat-val load-stat-peak" id="peak-watts">0W</span>
-                    </div>
-                    <div class="load-stat">
-                        <span class="load-stat-label">Appliances</span>
-                        <span class="load-stat-val" id="appliance-count">0</span>
-                    </div>
-                    <div class="load-size-badge" id="load-size-badge">
-                        <i data-lucide="zap"></i>
-                        <span id="load-size-text">Add appliances to begin</span>
-                    </div>
-                </div>
-                <button class="cta-btn guided-next-btn" id="guided-next-from-appliances" disabled>
-                    <span>Finish</span> <i data-lucide="arrow-right"></i>
-                </button>
-            </div>
+                    <!-- Dynamic wizard area rendered by JS -->
+                    <div id="ab-wizard-header"></div>
+                    <div id="ab-cat-progress"></div>
+                    <div id="appliance-builder" class="appliance-builder"></div>
+                    <div id="ab-wizard-nav"></div>
 
-        </section>
-
-        <!-- GUIDED: Recommendations -->
-        <section id="recommend-section" class="panel" data-step="recommend">
-            <div class="panel-header">
-                <span class="panel-tag">Step 2 of 4</span>
-                <h1>Your Recommended Systems</h1>
-                <p>Based on your <strong id="rec-watts-display">0W</strong> load, here are the best options for you.</p>
-            </div>
-
-            <div class="rec-phase-info" id="rec-phase-info"></div>
-
-            <div id="rec-inverter-options" class="card-grid"></div>
-
-            <button class="back-btn" id="back-from-recommend"><i data-lucide="arrow-left"></i> Back</button>
-        </section>
-
-        <!-- GUIDED: Battery Selection -->
-        <section id="guided-battery-section" class="panel" data-step="guided-battery">
-            <div class="panel-header">
-                <span class="panel-tag">Step 3 of 4</span>
-                <h1>Choose Your Battery</h1>
-                <p>Your inverter needs energy storage. Pick the battery that fits your needs and budget.</p>
-            </div>
-
-            <div class="guided-inverter-reminder" id="guided-inverter-reminder"></div>
-
-            <div id="guided-battery-options" class="card-grid"></div>
-
-            <button class="back-btn" id="back-from-guided-battery"><i data-lucide="arrow-left"></i> Back</button>
-        </section>
-
-        <!-- STEP: Phase Selection -->
-        <section id="phase-section" class="panel visible" data-step="phase">
-            <div class="panel-header">
-                <span class="panel-tag" id="phase-step-tag">Step 1</span>
-                <h1>Choose Your System Type</h1>
-                <p>Select the phase type that matches your installation.</p>
-            </div>
-            <div id="phase-options" class="brand-grid"></div>
-        </section>
-
-        <!-- STEP: Brand -->
-        <section id="company-section" class="panel" data-step="company">
-            <div class="panel-header">
-                <span class="panel-tag" id="company-step-tag">Step 2</span>
-                <h1>Choose Your Brand</h1>
-                <p>Select a manufacturer to start building your solar system.</p>
-            </div>
-
-            <div id="company-options" class="brand-grid"></div>
-        </section>
-
-        <!-- STEP: Inverter / Package -->
-        <section id="inverter-section" class="panel" data-step="inverter">
-            <div class="panel-header">
-                <span class="panel-tag" id="inverter-step-tag">Step 3</span>
-                <h1 id="inverter-heading">Pick Your System</h1>
-                <p id="inverter-subtitle">Choose the system that matches your power needs.</p>
-            </div>
-            <div class="resource-links" id="inverter-links">
-                <a href="https://drive.google.com/file/d/1X_Azx91o4wRf9H45SUOGCV_l9N45dfT6/view?usp=sharing" target="_blank" rel="noopener" class="res-link kstar-only">
-                    <i data-lucide="book-open"></i> User Manual
-                </a>
-                <a href="https://drive.google.com/file/d/1sx29gQLQzLj1ThCVjoHGLXOGOZG-XCgi/view?usp=sharing" target="_blank" rel="noopener" class="res-link kstar-only">
-                    <i data-lucide="star"></i> Features
-                </a>
-                <a href="https://drive.google.com/file/d/1LGHqj75hovaBsraE4k5FIrT-4pDXfNzd/view?usp=sharing" target="_blank" rel="noopener" class="res-link fortuner-only">
-                    <i data-lucide="star"></i> Features
-                </a>
-            </div>
-            <div id="compare-bar" class="compare-bar hidden">
-                <span><i data-lucide="columns-2"></i> <span id="compare-count">0</span> selected to compare</span>
-                <button id="compare-btn" class="cta-btn cta-small">Compare Now</button>
-                <button id="compare-clear" class="cta-btn cta-ghost cta-small">Clear</button>
-            </div>
-            <div id="inverter-options" class="card-grid"></div>
-            <button class="back-btn" id="back-from-inverter"><i data-lucide="arrow-left"></i> Back</button>
-        </section>
-
-        <!-- STEP: Battery -->
-        <section id="battery-section" class="panel" data-step="battery">
-            <div class="panel-header">
-                <span class="panel-tag" id="battery-step-tag">Step 4</span>
-                <h1 id="battery-heading">Select Your Battery</h1>
-                <p id="battery-subtitle">Pick the energy storage that fits your needs and budget.</p>
-            </div>
-            <div id="battery-options" class="card-grid"></div>
-            <button class="back-btn" id="back-from-battery"><i data-lucide="arrow-left"></i> Back</button>
-        </section>
-
-        <!-- STEP: Summary / Quote -->
-        <section id="summary-section" class="panel" data-step="summary">
-
-            <!-- Page header -->
-            <div class="quote-page-header">
-                <div class="quote-page-icon"><i data-lucide="file-text"></i></div>
-                <h1>Your Solar Quote</h1>
-                <p class="quote-page-sub">Review your selections, see the full cost breakdown, and share or download your quote.</p>
-            </div>
-
-            <!-- Compare quotes -->
-            <div class="compare-quote-section">
-                <button class="compare-quote-btn" id="compare-quote-btn">
-                    <i data-lucide="plus-circle"></i> Save &amp; Build Another Quote to Compare
-                </button>
-                <button class="compare-view-btn" id="compare-view-btn" style="display:none">
-                    <i data-lucide="columns-2"></i> View Comparison
-                </button>
-            </div>
-
-            <!-- 1. System overview -->
-            <div class="quote-block" id="selection-overview">
-                <div class="quote-block-header">
-                    <span class="qb-num">1</span>
-                    <div><h2>System Overview</h2><p class="qb-hint">What you've selected</p></div>
-                </div>
-                <div id="selection-cards" class="selection-cards"></div>
-            </div>
-
-            <!-- 2. Solar panels -->
-            <div class="quote-block" id="panel-block">
-                <div class="quote-block-header">
-                    <span class="qb-num">2</span>
-                    <div><h2>Solar Panels</h2><p class="qb-hint">Modules included in your system</p></div>
-                </div>
-                <div id="panel-info" class="panel-info-content"></div>
-                <div id="panel-images" class="panel-visual"></div>
-            </div>
-
-            <!-- 3. Accessories -->
-            <div class="quote-block" id="accessory-block">
-                <!-- Rendered dynamically by JS -->
-            </div>
-
-            <!-- 4. Savings calculator -->
-            <div class="quote-block" id="savings-block">
-                <div class="quote-block-header">
-                    <span class="qb-num">4</span>
-                    <div><h2>Savings Estimate</h2><p class="qb-hint">See how quickly your system pays for itself</p></div>
-                </div>
-                <div class="savings-calculator">
-                    <div class="savings-input-row">
-                        <label for="monthly-bill">Average monthly KPLC bill (last 6 months)</label>
-                        <div class="savings-input-wrap">
-                            <span class="savings-prefix">KSH</span>
-                            <input type="number" id="monthly-bill" placeholder="e.g. 5000" min="0" step="500">
-                        </div>
-                    </div>
-                    <div id="savings-results" class="savings-results hidden">
-                        <div class="savings-card savings-monthly">
-                            <span class="savings-card-label">Monthly Savings</span>
-                            <span class="savings-card-val" id="monthly-savings">KSH 0</span>
-                        </div>
-                        <div class="savings-card savings-yearly">
-                            <span class="savings-card-label">Yearly Savings</span>
-                            <span class="savings-card-val" id="yearly-savings">KSH 0</span>
-                        </div>
-                        <div class="savings-card savings-payback">
-                            <span class="savings-card-label">Payback Period</span>
-                            <span class="savings-card-val" id="payback-period">&mdash;</span>
-                        </div>
-                        <div class="savings-card savings-10yr">
-                            <span class="savings-card-label">10-Year Net Savings</span>
-                            <span class="savings-card-val" id="ten-year-savings">KSH 0</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 5. Environmental impact -->
-            <div class="quote-block" id="env-block">
-                <div class="quote-block-header">
-                    <span class="qb-num green">5</span>
-                    <div><h2>Environmental Impact</h2><p class="qb-hint">Your contribution to a cleaner planet</p></div>
-                </div>
-                <div class="env-grid" id="env-grid">
-                    <div class="env-card" data-impact="energy">
-                        <div class="env-icon"><i data-lucide="zap"></i></div>
-                        <span class="env-label">Energy Produced</span>
-                        <span id="energy-produced" class="env-value">0 kWh/yr</span>
-                    </div>
-                    <div class="env-card" data-impact="co2">
-                        <div class="env-icon"><i data-lucide="leaf"></i></div>
-                        <span class="env-label">CO&#8322; Reduced</span>
-                        <span id="co2-reduced" class="env-value">0 kg/yr</span>
-                    </div>
-                    <div class="env-card" data-impact="trees">
-                        <div class="env-icon"><i data-lucide="trees"></i></div>
-                        <span class="env-label">Trees Equivalent</span>
-                        <span id="trees-planted" class="env-value">0 trees/yr</span>
-                    </div>
-                    <div class="env-card" data-impact="offset">
-                        <div class="env-icon"><i data-lucide="pie-chart"></i></div>
-                        <span class="env-label">Carbon Offset</span>
-                        <div class="ring-wrap">
-                            <svg class="ring-svg" viewBox="0 0 80 80">
-                                <circle class="ring-track" cx="40" cy="40" r="34"/>
-                                <circle id="co2-progress" class="ring-fill" cx="40" cy="40" r="34"/>
-                            </svg>
-                            <span id="co2-percentage" class="ring-text">0%</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 6. Cost breakdown -->
-            <div class="quote-block quote-block-highlight" id="cost-block">
-                <div class="quote-block-header">
-                    <span class="qb-num accent">6</span>
-                    <div><h2>Cost Breakdown</h2><p class="qb-hint">Full pricing for your system</p></div>
-                </div>
-
-                <div class="disclaimer">
-                    <i data-lucide="info"></i>
-                    <p>Quote includes solar mounting/structure. Final pricing confirmed after site survey.</p>
-                </div>
-
-                <div id="summary" class="breakdown"></div>
-
-                <div class="total-bar">
-                    <div class="total-bar-left">
-                        <span class="total-label">Total Estimated Cost</span>
-                        <span class="total-sub">Includes equipment, mounting &amp; installation</span>
-                    </div>
-                    <span id="total-cost" class="total-amount">0 KSH</span>
-                </div>
-
-                <div id="no-solar-summary" class="no-solar-summary"></div>
-
-                <div class="financing-row" id="financing-row">
-                    <div class="financing-head">
-                        <i data-lucide="calendar"></i>
-                        <span class="financing-label">Payment Plans</span>
-                    </div>
-                    <div class="financing-options">
-                        <button class="fin-opt" data-months="6">
-                            <span class="fin-amount" id="fin-6">&mdash;</span>
-                            <span class="fin-period">per month &times; 6</span>
-                        </button>
-                        <button class="fin-opt" data-months="12">
-                            <span class="fin-amount" id="fin-12">&mdash;</span>
-                            <span class="fin-period">per month &times; 12</span>
-                        </button>
-                        <button class="fin-opt" data-months="24">
-                            <span class="fin-amount" id="fin-24">&mdash;</span>
-                            <span class="fin-period">per month &times; 24</span>
-                        </button>
-                    </div>
-                    <p class="financing-note">Contact us to discuss flexible payment options</p>
-                </div>
-
-            </div>
-
-            <!-- 7. Contact & share -->
-            <div class="quote-block quote-block-action" id="share-block">
-                <div class="quote-block-header">
-                    <span class="qb-num">7</span>
-                    <div><h2>Get Your Quote</h2><p class="qb-hint">Fill in your details to email, WhatsApp, or download this quote</p></div>
-                </div>
-                <div class="user-form">
-                    <div class="form-row">
-                        <div class="field">
-                            <label for="user-name">Full Name <span class="req">*</span></label>
-                            <input type="text" id="user-name" placeholder="Jane Doe" autocomplete="name">
-                            <span class="field-error" id="name-error"></span>
-                        </div>
-                        <div class="field">
-                            <label for="user-email">Email <span class="req">*</span></label>
-                            <input type="email" id="user-email" placeholder="jane@example.com" autocomplete="email">
-                            <span class="field-error" id="email-error"></span>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="field phone-field">
-                            <label for="user-phone">Phone</label>
-                            <div class="phone-wrap">
-                                <select id="country-code">
-                                    <option value="+254" data-length="9">KE +254</option>
-                                    <option value="+1" data-length="10">US +1</option>
-                                    <option value="+44" data-length="10">UK +44</option>
-                                    <option value="+91" data-length="10">IN +91</option>
-                                    <option value="+234" data-length="10">NG +234</option>
-                                </select>
-                                <input type="tel" id="user-phone" placeholder="712345678" autocomplete="tel">
+                    <div class="guided-load-summary" id="guided-load-summary">
+                        <div class="load-summary-inner">
+                            <div class="load-stat">
+                                <span class="load-stat-label">Running Load</span>
+                                <span class="load-stat-val" id="running-watts">0W</span>
                             </div>
-                            <span class="field-error" id="phone-error"></span>
+                            <div class="load-stat">
+                                <span class="load-stat-label">Peak / Starting</span>
+                                <span class="load-stat-val load-stat-peak" id="peak-watts">0W</span>
+                            </div>
+                            <div class="load-stat">
+                                <span class="load-stat-label">Appliances</span>
+                                <span class="load-stat-val" id="appliance-count">0</span>
+                            </div>
+                            <div class="load-size-badge" id="load-size-badge">
+                                <i data-lucide="zap"></i>
+                                <span id="load-size-text">Add appliances to begin</span>
+                            </div>
                         </div>
-                        <div class="field">
-                            <label for="sales-rep">Sales Rep / Employee Name</label>
-                            <input type="text" id="sales-rep" placeholder="Employee who assisted you">
+                        <button class="cta-btn guided-next-btn" id="guided-next-from-appliances" disabled>
+                            <span>Finish</span> <i data-lucide="arrow-right"></i>
+                        </button>
+                    </div>
+
+                </section>
+
+                <!-- GUIDED: Recommendations -->
+                <section id="recommend-section" class="panel" data-step="recommend">
+                    <div class="panel-header">
+                        <span class="panel-tag">Step 2 of 4</span>
+                        <h1>Your Recommended Systems</h1>
+                        <p>Based on your <strong id="rec-watts-display">0W</strong> load, here are the best options for you.</p>
+                    </div>
+
+                    <div class="rec-phase-info" id="rec-phase-info"></div>
+
+                    <div id="rec-inverter-options" class="card-grid"></div>
+
+                    <button class="back-btn" id="back-from-recommend"><i data-lucide="arrow-left"></i> Back</button>
+                </section>
+
+                <!-- GUIDED: Battery Selection -->
+                <section id="guided-battery-section" class="panel" data-step="guided-battery">
+                    <div class="panel-header">
+                        <span class="panel-tag">Step 3 of 4</span>
+                        <h1>Choose Your Battery</h1>
+                        <p>Your inverter needs energy storage. Pick the battery that fits your needs and budget.</p>
+                    </div>
+
+                    <div class="guided-inverter-reminder" id="guided-inverter-reminder"></div>
+
+                    <div id="guided-battery-options" class="card-grid"></div>
+
+                    <button class="back-btn" id="back-from-guided-battery"><i data-lucide="arrow-left"></i> Back</button>
+                </section>
+
+                <!-- STEP: Phase Selection -->
+                <section id="phase-section" class="panel visible" data-step="phase">
+                    <div class="panel-header">
+                        <span class="panel-tag" id="phase-step-tag">Step 1</span>
+                        <h1>Choose Your System Type</h1>
+                        <p>Select the phase type that matches your installation.</p>
+                    </div>
+                    <div id="phase-options" class="brand-grid"></div>
+                </section>
+
+                <!-- STEP: Brand -->
+                <section id="company-section" class="panel" data-step="company">
+                    <div class="panel-header">
+                        <span class="panel-tag" id="company-step-tag">Step 2</span>
+                        <h1>Choose Your Brand</h1>
+                        <p>Select a manufacturer to start building your solar system.</p>
+                    </div>
+
+                    <div id="company-options" class="brand-grid"></div>
+                </section>
+
+                <!-- STEP: Inverter / Package -->
+                <section id="inverter-section" class="panel" data-step="inverter">
+                    <div class="panel-header">
+                        <span class="panel-tag" id="inverter-step-tag">Step 3</span>
+                        <h1 id="inverter-heading">Pick Your System</h1>
+                        <p id="inverter-subtitle">Choose the system that matches your power needs.</p>
+                    </div>
+                    <div class="resource-links" id="inverter-links">
+                        <a href="https://drive.google.com/file/d/1X_Azx91o4wRf9H45SUOGCV_l9N45dfT6/view?usp=sharing" target="_blank" rel="noopener" class="res-link kstar-only">
+                            <i data-lucide="book-open"></i> User Manual
+                        </a>
+                        <a href="https://drive.google.com/file/d/1sx29gQLQzLj1ThCVjoHGLXOGOZG-XCgi/view?usp=sharing" target="_blank" rel="noopener" class="res-link kstar-only">
+                            <i data-lucide="star"></i> Features
+                        </a>
+                        <a href="https://drive.google.com/file/d/1LGHqj75hovaBsraE4k5FIrT-4pDXfNzd/view?usp=sharing" target="_blank" rel="noopener" class="res-link fortuner-only">
+                            <i data-lucide="star"></i> Features
+                        </a>
+                    </div>
+                    <div id="compare-bar" class="compare-bar hidden">
+                        <span><i data-lucide="columns-2"></i> <span id="compare-count">0</span> selected to compare</span>
+                        <button id="compare-btn" class="cta-btn cta-small">Compare Now</button>
+                        <button id="compare-clear" class="cta-btn cta-ghost cta-small">Clear</button>
+                    </div>
+                    <div id="inverter-options" class="card-grid"></div>
+                    <button class="back-btn" id="back-from-inverter"><i data-lucide="arrow-left"></i> Back</button>
+                </section>
+
+                <!-- STEP: Battery -->
+                <section id="battery-section" class="panel" data-step="battery">
+                    <div class="panel-header">
+                        <span class="panel-tag" id="battery-step-tag">Step 4</span>
+                        <h1 id="battery-heading">Select Your Battery</h1>
+                        <p id="battery-subtitle">Pick the energy storage that fits your needs and budget.</p>
+                    </div>
+                    <div id="battery-options" class="card-grid"></div>
+                    <button class="back-btn" id="back-from-battery"><i data-lucide="arrow-left"></i> Back</button>
+                </section>
+
+                <!-- STEP: Summary / Quote -->
+                <section id="summary-section" class="panel" data-step="summary">
+
+                    <!-- Page header -->
+                    <div class="quote-page-header">
+                        <p class="quote-date" id="quote-date"></p>
+                        <h1>Your Solar Quote</h1>
+                        <p class="quote-page-sub">Review your selections, see the full cost breakdown, and share or download your quote.</p>
+                    </div>
+
+                    <!-- Compare quotes -->
+                    <div class="compare-quote-section">
+                        <button class="compare-quote-btn" id="compare-quote-btn">
+                            <i data-lucide="plus-circle"></i> Save &amp; Build Another Quote to Compare
+                        </button>
+                        <button class="compare-view-btn" id="compare-view-btn" style="display:none">
+                            <i data-lucide="columns-2"></i> View Comparison
+                        </button>
+                    </div>
+
+                    <!-- 1. System overview -->
+                    <div class="quote-block" id="selection-overview">
+                        <div class="quote-block-header">
+                            <span class="qb-num">1</span>
+                            <div><h2>System Overview</h2><p class="qb-hint">What you've selected</p></div>
+                        </div>
+                        <div id="selection-cards" class="selection-cards"></div>
+                    </div>
+
+                    <!-- 2. Solar panels -->
+                    <div class="quote-block" id="panel-block">
+                        <div class="quote-block-header">
+                            <span class="qb-num">2</span>
+                            <div><h2>Solar Panels</h2><p class="qb-hint">Modules included in your system</p></div>
+                        </div>
+                        <div id="panel-info" class="panel-info-content"></div>
+                        <div id="panel-images" class="panel-visual"></div>
+                    </div>
+
+                    <!-- 3. Accessories -->
+                    <div class="quote-block" id="accessory-block">
+                        <!-- Rendered dynamically by JS -->
+                    </div>
+
+                    <!-- 4. Savings calculator -->
+                    <div class="quote-block" id="savings-block">
+                        <div class="quote-block-header">
+                            <span class="qb-num">4</span>
+                            <div><h2>Savings Estimate</h2><p class="qb-hint">See how quickly your system pays for itself</p></div>
+                        </div>
+                        <div class="savings-calculator">
+                            <div class="savings-input-row">
+                                <label for="monthly-bill">Average monthly KPLC bill (last 6 months)</label>
+                                <div class="savings-input-wrap">
+                                    <span class="savings-prefix">KSH</span>
+                                    <input type="number" id="monthly-bill" placeholder="e.g. 5000" min="0" step="500">
+                                </div>
+                            </div>
+                            <div id="savings-results" class="savings-results hidden">
+                                <div class="savings-card savings-monthly">
+                                    <span class="savings-card-label">Monthly Savings</span>
+                                    <span class="savings-card-val" id="monthly-savings">KSH 0</span>
+                                </div>
+                                <div class="savings-card savings-yearly">
+                                    <span class="savings-card-label">Yearly Savings</span>
+                                    <span class="savings-card-val" id="yearly-savings">KSH 0</span>
+                                </div>
+                                <div class="savings-card savings-payback">
+                                    <span class="savings-card-label">Payback Period</span>
+                                    <span class="savings-card-val" id="payback-period">&mdash;</span>
+                                </div>
+                                <div class="savings-card savings-10yr">
+                                    <span class="savings-card-label">10-Year Net Savings</span>
+                                    <span class="savings-card-val" id="ten-year-savings">KSH 0</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="cta-row">
-                    <button id="share-summary" class="cta-btn"><i data-lucide="mail"></i> Email Quote</button>
-                    <button id="share-whatsapp" class="cta-btn cta-green"><i data-lucide="message-circle"></i> WhatsApp</button>
-                    <button id="download-pdf" class="cta-btn cta-red"><i data-lucide="file-down"></i> Download PDF</button>
-                </div>
+                    <!-- 5. Environmental impact -->
+                    <div class="quote-block" id="env-block">
+                        <div class="quote-block-header">
+                            <span class="qb-num green">5</span>
+                            <div><h2>Environmental Impact</h2><p class="qb-hint">Your contribution to a cleaner planet</p></div>
+                        </div>
+                        <div class="env-grid" id="env-grid">
+                            <div class="env-card" data-impact="energy">
+                                <div class="env-icon"><i data-lucide="zap"></i></div>
+                                <span class="env-label">Energy Produced</span>
+                                <span id="energy-produced" class="env-value">0 kWh/yr</span>
+                            </div>
+                            <div class="env-card" data-impact="co2">
+                                <div class="env-icon"><i data-lucide="leaf"></i></div>
+                                <span class="env-label">CO&#8322; Reduced</span>
+                                <span id="co2-reduced" class="env-value">0 kg/yr</span>
+                            </div>
+                            <div class="env-card" data-impact="trees">
+                                <div class="env-icon"><i data-lucide="trees"></i></div>
+                                <span class="env-label">Trees Equivalent</span>
+                                <span id="trees-planted" class="env-value">0 trees/yr</span>
+                            </div>
+                            <div class="env-card" data-impact="offset">
+                                <div class="env-icon"><i data-lucide="pie-chart"></i></div>
+                                <span class="env-label">Carbon Offset</span>
+                                <div class="ring-wrap">
+                                    <svg class="ring-svg" viewBox="0 0 80 80">
+                                        <circle class="ring-track" cx="40" cy="40" r="34"/>
+                                        <circle id="co2-progress" class="ring-fill" cx="40" cy="40" r="34"/>
+                                    </svg>
+                                    <span id="co2-percentage" class="ring-text">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6. Cost breakdown -->
+                    <div class="quote-block quote-block-highlight" id="cost-block">
+                        <div class="quote-block-header">
+                            <span class="qb-num accent">6</span>
+                            <div><h2>Cost Breakdown</h2><p class="qb-hint">Full pricing for your system</p></div>
+                        </div>
+
+                        <div class="disclaimer">
+                            <i data-lucide="info"></i>
+                            <p>Quote includes solar mounting/structure. Final pricing confirmed after site survey.</p>
+                        </div>
+
+                        <div id="summary" class="breakdown"></div>
+
+                        <div class="total-bar">
+                            <div class="total-bar-left">
+                                <span class="total-label">Total Estimated Cost</span>
+                                <span class="total-sub">Includes equipment, mounting &amp; installation</span>
+                            </div>
+                            <span id="total-cost" class="total-amount">0 KSH</span>
+                        </div>
+
+                        <div id="no-solar-summary" class="no-solar-summary"></div>
+
+                        <div class="financing-row" id="financing-row">
+                            <div class="financing-head">
+                                <i data-lucide="calendar"></i>
+                                <span class="financing-label">Payment Plans</span>
+                            </div>
+                            <div class="financing-options">
+                                <button class="fin-opt" data-months="6">
+                                    <span class="fin-amount" id="fin-6">&mdash;</span>
+                                    <span class="fin-period">per month &times; 6</span>
+                                </button>
+                                <button class="fin-opt" data-months="12">
+                                    <span class="fin-amount" id="fin-12">&mdash;</span>
+                                    <span class="fin-period">per month &times; 12</span>
+                                </button>
+                                <button class="fin-opt" data-months="24">
+                                    <span class="fin-amount" id="fin-24">&mdash;</span>
+                                    <span class="fin-period">per month &times; 24</span>
+                                </button>
+                            </div>
+                            <p class="financing-note">Contact us to discuss flexible payment options</p>
+                        </div>
+
+                    </div>
+
+                    <!-- 7. Contact & share -->
+                    <div class="quote-block quote-block-action" id="share-block">
+                        <div class="quote-block-header">
+                            <span class="qb-num">7</span>
+                            <div><h2>Get Your Quote</h2><p class="qb-hint">Fill in your details to email, WhatsApp, or download this quote</p></div>
+                        </div>
+                        <div class="user-form">
+                            <div class="form-row">
+                                <div class="field">
+                                    <label for="user-name">Full Name <span class="req">*</span></label>
+                                    <input type="text" id="user-name" placeholder="Jane Doe" autocomplete="name">
+                                    <span class="field-error" id="name-error"></span>
+                                </div>
+                                <div class="field">
+                                    <label for="user-email">Email <span class="req">*</span></label>
+                                    <input type="email" id="user-email" placeholder="jane@example.com" autocomplete="email">
+                                    <span class="field-error" id="email-error"></span>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="field phone-field">
+                                    <label for="user-phone">Phone</label>
+                                    <div class="phone-wrap">
+                                        <select id="country-code">
+                                            <option value="+254" data-length="9">KE +254</option>
+                                            <option value="+1" data-length="10">US +1</option>
+                                            <option value="+44" data-length="10">UK +44</option>
+                                            <option value="+91" data-length="10">IN +91</option>
+                                            <option value="+234" data-length="10">NG +234</option>
+                                        </select>
+                                        <input type="tel" id="user-phone" placeholder="712345678" autocomplete="tel">
+                                    </div>
+                                    <span class="field-error" id="phone-error"></span>
+                                </div>
+                                <div class="field">
+                                    <label for="sales-rep">Sales Rep / Employee Name</label>
+                                    <input type="text" id="sales-rep" placeholder="Employee who assisted you">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cta-row">
+                            <button id="share-summary" class="cta-btn"><i data-lucide="mail"></i> Email Quote</button>
+                            <button id="share-whatsapp" class="cta-btn cta-green"><i data-lucide="message-circle"></i> WhatsApp</button>
+                            <button id="download-pdf" class="cta-btn cta-red"><i data-lucide="file-down"></i> Download PDF</button>
+                        </div>
+                    </div>
+
+                    <div class="quote-footer-actions">
+                        <button class="back-btn" id="back-from-summary"><i data-lucide="arrow-left"></i> Back</button>
+                        <button id="reset-selection" class="cta-btn cta-ghost"><i data-lucide="rotate-cw"></i> Start Over</button>
+                    </div>
+
+                </section>
+
             </div>
 
-            <div class="quote-footer-actions">
-                <button class="back-btn" id="back-from-summary"><i data-lucide="arrow-left"></i> Back</button>
-                <button id="reset-selection" class="cta-btn cta-ghost"><i data-lucide="rotate-cw"></i> Start Over</button>
-            </div>
-
-        </section>
+            <aside class="stage-col" aria-label="Your system">
+                <div class="stage stage-live" id="stage"></div>
+            </aside>
+        </div>
 
     </main>
 
@@ -540,10 +529,10 @@
                 <p class="footer-lede">Visit the showroom to see the inverters and batteries in person, or call and we&rsquo;ll talk through your quote.</p>
             </div>
             <ul class="footer-links">
-                <li><i data-lucide="map-pin"></i><span>The Big Bang, Ngara<br>Opposite Rainbow Plaza, Nairobi</span></li>
-                <li><i data-lucide="phone"></i><a href="tel:+254723984559">+254 723 984 559</a></li>
-                <li><i data-lucide="mail"></i><a href="mailto:info@sangyug.com">info@sangyug.com</a></li>
-                <li><i data-lucide="globe"></i><a href="https://www.sangyug.com" target="_blank" rel="noopener">sangyug.com</a></li>
+                <li><span class="fl-label">Showroom</span><span>The Big Bang, Ngara<br>Opposite Rainbow Plaza, Nairobi</span></li>
+                <li><span class="fl-label">Phone</span><a href="tel:+254723984559">+254 723 984 559</a></li>
+                <li><span class="fl-label">Email</span><a href="mailto:info@sangyug.com">info@sangyug.com</a></li>
+                <li><span class="fl-label">Web</span><a href="https://www.sangyug.com" target="_blank" rel="noopener">sangyug.com</a></li>
             </ul>
         </div>
         <div class="footer-credits">
